@@ -251,16 +251,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   checkIfFree(div: HTMLDivElement, idNumber: number, rows: number): boolean {
-    let optionalDivLeft: string = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 1);
-    let optionalDivRight: string = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 1);
-    let optionalDivUp: string = '';
-    let optionalDivDown: string = '';
+    let optionalDivLeft: HTMLDivElement | null = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 1)) as HTMLDivElement;
+    let optionalDivRight: HTMLDivElement | null = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 1)) as HTMLDivElement;
+    let optionalDivUp: HTMLDivElement | null = null;
+    let optionalDivDown: HTMLDivElement | null = null;
     if (rows == 5 || rows == 4 || rows == 3) {
-      optionalDivUp = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12);
-      optionalDivDown = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12);
+      optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12)) as HTMLDivElement
+      optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12)) as HTMLDivElement
     }
-
-    console.log(optionalDivDown, optionalDivLeft, optionalDivRight, optionalDivUp);
+    console.log("down : " + optionalDivDown, "left : " + optionalDivLeft, "right : " + optionalDivRight, "up : " + optionalDivUp);
     return true;
   }
 
