@@ -251,20 +251,20 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   checkIfFree(div: HTMLDivElement, idNumber: number, rows: number): boolean {
-    let optionalDivLeft: string = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber - 1);
-    let optionalDivRight: string = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber + 1);
+    let optionalDivLeft: string = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 1);
+    let optionalDivRight: string = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 1);
     let optionalDivUp: string = '';
     let optionalDivDown: string = '';
     if (rows == 5 || rows == 4 || rows == 3) {
-      optionalDivUp = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber - 12);
-      optionalDivDown = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber + 12);
+      optionalDivUp = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12);
+      optionalDivDown = div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12);
     }
 
-    console.log(optionalDivDown,optionalDivLeft,optionalDivRight,optionalDivUp);
+    console.log(optionalDivDown, optionalDivLeft, optionalDivRight, optionalDivUp);
     return true;
   }
 
-  
+
   translateRow(rows: number): string {
     if (rows == 5) {
       return 'first-';
