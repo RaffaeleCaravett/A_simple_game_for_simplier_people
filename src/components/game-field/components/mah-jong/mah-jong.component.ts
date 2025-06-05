@@ -237,8 +237,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   checkMove(div: HTMLDivElement) {
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
-    let isCardFree: boolean = this.checkIfFree(div, rows, idNumber);
-    console.log(isCardFree);
+    let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
   }
 
 
@@ -251,39 +250,21 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     else return 0;
   }
 
-  checkIfFree(div: HTMLDivElement, rows: number, idNumber: number): boolean {
-    if ((idNumber == 1 || idNumber == 12 || idNumber == 49 || idNumber == 60) && rows == 5) return true;
-    else if ((idNumber == 1 || idNumber == 12 || idNumber == 37 || idNumber == 48) && rows == 4) return true;
-    else if ((idNumber == 1 || idNumber == 12 || idNumber == 25 || idNumber == 36) && rows == 3) return true;
-    else if (rows == 1) return true;
-    else if ((idNumber - 12) < 0) {
-      //Controllo se nella prima riga ci sono carte a sinistra o a desta
-      if (this.checkIfDivIsPresent(document.getElementById(this.translateRow(rows) + String(idNumber - 1))) ||
-        this.checkIfDivIsPresent(document.getElementById(this.translateRow(rows) + String(idNumber + 1)))) {
-        if (!(document.getElementById(this.translateRow(rows) + String(idNumber - 1))!.textContent!.length > 0)) {
-          console.log('left free on first line , row : ' + this.translateRow(rows).substring(0, this.translateRow(rows).lastIndexOf('-')));
-          return true;
-        } else if (!(document.getElementById(this.translateRow(rows) + String(idNumber + 1))!.textContent!.length > 0)) {
-          console.log('right free on first line , row : ' + this.translateRow(rows).substring(0, this.translateRow(rows).lastIndexOf('-')));
-          return true;
-        } else {
-          console.log('both left and right occupied on first line , row : ' + this.translateRow(rows).substring(0, this.translateRow(rows).lastIndexOf('-')));
-          return false;
-        }
-      } else if (!this.checkIfDivIsPresent(document.getElementById(this.translateRow(rows) + String(idNumber - 1))) ||
-        !this.checkIfDivIsPresent(document.getElementById(this.translateRow(rows) + String(idNumber + 1)))) {
-        console.log('left or right undefined on first line , row : ' + this.translateRow(rows).substring(0, this.translateRow(rows).lastIndexOf('-')));
-        return true;
-      } else {
-        return false;
-      }
-    } else if (((idNumber + 12) > 60 && rows == 5) || ((idNumber + 12) > 48 && rows == 4) || ((idNumber + 12) > 36 && rows == 3) || ((idNumber + 3) > 6 && rows == 2)) {
-      //just to fix return error... to do ...
-      console.log('to do ...');
-      return true;
+  checkIfFree(div: HTMLDivElement, idNumber: number, rows: number): boolean {
+    let optionalDivLeft: string = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber - 1);
+    let optionalDivRight: string = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber + 1);
+    let optionalDivUp: string = '';
+    let optionalDivDown: string = '';
+    if (rows == 5 || rows == 4 || rows == 3) {
+      optionalDivUp = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber - 12);
+      optionalDivDown = div.id.substring(div.id.lastIndexOf('-') - 1) + (idNumber + 12);
     }
-    else return false;
+
+    console.log(optionalDivDown,optionalDivLeft,optionalDivRight,optionalDivUp);
+    return true;
   }
+
+  
   translateRow(rows: number): string {
     if (rows == 5) {
       return 'first-';
