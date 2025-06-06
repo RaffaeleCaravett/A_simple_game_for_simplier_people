@@ -17,15 +17,10 @@
         0 0 2.8rem #ff7300,
         inset 0 0 1.3rem #ff7300;
 
-    .arrow_up_button {
-        transition: 1s;
-        &:hover {
-            max-width: 45px;
-            max-height: 45px;
-            transition: 1s;
-        }
-    }
+}
 
+.bi-arrow-up::before {
+    width: 38px;
 }
 
 .bg-personal {

@@ -11,11 +11,11 @@ import { browserRefresh } from '../../app/app.component';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  windowWidth: number = 0;
   starCount: number = 0;
   interval: any;
   mode: string = 'light';
-  balls:number[]=[1,2,3,4,5,6,7,8,9,10]
+  balls: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   constructor(private modeService: ModeService) {
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
@@ -30,8 +30,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.onResize();
-    if(!browserRefresh){
-      localStorage.setItem('location','')   
+    if (!browserRefresh) {
+      localStorage.setItem('location', '')
     }
   }
   ngAfterViewInit(): void {
@@ -64,22 +64,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('window:resize', ['event'])
   onResize(event?: any) {
+    this.windowWidth = window.innerWidth;
     let father = document.querySelector('.cards-container');
     let father1 = document.getElementsByClassName('rotate-ts')!;
-    Array.from(father?.children!).forEach((e:any,a:any)=>{
-     if (window.innerWidth <= 400) {
-      e.children[0].style="left:0;"
-    }else{
-      a==0||a==2?e.children[0].style="left:-8%;":e.children[0].style="left:10%;"
-    }
-     })
-     Array.from(father1).forEach((e:Element)=>{
+    Array.from(father?.children!).forEach((e: any, a: any) => {
+      if (window.innerWidth <= 400) {
+        e.children[0].style = "left:0;"
+      } else {
+        a == 0 || a == 2 ? e.children[0].style = "left:-8%;" : e.children[0].style = "left:10%;"
+      }
+    })
+    Array.from(father1).forEach((e: Element) => {
       let div = e as HTMLDivElement;
       if (window.innerWidth <= 400) {
-       div.classList.add("rotate-ts-important")
-     }else{
-      div.classList.remove("rotate-ts-important")
-    }
-      })
+        div.classList.add("rotate-ts-important")
+      } else {
+        div.classList.remove("rotate-ts-important")
+      }
+    })
   }
 }
