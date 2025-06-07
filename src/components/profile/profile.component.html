@@ -386,7 +386,7 @@
                     </div>
                 </div>
                 <div *ngIf="section=='Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                    <app-impostazioni [section]="impostazioniSection" [user]="visitedUser"></app-impostazioni>
+                    <app-impostazioni [section]="impostazioniSection" [user]="visitedUser" [mode]="mode"></app-impostazioni>
                 </div>
                 <div *ngIf="section== 'Preferiti'">
                     <app-preferiti [userInput]="visitedUser"></app-preferiti>

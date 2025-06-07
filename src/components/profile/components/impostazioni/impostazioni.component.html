@@ -25,7 +25,7 @@
             </div>
         </form>
         <div class="w-75 m-auto">
-            <button class="btn my-3 btn-outline-success fw-bold" [disabled]="assistenzaForm.invalid"
+            <button class="btn my-3 btn-success fw-bold" [disabled]="assistenzaForm.invalid"
                 [matTooltip]="btn.disabled? 'Completa il form': 'Invia la richiesta'" #btn (click)="inviaRichiesta()"
                 matTooltipPosition="above">Invia
                 richiesta</button>
@@ -160,7 +160,7 @@
                     </p>
                     <h2>{{r?.oggetto}}</h2>
                     <p class="sub-title">Creata il <span class="fw-bold">{{format(r?.createdAt)}}</span></p>
-                    <p class="py-5 bg-light shadow-sm text-dark">
+                    <p class="py-5 shadow-sm" [ngClass]="mode=='light'?'bg-light text-dark':'bg-dark text-white'">
                         {{r?.descrizionePreview}}
                     </p>
                 </div>

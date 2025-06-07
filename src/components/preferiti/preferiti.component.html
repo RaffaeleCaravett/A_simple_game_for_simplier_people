@@ -8,8 +8,8 @@
                 <h2 *ngIf="(user?.id != visitedUser?.id) && visitedUser && userInput!=null">Cerca fra i preferiti</h2>
             </div>
             <div class="col-md-12 p-5">
-                <form [formGroup]="searchPreferitiForm" class="w-75 row m-auto bg-white border p-3">
-                <h2>🔍 Cerca qui fra i tuoi preferiti</h2>
+                <form [formGroup]="searchPreferitiForm" [ngClass]="mode=='light'?'bg-white':'bg-personal text-light'" class="w-75 row m-auto border p-3">
+                <h2 [ngClass]="mode=='light'?'text-dark':'text-light'">🔍 Cerca qui fra i tuoi preferiti</h2>
                     <div class="col-md-4">
                         <label for="size" class="p-2">Elementi per pagina</label>
                         <select name="size" id="size" formControlName="size" class="form-select">

@@ -86,7 +86,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   trofeiSortOrder: string = 'ASC';
   trofei: any = null;
   firstTimeReces: number = 0;
-  sottomenu: string[] = ['Cambia immagine del profilo', 'Cambia la password', 'Cambia altre informazioni', 'Richiedi assistenza', 'Monitora le tue richieste'];
+  sottomenu: string[] = ['🖼️Cambia immagine del profilo', '🔒 Cambia la password', 'ℹ️ Cambia altre informazioni', '📞 Richiedi assistenza', '📨 Monitora le tue richieste'];
   impostazioniSection: string = 'Richiedi assistenza';
   mode: string = 'light';
   cityX: number = 0;
@@ -102,10 +102,17 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.user = this.authService.getUser()!;
+      this.getAllDatas();
       if (this.visitedUser?.id == this.user?.id) {
         this.visitedUser = this.authService.getUser()!;
         this.getCoordinates();
-        this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
+        let yesImpostazioni: boolean = false;
+        this.menuVoices.forEach((d) => {
+          if (d.label == 'Impostazioni') {
+            yesImpostazioni = true;
+          }
+        });
+        if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
         this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
         localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
       }
@@ -127,7 +134,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               this.visitedUser = data;
               this.getCoordinates();
               if (this.user?.id == this.visitedUser?.id) {
-                this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
+                let yesImpostazioni: boolean = false;
+                this.menuVoices.forEach((d) => {
+                  if (d.label == 'Impostazioni') {
+                    yesImpostazioni = true;
+                  }
+                });
+                if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
                 this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
               }
               this.getAllDatas();
@@ -141,7 +154,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.visitedUser = JSON.parse(localStorage.getItem('visitedUser')!);
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
-              this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
+              let yesImpostazioni: boolean = false;
+              this.menuVoices.forEach((d) => {
+                if (d.label == 'Impostazioni') {
+                  yesImpostazioni = true;
+                }
+              });
+              if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
               this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
             }
             this.getAllDatas();
@@ -250,7 +269,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
 
   setImpostazioniSection(s: string) {
-    this.impostazioniSection = s;
+    this.impostazioniSection = s.substring(3);
+    console.log(this.impostazioniSection)
   }
   getCoordinates() {
     if (this.visitedUser?.completed) {

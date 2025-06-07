@@ -1,4 +1,4 @@
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { User } from '../../../../interfaces/interfaces';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,12 +10,11 @@ import { RichiestaComponent } from '../../../../shared/components/richiesta/rich
 import { FormsService } from '../../../../services/forms.service';
 import { AuthService } from '../../../../services/auth.service';
 import { SharedModule } from '../../../../shared/modules/shared.module';
-import { InsertTextComponent } from '../../../../shared/components/text-editor/components/insert-text/insert-text.component';
 
 @Component({
   selector: 'app-impostazioni',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, MatTooltipModule, NgFor, SharedModule],
+  imports: [NgIf, ReactiveFormsModule, MatTooltipModule, NgFor, SharedModule, NgClass],
   templateUrl: './impostazioni.component.html',
   styleUrl: './impostazioni.component.scss'
 })
@@ -70,6 +69,7 @@ export class ImpostazioniComponent implements OnInit, OnDestroy, OnChanges {
     { value: 'fs-2', label: 'big' },
     { value: 'fs-1', label: 'bigger' }
   ]);
+  @Input('mode') mode:string = 'light';
   constructor(private toastr: ToastrService, private profileService: ProfileServive, private datePipe: DatePipe, private matDialog: MatDialog,
     private formService: FormsService, private authService: AuthService) { }
 
