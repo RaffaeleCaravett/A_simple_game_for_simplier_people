@@ -238,6 +238,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
     let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
+    console.log(isCardFree);
   }
 
 
@@ -255,12 +256,31 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     let optionalDivRight: HTMLDivElement | null = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 1)) as HTMLDivElement;
     let optionalDivUp: HTMLDivElement | null = null;
     let optionalDivDown: HTMLDivElement | null = null;
+    if (rows == 5 && (idNumber == 12 || idNumber == 24 || idNumber == 36 || idNumber == 48)) {
+      optionalDivRight = null;
+    } else if (rows == 5 && (idNumber == 13 || idNumber == 25 || idNumber == 37 || idNumber == 49)) {
+      optionalDivLeft = null;
+    } else if (rows == 4 && (idNumber == 12 || idNumber == 24 || idNumber == 36)) {
+      optionalDivRight = null;
+    } else if (rows == 4 && (idNumber == 13 || idNumber == 25 || idNumber == 37)) {
+      optionalDivLeft = null;
+    }else if (rows == 3 && (idNumber == 12 || idNumber == 24 )) {
+      optionalDivRight = null;
+    } else if (rows == 3 && (idNumber == 13 || idNumber == 25 )){
+      optionalDivLeft = null;
+    }
     if (rows == 5 || rows == 4 || rows == 3) {
       optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12)) as HTMLDivElement
       optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12)) as HTMLDivElement
     }
-    console.log("down : " + optionalDivDown, "left : " + optionalDivLeft, "right : " + optionalDivRight, "up : " + optionalDivUp);
-    return true;
+    let free: number = 0;
+    debugger
+    if (null == optionalDivDown) free += 1;
+    if (null == optionalDivLeft) free += 1;
+    if (null == optionalDivRight) free += 1;
+    if (null == optionalDivUp) free += 1;
+    if (free >= 2) return true;
+    return false;
   }
 
 

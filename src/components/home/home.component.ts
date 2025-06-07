@@ -67,20 +67,24 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.windowWidth = window.innerWidth;
     let father = document.querySelector('.cards-container');
     let father1 = document.getElementsByClassName('rotate-ts')!;
-    Array.from(father?.children!).forEach((e: any, a: any) => {
-      if (window.innerWidth <= 400) {
-        e.children[0].style = "left:0;"
-      } else {
-        a == 0 || a == 2 ? e.children[0].style = "left:-8%;" : e.children[0].style = "left:10%;"
-      }
-    })
-    Array.from(father1).forEach((e: Element) => {
-      let div = e as HTMLDivElement;
-      if (window.innerWidth <= 400) {
-        div.classList.add("rotate-ts-important")
-      } else {
-        div.classList.remove("rotate-ts-important")
-      }
-    })
+    if (father?.children) {
+      Array.from(father?.children!)?.forEach((e: any, a: any) => {
+        if (window.innerWidth <= 400) {
+          e.children[0].style = "left:0;"
+        } else {
+          a == 0 || a == 2 ? e.children[0].style = "left:-8%;" : e.children[0].style = "left:10%;"
+        }
+      })
+    }
+    if (father1) {
+      Array.from(father1)?.forEach((e: Element) => {
+        let div = e as HTMLDivElement;
+        if (window.innerWidth <= 400) {
+          div.classList.add("rotate-ts-important")
+        } else {
+          div.classList.remove("rotate-ts-important")
+        }
+      })
+    }
   }
 }
