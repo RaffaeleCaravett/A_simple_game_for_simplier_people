@@ -264,17 +264,23 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       optionalDivRight = null;
     } else if (rows == 4 && (idNumber == 13 || idNumber == 25 || idNumber == 37)) {
       optionalDivLeft = null;
-    }else if (rows == 3 && (idNumber == 12 || idNumber == 24 )) {
+    } else if (rows == 3 && (idNumber == 12 || idNumber == 24)) {
       optionalDivRight = null;
-    } else if (rows == 3 && (idNumber == 13 || idNumber == 25 )){
+    } else if (rows == 3 && (idNumber == 13 || idNumber == 25)) {
+      optionalDivLeft = null;
+    } else if (rows == 2 && (idNumber == 3)) {
+      optionalDivRight = null;
+    } else if (rows == 2 && (idNumber == 4)) {
       optionalDivLeft = null;
     }
     if (rows == 5 || rows == 4 || rows == 3) {
       optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12)) as HTMLDivElement
       optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12)) as HTMLDivElement
+    } else if (rows == 2) {
+      optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 3)) as HTMLDivElement
+      optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 3)) as HTMLDivElement
     }
     let free: number = 0;
-    debugger
     if (null == optionalDivDown) free += 1;
     if (null == optionalDivLeft) free += 1;
     if (null == optionalDivRight) free += 1;
