@@ -6,10 +6,10 @@
             </div>
             <div class="col-md-3" *ngIf="windowWidth>699 else reducedMenu">
                 <ul class="text-start">
-                    <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v)">
-                        <span *ngIf="v != 'Impostazioni'">{{v.toUpperCase()}}</span>
-                        <div *ngIf="v == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                            <span>{{v.toUpperCase()}}</span>
+                    <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
+                        <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                        <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
+                            <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
                             <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
                                 <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
                                     {{s.toUpperCase()}}</li>
@@ -27,10 +27,10 @@
                 <div class="col-6 p-3 position-relative" *ngIf="showMenu">
                     <div class="ml-5 mt-5 p-3 border rounded" [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
                         <ul class="text-start">
-                            <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v)">
-                                <span *ngIf="v != 'Impostazioni'">{{v.toUpperCase()}}</span>
-                                <div *ngIf="v == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                                    <span>{{v.toUpperCase()}}</span>
+                            <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
+                                <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                                <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
+                                    <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
                                     <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
                                         <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
                                             {{s.toUpperCase()}}</li>

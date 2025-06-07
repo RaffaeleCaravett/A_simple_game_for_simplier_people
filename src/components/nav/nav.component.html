@@ -11,15 +11,15 @@
             </div>
             <div class="col-md-4">
                 <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'"
-                    [routerLink]="'/home'">HOME</button>
+                    [routerLink]="'/home'">🏠 HOME</button>
             </div>
             <div class="col-md-4">
                 <button class="btn fs-4" *ngIf="isAuthenticatedUser" [ngClass]="mode!='light'?'text-light':'text-dark'"
-                    [routerLink]="'/lobby'">LOBBY</button>
+                    [routerLink]="'/lobby'">🎮 LOBBY</button>
             </div>
             <div class="col-md-4" *ngIf="!isAuthenticatedUser;else logOut">
                 <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'"
-                    [routerLink]="'/forms'">LOGIN</button>
+                    [routerLink]="'/forms'">🚪 LOGIN</button>
             </div>
             <ng-template #logOut>
                 <div class="col-md-4" *ngIf="isAuthenticatedUser">
@@ -40,11 +40,11 @@
                     <ng-template matMenuContent>
                         <div>
                             <button mat-menu-item class="btn fs-4 text-dark"
-                                (click)="goToRoute('lobby/profile')">Profile</button>
+                                (click)="goToRoute('lobby/profile')">🪪 Profile</button>
                             <button mat-menu-item class="btn fs-4 text-dark"
-                                (click)="goToRoute('lobby/preferiti')">Preferiti</button>
+                                (click)="goToRoute('lobby/preferiti')">💌 Preferiti</button>
                             <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
-                                [routerLink]="'/home'">Logout</button>
+                                [routerLink]="'/home'">➡️ Logout</button>
                         </div>
                     </ng-template>
                 </mat-menu>

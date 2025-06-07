@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-4 text-center overflow-auto" [ngClass]="windowWidth<768?'d-none':'d-block'">
-        <h2>Ricerca fra i giochi</h2>
+        <h2>Ricerca fra i giochi <span class="fs-4">🎲</span></h2>
         <form [formGroup]="searchGiocoForm" class="text-center">
             <label for="nomeGioco" class="py-1">Nome completo o in parte</label>
             <input type="text" class="form-control" name="nomeGioco" formControlName="nomeGioco">

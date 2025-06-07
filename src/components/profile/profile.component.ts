@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
 
   sizes: number[] = [2, 5, 10];
   windowWidth: number = 0;
-  menuVoices: Set<string> = new Set(['Profilo', 'Recensioni', 'Giochi', 'Trofei', 'Classifiche', 'Partite', 'Preferiti']);
+  menuVoices: Set<{ label: string, emoji: string }> = new Set([{ label: 'Profilo', emoji: '🪪' }, { label: 'Recensioni', emoji: '✅' }, { label: 'Giochi', emoji: '🕹️' }, { label: 'Trofei', emoji: '🏅' }, { label: 'Classifiche', emoji: '📋' }, { label: 'Partite', emoji: '🥅' }, { label: 'Preferiti', emoji: '❤️' }]);
   section: string = 'Profilo';
   circles: number[] = [1, 2, 3, 4, 5];
   partitePage: number = 0;
@@ -105,8 +105,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       if (this.visitedUser?.id == this.user?.id) {
         this.visitedUser = this.authService.getUser()!;
         this.getCoordinates();
-        this.menuVoices.add('Impostazioni');
-        this.menuVoices.delete('Preferiti');
+        this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
+        this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
         localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
       }
     });
@@ -127,8 +127,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               this.visitedUser = data;
               this.getCoordinates();
               if (this.user?.id == this.visitedUser?.id) {
-                this.menuVoices.add('Impostazioni');
-                this.menuVoices.delete('Preferiti');
+                this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
+                this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
               }
               this.getAllDatas();
               if (this.visitedUser != null && this.visitedUser != undefined) localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
@@ -141,8 +141,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.visitedUser = JSON.parse(localStorage.getItem('visitedUser')!);
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
-              this.menuVoices.add('Impostazioni');
-              this.menuVoices.delete('Preferiti');
+              this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
+              this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
             }
             this.getAllDatas();
           }
@@ -301,6 +301,6 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
   formatDate(date: string) {
     let newDate = new Date(date);
-    return newDate.getDate()+'/'+newDate.getMonth()+1+'/'+newDate.getFullYear();
+    return newDate.getDate() + '/' + newDate.getMonth() + 1 + '/' + newDate.getFullYear();
   }
 }

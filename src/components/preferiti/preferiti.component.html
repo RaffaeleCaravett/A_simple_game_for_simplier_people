@@ -8,7 +8,8 @@
                 <h2 *ngIf="(user?.id != visitedUser?.id) && visitedUser && userInput!=null">Cerca fra i preferiti</h2>
             </div>
             <div class="col-md-12 p-5">
-                <form [formGroup]="searchPreferitiForm" class="w-75 row m-auto">
+                <form [formGroup]="searchPreferitiForm" class="w-75 row m-auto bg-white border p-3">
+                <h2>🔍 Cerca qui fra i tuoi preferiti</h2>
                     <div class="col-md-4">
                         <label for="size" class="p-2">Elementi per pagina</label>
                         <select name="size" id="size" formControlName="size" class="form-select">
@@ -39,18 +40,18 @@
                         </select>
                     </div>
                     <div class="col-md-12 py-4">
-                        <button class="btn btn-outline-primary fw-bold" (click)="getPreferiti()">Cerca</button>
+                        <button class="btn btn-primary fw-bold" (click)="getPreferiti()">Cerca</button>
                     </div>
                 </form>
             </div>
             <div class="col-md-6 col-lg-4 p-3" *ngFor="let p of preferiti?.content">
-                <div class="border shadow p-4">
-                    <p class="text-end" *ngIf="user?.id == visitedUser?.id">
+                <p class="text-end p-2 m-0 border border-bottom-0" [ngClass]="mode=='light'?'bg-primary':'bg-dark'" *ngIf="user?.id == visitedUser?.id">
                         <button class="btn" matTooltip="Elimina dai preferiti" matTooltipPosition="above"
                             (click)="deletePreferito(p?.id)">
                             <i class="bi bi-trash3 h4 text-danger"></i>
                         </button>
                     </p>
+                <div class="border border-top-0 shadow p-4">
                     <h2>
                         {{p?.gioco?.nomeGioco}}
                     </h2>
