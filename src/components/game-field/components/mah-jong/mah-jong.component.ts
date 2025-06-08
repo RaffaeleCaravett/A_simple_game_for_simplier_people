@@ -31,6 +31,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   allCards: string[] = [];
   mixedAllCards: string[] = [];
   @ViewChild('base', { static: false }) base: any;
+  selectedCard: any = null;
   constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -238,7 +239,30 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
     let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
-    console.log(isCardFree);
+    if (isCardFree) {
+      if (this.selectedCard && this.selectedCard == div) {
+        this.selectedCard = null;
+        div.style.transition = '1s';
+        div.style.scale = '1';
+        return;
+      } else if (this.selectedCard && this.selectedCard != div) {
+        if (div.textContent == this.selectedCard.textContent) {
+          div.textContent = '';
+          div.style.transition = '1s';
+          div.style.display = 'none'
+          document.getElementById(this.selectedCard?.id)!.textContent = '';
+          document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
+          document.getElementById(this.selectedCard?.id)!.style.display = 'none';
+        } else {
+          document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
+          document.getElementById(this.selectedCard?.id)!.style.scale = '1';
+        }
+      }
+
+      div.style.transition = '1s';
+      div.style.scale = '1.1';
+      this.selectedCard = div;
+    }
   }
 
 
@@ -281,10 +305,10 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 3)) as HTMLDivElement
     }
     let free: number = 0;
-    if (null == optionalDivDown) free += 1;
-    if (null == optionalDivLeft) free += 1;
-    if (null == optionalDivRight) free += 1;
-    if (null == optionalDivUp) free += 1;
+    if (null == optionalDivDown || optionalDivDown?.textContent == '') free += 1;
+    if (null == optionalDivLeft || optionalDivLeft?.textContent == '') free += 1;
+    if (null == optionalDivRight || optionalDivRight?.textContent == '') free += 1;
+    if (null == optionalDivUp || optionalDivUp?.textContent == '') free += 1;
     if (free >= 2) return true;
     return false;
   }
@@ -305,5 +329,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
   checkIfDivIsPresent(div: any) {
     return (undefined != div && null != div);
+  }
+  mescolaCarte(){
+    console.log('vafancul\'a chi te muartu');
   }
 }
