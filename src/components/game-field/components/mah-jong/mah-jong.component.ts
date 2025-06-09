@@ -12,7 +12,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [NgIf, NgFor, ReactiveFormsModule, NgClass, MatTooltipModule],
   templateUrl: './mah-jong.component.html',
   styleUrl: './mah-jong.component.scss',
-  encapsulation: ViewEncapsulation.None
 })
 export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked {
   @Input() game: number = 0;
