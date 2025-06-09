@@ -25,7 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         setTimeout(() => {
           if (err instanceof HttpErrorResponse) {
               if (
-                (err.error &&
+                ((err.error &&
                   err.error.message &&
                   err.error.message ==
                   'Il token non è valido! Per favore effettua nuovamente il login o refresha la pagina!') ||
@@ -33,7 +33,10 @@ export class ErrorInterceptor implements HttpInterceptor {
                   err.error.message &&
                   err.error.message ==
                   'Il token non è valido.') ||
-                  (err.status === 401 || err.status === 403)
+                  (err.status === 401 || err.status === 403))
+                  &&!(err?.error?.message =="Il refresh token non è valido. Accedi nuovamente." ||
+                    err?.message == "Il refresh token non è valido. Accedi nuovamente."
+                  )
               ) {
                 this.formsService.requestLoginCode.next("");
                 let refreshToken = localStorage.getItem('refreshToken');
