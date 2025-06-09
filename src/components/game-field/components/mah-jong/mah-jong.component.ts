@@ -366,13 +366,32 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         remainingTessers.push(c);
       }
     }
-    for (let i = 1; i <= remainingTessers.length - 1; i++) {
-      console.log('i : ' + i);
-      console.log('length-1 : ' + (remainingTessers.length - 1));
-      let randomNumber = Math.floor(Math.random() * (remainingTessers.length));
+    let remainingTessersInitialLength = remainingTessers.length;
+    for (let i = 1; i <= remainingTessersInitialLength; i++) {
+      let randomNumber = Math.floor(Math.random() * (remainingTessers.length - 1));
+      if (randomNumber < 0) randomNumber = 0;
+      
+
       remainingTessers = remainingTessers.filter(t => t.id != remainingTessers[randomNumber].id);
       mixedTessers.push(remainingTessers[randomNumber])
-      console.log(mixedTessers);
+    }
+    for (let c of this.allTessers) {
+      if (c.textContent != '') {
+        let randomNumber = Math.floor(Math.random() * (mixedTessers.length - 1));
+        debugger
+        if (randomNumber < 0) randomNumber = 0;
+        console.log(randomNumber)
+        console.log(mixedTessers.at(randomNumber));
+        c.textContent = mixedTessers[randomNumber].textContent;
+        console.log(mixedTessers);
+        mixedTessers = mixedTessers.filter(m => {
+            m.id != mixedTessers[randomNumber].id        });
+      }
+    }
+    for (let c of this.allTessers) {
+      if (c.textContent != '') {
+        document.getElementById(c.id)!.textContent = c.textContent;
+      }
     }
   }
 }
