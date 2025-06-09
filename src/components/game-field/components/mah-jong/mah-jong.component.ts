@@ -31,6 +31,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   fourthFloor: string[] = [];
   allCards: string[] = [];
   mixedAllCards: string[] = [];
+  allTessers: HTMLDivElement[] = [];
   @ViewChild('base', { static: false }) base: any;
   selectedCard: any = null;
   constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef) { }
@@ -164,6 +165,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       div.id = floorNumber + '-' + (w + 1);
       div.addEventListener('click', () => this.checkMove(div));
       floor.push(div);
+      this.allTessers.push(div);
     }
   }
 
@@ -270,7 +272,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           document.getElementById(this.selectedCard?.id)!.style.display = 'none';
           document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
           document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
-          this.removeBackgroundColor(div,document.getElementById(this.selectedCard?.id) as HTMLDivElement);
+          this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
         } else {
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
           document.getElementById(this.selectedCard?.id)!.style.scale = '1';
@@ -357,6 +359,20 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     return (undefined != div && null != div);
   }
   mescolaCarte() {
-    console.log('vafancul\'a chi te muartu');
+    let remainingTessers: HTMLDivElement[] = [];
+    let mixedTessers: HTMLDivElement[] = [];
+    for (let c of this.allTessers) {
+      if (c?.textContent != '') {
+        remainingTessers.push(c);
+      }
+    }
+    for (let i = 1; i <= remainingTessers.length - 1; i++) {
+      console.log('i : ' + i);
+      console.log('length-1 : ' + (remainingTessers.length - 1));
+      let randomNumber = Math.floor(Math.random() * (remainingTessers.length));
+      remainingTessers = remainingTessers.filter(t => t.id != remainingTessers[randomNumber].id);
+      mixedTessers.push(remainingTessers[randomNumber])
+      console.log(mixedTessers);
+    }
   }
 }
