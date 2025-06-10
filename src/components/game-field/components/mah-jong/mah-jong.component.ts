@@ -6,6 +6,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TreeKeyManager } from '@angular/cdk/a11y';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-mah-jong',
@@ -233,36 +234,54 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     firstCard.classList.add(colors[randomColor]);
     secondCard.classList.add(colors[randomColor]);
   }
+  removeBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement) {
+    let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary'];
+    firstCard.classList.remove('bg-gradient');
+    secondCard.classList.remove('bg-gradient');
+    for (let c of colors) {
+      firstCard.classList.remove(c);
+      secondCard.classList.remove(c);
+    }
+  }
 
   checkMove(div: HTMLDivElement) {
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
     let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
-    debugger
     if (isCardFree) {
       if (this.selectedCard && this.selectedCard == div) {
         this.selectedCard = null;
         div.style.transition = '1s';
-        div.style.borderColor = 'black!important;';
+        div.style.borderColor = '';
+        div.style.borderColor = 'black';
         div.style.scale = '1';
         return;
       } else if (this.selectedCard && this.selectedCard != div) {
         if (div.textContent == this.selectedCard.textContent) {
           div.textContent = '';
           div.style.transition = '1s';
-          div.style.display = 'none'
+          div.style.display = '';
+          div.style.display = 'none';
+          div.style.borderColor = '';
+          div.style.borderColor = 'transparent';
           document.getElementById(this.selectedCard?.id)!.textContent = '';
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
+          document.getElementById(this.selectedCard?.id)!.style.display = '';
           document.getElementById(this.selectedCard?.id)!.style.display = 'none';
+          document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
+          document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
+          this.removeBackgroundColor(div,document.getElementById(this.selectedCard?.id) as HTMLDivElement);
         } else {
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
           document.getElementById(this.selectedCard?.id)!.style.scale = '1';
-          document.getElementById(this.selectedCard?.id)!.style.borderColor = 'black!important;';
+          document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
+          document.getElementById(this.selectedCard?.id)!.style.borderColor = 'black';
         }
       }
 
       div.style.transition = '1s';
-      div.style.borderColor = 'green!important;';
+      div.style.borderColor = '';
+      div.style.borderColor = 'green';
       div.style.scale = '1.1';
       this.selectedCard = div;
     }
