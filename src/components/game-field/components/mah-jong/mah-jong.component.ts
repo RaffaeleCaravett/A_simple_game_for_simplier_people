@@ -154,7 +154,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     for (let w = 0; w < walls.length; w++) {
       let div = document.createElement('div');
       div.classList.add('p-2');
-      div.classList.add('border');
       div.classList.add('d-flex');
       div.classList.add('align-items-middle');
       div.classList.add('justify-content-center');
@@ -239,10 +238,12 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
     let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
+    debugger
     if (isCardFree) {
       if (this.selectedCard && this.selectedCard == div) {
         this.selectedCard = null;
         div.style.transition = '1s';
+        div.style.borderColor = 'black!important;';
         div.style.scale = '1';
         return;
       } else if (this.selectedCard && this.selectedCard != div) {
@@ -256,10 +257,12 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         } else {
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
           document.getElementById(this.selectedCard?.id)!.style.scale = '1';
+          document.getElementById(this.selectedCard?.id)!.style.borderColor = 'black!important;';
         }
       }
 
       div.style.transition = '1s';
+      div.style.borderColor = 'green!important;';
       div.style.scale = '1.1';
       this.selectedCard = div;
     }
@@ -298,11 +301,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       optionalDivLeft = null;
     }
     if (rows == 5 || rows == 4 || rows == 3) {
-      optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12)) as HTMLDivElement
-      optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12)) as HTMLDivElement
+      optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 12)) as HTMLDivElement;
+      optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 12)) as HTMLDivElement;
     } else if (rows == 2) {
-      optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 3)) as HTMLDivElement
-      optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 3)) as HTMLDivElement
+      optionalDivUp = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 3)) as HTMLDivElement;
+      optionalDivDown = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 3)) as HTMLDivElement;
+      if (document.getElementById('fifth-1')?.textContent != '' && document.getElementById('fifth-2')?.textContent != '') return false;
+      else if ((idNumber == 1 || idNumber == 2 || idNumber == 4 || idNumber == 5) && document.getElementById('fifth-1')?.textContent != '') return false;
+      else if ((idNumber == 2 || idNumber == 3 || idNumber == 5 || idNumber == 6) && document.getElementById('fifth-2')?.textContent != '') return false;
+
     }
     let free: number = 0;
     if (null == optionalDivDown || optionalDivDown?.textContent == '') free += 1;
@@ -330,7 +337,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   checkIfDivIsPresent(div: any) {
     return (undefined != div && null != div);
   }
-  mescolaCarte(){
+  mescolaCarte() {
     console.log('vafancul\'a chi te muartu');
   }
 }
