@@ -367,16 +367,14 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     for (let i = 1; i <= remainingTessersInitialLength; i++) {
       let randomNumber = Math.floor(Math.random() * (remainingTessers.length - 1));
       if (randomNumber < 0) randomNumber = 0;
-      
-
-      remainingTessers = remainingTessers.filter(t => t.id != remainingTessers[randomNumber].id);
       mixedTessers.push(remainingTessers[randomNumber])
+      remainingTessers = remainingTessers.filter(t => t.id != remainingTessers[randomNumber].id);
     }
     for (let c of this.allTessers) {
       if (c.textContent != '') {
         let randomNumber = Math.floor(Math.random() * (mixedTessers.length - 1));
-        debugger
         if (randomNumber < 0) randomNumber = 0;
+        c.textContent = '';
         c.textContent = mixedTessers[randomNumber].textContent;
         mixedTessers = mixedTessers.filter(m => {
             m.id != mixedTessers[randomNumber].id        });
