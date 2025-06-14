@@ -5,8 +5,6 @@ import { User } from '../../../../interfaces/interfaces';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TreeKeyManager } from '@angular/cdk/a11y';
-import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-mah-jong',
@@ -380,10 +378,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         let randomNumber = Math.floor(Math.random() * (mixedTessers.length - 1));
         debugger
         if (randomNumber < 0) randomNumber = 0;
-        console.log(randomNumber)
-        console.log(mixedTessers.at(randomNumber));
         c.textContent = mixedTessers[randomNumber].textContent;
-        console.log(mixedTessers);
         mixedTessers = mixedTessers.filter(m => {
             m.id != mixedTessers[randomNumber].id        });
       }
