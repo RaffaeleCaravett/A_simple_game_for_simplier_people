@@ -367,6 +367,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     for (let i = 1; i <= remainingTessersInitialLength; i++) {
       let randomNumber = Math.floor(Math.random() * (remainingTessers.length - 1));
       if (randomNumber < 0) randomNumber = 0;
+      else if (randomNumber >= remainingTessers.length) randomNumber = randomNumber - 1;
+
       mixedTessers.push(remainingTessers[randomNumber])
       remainingTessers = remainingTessers.filter(t => t.id != remainingTessers[randomNumber].id);
     }
@@ -374,10 +376,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       if (c.textContent != '') {
         let randomNumber = Math.floor(Math.random() * (mixedTessers.length - 1));
         if (randomNumber < 0) randomNumber = 0;
+        else if (randomNumber >= mixedTessers.length) randomNumber = randomNumber - 1;
         c.textContent = '';
+        if (mixedTessers[randomNumber].textContent == '') {
+          console.log(randomNumber)
+          console.log(mixedTessers[randomNumber].id)
+        }
         c.textContent = mixedTessers[randomNumber].textContent;
-        mixedTessers = mixedTessers.filter(m => {
-            m.id != mixedTessers[randomNumber].id        });
+        mixedTessers = mixedTessers.filter(m => m.id != mixedTessers[randomNumber].id);
+        console.log(mixedTessers)
       }
     }
     for (let c of this.allTessers) {
