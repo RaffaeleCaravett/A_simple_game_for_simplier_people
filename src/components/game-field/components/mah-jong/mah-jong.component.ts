@@ -359,32 +359,27 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     let remainingTessers: HTMLDivElement[] = [];
     let mixedTessers: HTMLDivElement[] = [];
     for (let c of this.allTessers) {
-      if (c?.textContent != '') {
+      if (c?.textContent != "") {
         remainingTessers.push(c);
       }
     }
     let remainingTessersInitialLength = remainingTessers.length;
     for (let i = 1; i <= remainingTessersInitialLength; i++) {
-      let randomNumber = Math.floor(Math.random() * (remainingTessers.length - 1));
-      if (randomNumber < 0) randomNumber = 0;
-      else if (randomNumber >= remainingTessers.length) randomNumber = randomNumber - 1;
 
+      let randomNumber = Math.floor(Math.random() * remainingTessers.length);
+      if (randomNumber < 0) randomNumber = 0;
+      else if (randomNumber > remainingTessers.length || (randomNumber == remainingTessers.length && remainingTessers.length > 1)) randomNumber = randomNumber - 1;
       mixedTessers.push(remainingTessers[randomNumber])
-      remainingTessers = remainingTessers.filter(t => t.id != remainingTessers[randomNumber].id);
+      remainingTessers = remainingTessers.filter((m: any) => m.id != remainingTessers[randomNumber].id);
+
     }
     for (let c of this.allTessers) {
       if (c.textContent != '') {
-        let randomNumber = Math.floor(Math.random() * (mixedTessers.length - 1));
+        let randomNumber = Math.floor(Math.random() * mixedTessers.length);
         if (randomNumber < 0) randomNumber = 0;
-        else if (randomNumber >= mixedTessers.length) randomNumber = randomNumber - 1;
-        c.textContent = '';
-        if (mixedTessers[randomNumber].textContent == '') {
-          console.log(randomNumber)
-          console.log(mixedTessers[randomNumber].id)
-        }
+        else if (randomNumber >= mixedTessers.length || (randomNumber == mixedTessers.length && mixedTessers.length > 1)) randomNumber = randomNumber - 1;
         c.textContent = mixedTessers[randomNumber].textContent;
-        mixedTessers = mixedTessers.filter(m => m.id != mixedTessers[randomNumber].id);
-        console.log(mixedTessers)
+        mixedTessers = mixedTessers.filter((m: any) => m.id != mixedTessers[randomNumber].id);
       }
     }
     for (let c of this.allTessers) {
