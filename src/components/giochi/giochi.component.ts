@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { GiochiService } from '../../services/giochi.service';
-import { Subscriber, throttleTime } from 'rxjs';
+import { throttleTime } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { GiocoPreviewComponent } from '../../shared/components/gioco-preview/gioco-preview.component';
 import { FormControl, FormGroup } from '@angular/forms';

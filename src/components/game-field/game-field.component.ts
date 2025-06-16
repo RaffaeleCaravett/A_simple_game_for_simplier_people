@@ -8,17 +8,18 @@ import { MahJongComponent } from './components/mah-jong/mah-jong.component';
 @Component({
   selector: 'app-game-field',
   standalone: true,
-  imports: [NgIf,TrisComponent,MemoryComponent,MahJongComponent],
+  imports: [NgIf, TrisComponent, MemoryComponent, MahJongComponent],
   templateUrl: './game-field.component.html',
   styleUrl: './game-field.component.scss'
 })
-export class GameFieldComponent implements OnInit, OnDestroy{
+export class GameFieldComponent implements OnInit, OnDestroy {
   game: number = 0;
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.route.queryParams.subscribe(
       params => {
-        this.game = JSON.parse(params['gioco']);
+        if (params && params['gioco'])
+          this.game = JSON.parse(params['gioco']);
       })
     if (this.game == undefined || this.game == 0 || this.game == null) {
       this.router.navigate(['/'])
@@ -30,7 +31,7 @@ export class GameFieldComponent implements OnInit, OnDestroy{
     localStorage.setItem('game', String(this.game));
   }
 
-   
+
   ngOnDestroy(): void {
     localStorage.removeItem('game');
   }

@@ -130,7 +130,7 @@
                                 </div>
                 </div>
             </div>
-            <div class="w-100 p-2 bg-info text-center d-flex justify-content-around align-items-center text-light button"
+            <div class="p-2 bg-info text-center d-flex justify-content-around align-items-center text-light button"
                 (click)="openGameDialog(g)" *ngIf="!isLoading">
                 <p class="fs-4 fw-bold pt-3"
                     [ngClass]="g.difficolta<=2?'text-success':g.difficolta<=4?'text-warning':'text-danger'">VAI AL GIOCO
@@ -139,8 +139,8 @@
             </div>
             <app-skeleton *ngIf="isLoading"></app-skeleton>
         </div>
-        <div class="w-100 d-flex justify-content-center align-items-center">
-            <app-spinner *ngIf="isLoading" class="m-auto"></app-spinner>
+        <div class="w-100 m-auto pt-5 mt-5 d-flex justify-content-center align-items-center">
+            <app-spinner *ngIf="isLoading&&giochi&&giochi.length>500" class="m-auto"></app-spinner>
         </div>
     </div>
 </div>
