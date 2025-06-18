@@ -157,6 +157,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       div.classList.add('align-items-middle');
       div.classList.add('justify-content-center');
       div.classList.add('tessera');
+      div.classList.add('shadow-sm');
       div.classList.add(col ? `col-${col}` : 'col-1');
       // div.classList.add(floorNumber == 'first' ? 'z-0' : floorNumber == 'second' ? 'z-1' : floorNumber == 'third' ? 'z-2' : floorNumber == 'fourth' ? 'z-3' :
       // floorNumber == 'fifth' ? 'z-4' : 'z-0');
@@ -226,7 +227,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   assignBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement) {
-    let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary'];
+    let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary'];
     firstCard.classList.add('bg-gradient');
     secondCard.classList.add('bg-gradient');
 
@@ -236,7 +237,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     secondCard.classList.add(colors[randomColor]);
   }
   removeBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement, isMoreThanFirst?: boolean) {
-    let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary', 'p-2'];
+    let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary', 'p-2'];
     firstCard.classList.remove('bg-gradient');
     secondCard.classList.remove('bg-gradient');
 
@@ -283,12 +284,14 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
             div.style.border = 'none';
             div.style.opacity = '0';
             div.style.height = '48px';
+            div?.classList.remove('shadow-sm');
             document.getElementById(this.selectedCard?.id)!.textContent = '';
             document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
             document.getElementById(this.selectedCard?.id)!.style.display = '';
             document.getElementById(this.selectedCard?.id)!.style.border = 'none';
             document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
             document.getElementById(this.selectedCard?.id)!.style.height = '48px';
+            document.getElementById(this.selectedCard?.id)?.classList.remove('shadow-sm');
             this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
             this.selectedCard = null
             if (div.id == selectedDiv.id) {
