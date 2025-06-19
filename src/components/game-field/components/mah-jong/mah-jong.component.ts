@@ -234,9 +234,16 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     secondCard.classList.add(colors[randomColor]);
   }
   removeBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement) {
-    let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary'];
+    let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary', 'p-2'];
     firstCard.classList.remove('bg-gradient');
     secondCard.classList.remove('bg-gradient');
+    firstCard.classList.add('m-0');
+    secondCard.classList.add('m-0');
+    secondCard.classList.add('p-0');
+    secondCard.classList.add('p-0');
+    firstCard.classList.add('pe-none');
+    secondCard.classList.add('pe-none');
+
     for (let c of colors) {
       firstCard.classList.remove(c);
       secondCard.classList.remove(c);
@@ -244,10 +251,12 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   checkMove(div: HTMLDivElement) {
+
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
     let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
     if (isCardFree) {
+      if (div.textContent == '') return;
       if (this.selectedCard && this.selectedCard == div) {
         this.selectedCard = null;
         div.style.transition = '1s';
@@ -257,19 +266,24 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         return;
       } else if (this.selectedCard && this.selectedCard != div) {
         if (div.textContent == this.selectedCard.textContent) {
+          let standardHeight = div.style.height;
           div.textContent = '';
           div.style.transition = '1s';
           div.style.display = '';
-          div.style.display = 'none';
           div.style.borderColor = '';
           div.style.borderColor = 'transparent';
+          div.style.opacity = '0';
+          div.style.height = standardHeight;
           document.getElementById(this.selectedCard?.id)!.textContent = '';
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
           document.getElementById(this.selectedCard?.id)!.style.display = '';
-          document.getElementById(this.selectedCard?.id)!.style.display = 'none';
           document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
           document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
+          document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
+          document.getElementById(this.selectedCard?.id)!.style.height = standardHeight;
           this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
+          this.selectedCard = null
+          return;
         } else {
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
           document.getElementById(this.selectedCard?.id)!.style.scale = '1';
