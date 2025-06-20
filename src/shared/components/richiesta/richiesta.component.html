@@ -1,0 +1,33 @@
+<div mat-dialog-title>
+    <h2>Modifica la richiesta</h2>
+</div>
+<mat-dialog-content>
+    <form [formGroup]="assistenzaForm" class="m-2 border p-2 shadow-sm row text-center">
+        <div class="col-md-12 p-2">
+            <label for="oggetto" class="p-2">
+                Oggetto
+            </label>
+            <input type="text" formControlName="oggetto" id="oggetto" class="form-control">
+        </div>
+        <div class="col-md-12 p-2">
+            <label for="descrizione" class="p-2">
+                Descrizione
+            </label>
+            <textarea type="text" formControlName="descrizione" rows="5" id="descrizione" class="form-control">
+</textarea>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="d-flex justify-content-around py-3 w-50 m-auto">
+        <button class="btn btn-outline-success m-2" matTooltip="Modifica" matTooltipPosition="above"
+            (click)="put()">Modifica</button>
+        <button class="btn btn-outline-danger m-2" matTooltip="Elimina" matTooltipPosition="above"
+            (click)="delete()">Elimina</button>
+    </div>
+    <div *ngIf="showConfirmDelete" class="w-100 text-center">
+        <p class="fs-4 text-danger fw-bold">Vuoi davvero eliminare questa richiesta?</p>
+        <button class="btn btn-success m-2" (click)="showConfirmDelete=false;confirmDelete=true; delete();">Elimina</button>
+        <button class="btn btn-danger m-2" (click)="showConfirmDelete=false;confirmDelete=false;">Annulla</button>
+    </div>
+</mat-dialog-actions>

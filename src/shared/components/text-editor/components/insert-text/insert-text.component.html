@@ -1,0 +1,45 @@
+<div mat-dialo-title class="d-flex p-3 bg-success">
+    <h2>Personalizza la tua descrizione</h2>
+    <p class="text-end">
+    <button class="btn text-danger fw-bolder" (click)="close()">
+        <i class="bi bi-x-lg h4"></i>
+    </button>
+    </p>
+</div>
+<div class="row text-start p-2" mat-dialog-content [ngClass]="mode=='light'?'bg-light':'bg-dark'">
+    <div class="col-md-12 p-1">
+        <button class="btn shadow-none border-0" *ngFor="let i of icons" (click)="selectItems(i.value)">
+            <i class="bi bi {{i.label}} h2" [ngClass]="mode=='light'?'text-dark':'text-light'"></i></button>
+    </div>
+    <form [formGroup]="selectsForm">
+        <div class="col-md-6 p-1 d-flex justify-content-start align-items-end">
+            <label for="colors" class="p-2 fs-4">Color </label>
+            <select name="colors" id="colors" class="form-select w-50 {{color?.value}}" formControlName="colors" #color onfocus="this.size=5" onblur="this.size=1"
+                onchange="this.blur()" (change)="selectItems(color.value)">
+                <option value="">Seleziona un valore ..</option>
+                <option value="{{c.value}}" *ngFor="let c of colors" class="{{c.value}} text-start fs-4">{{c.label}}
+                </option>
+            </select>
+        </div>
+        <div class="col-md-6 p-1 d-flex justify-content-start align-items-end">
+            <label for="sizes" class="p-2 fs-4">Size </label>
+            <select name="sizes" id="sizes" class="form-select text-start w-50 {{size?.value}}" formControlName="sizes" #size onfocus="this.size=3" onblur="this.size=1"
+                onchange="this.blur()" (change)="selectItems(size.value)" >
+                <option value="">Seleziona un valore ..</option>
+                <option [value]="c.value" *ngFor="let c of sizes" class="{{c.value}} text-start">{{c.label}}</option>
+            </select>
+        </div>
+    </form>
+    <div class="col-md-12">
+        <div name="testo" #testo id="testo" class="form-control py-5 my-5" contenteditable="true"
+            (input)="calculateRemainingCharacters(testo)"></div>
+        <div class="text-end pr-4">
+            <p class="text-end">Caratteri a disposizione :
+                <span class="fw-bolder fs-5" [ngClass]="remainingCharacters>3000?'text-success':remainingCharacters<=3000 && remainingCharacters >1000
+                        ?'text-warning':'text-danger'">
+                    {{remainingCharacters}}
+                </span>
+        </div>
+        <button class="btn" (click)="close(true)" [ngClass]="mode=='light'?'text-dark':'text-light'">Aggiungi</button>
+    </div>
+</div>

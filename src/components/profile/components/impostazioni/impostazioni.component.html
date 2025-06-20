@@ -1,0 +1,180 @@
+<div class="row">
+    <div class="col-md-12">
+        <h2> Gestisci il tuo profilo</h2>
+    </div>
+    <div class="col-md-12" *ngIf="section=='Richiedi assistenza'">
+        <h2>Assistenza</h2>
+        <p class="fs-2">Ciao {{user!.nome}} !</p>
+        <p class="fs-4 w-75 m-auto pb-5">Qui potrai richiedere assistenza riguardo a varie informazioni. Qui di seguito,
+            inserisci l'oggetto della tua richiesta
+            e sotto inserisci la descrizione dettagliata. Il nostro team ti risponderà in 24 ore.
+        </p>
+        <form class="w-75 m-auto row p-4 assistenza-form" [formGroup]="assistenzaForm">
+            <div class="col-md-12">
+                <label for="oggetto" class="p-3">
+                    OGGETTO *
+                </label>
+                <input type="text" class="form-control p-2" id="oggetto" formControlName="oggetto">
+            </div>
+            <div class="col-md-12">
+                <label for="descrizione" class="p-3">
+                    DESCRIZIONE *
+                </label>
+                <textarea type="text" class="form-control p-2" id="descrizione" formControlName="descrizione" rows="3">
+</textarea>
+            </div>
+        </form>
+        <div class="w-75 m-auto">
+            <button class="btn my-3 btn-success fw-bold" [disabled]="assistenzaForm.invalid"
+                [matTooltip]="btn.disabled? 'Completa il form': 'Invia la richiesta'" #btn (click)="inviaRichiesta()"
+                matTooltipPosition="above">Invia
+                richiesta</button>
+            <p class="py-3 text-start">* Campi obbligatori</p>
+        </div>-
+    </div>
+    <div class="col-md-12" *ngIf="section=='Cambia immagine del profilo'">
+        <h2>Cambia immagine del profilo</h2>
+        <label for="immagine" class="to-point fs-4 pb-3" (click)="immagine.click();">Cambia immagine del profilo</label>
+        <input type="file" id="immagine" name="immagine" #immagine class="d-none" (change)="changeImage($event);"
+            accept="image/png, image/gif, image/jpeg, image/jpg">
+        <div class="rounded-circle shadow to-point profile-pic m-auto" (click)="immagine.click();"
+            style.backgroundImage="url('{{user!.immagineProfilo}}')" *ngIf="url==''"></div>
+        <div class="rounded-circle shadow to-point profile-pic m-auto" (click)="immagine.click();"
+            style.backgroundImage="url('{{url}}')" *ngIf="url!=''"></div>
+        <div *ngIf="selectedImage">
+            <button class="btn pt-3 btn-outline-success fw-bold m-2" matTooltip="Carica" matTooltipPosition="above"
+                (click)="putImage()">
+                <i class="bi bi-upload fw-bold h4"></i>
+            </button>
+            <button class="btn pt-3 btn-outline-danger fw-bold m-2" matTooltip="Elimina" matTooltipPosition="above"
+                (click)="url='';selectedImage=null;immagine.value='';"><i class="bi bi-x-lg fw-bold h4"></i></button>
+        </div>
+    </div>
+    <div class="col-md-12" *ngIf="section=='Cambia la password'">
+        <h2>Cambia la password</h2>
+        <form [formGroup]="cambiaPassword" #form="ngForm" class="w-75 m-auto">
+            <label for="nuovaPassword" class="p-2 fs-4">Nuova password</label>
+            <input type="password" class="form-control m-2" id="nuovaPassword" formControlName="nuovaPassword"
+                name="nuovaPassword">
+            <p class="text-danger" *ngIf="cambiaPassword.get('nuovaPassword')?.invalid&&form.submitted">Lunghezza minima
+                : 8 caratteri.</p>
+            <label for="ripetiNuovaPassword" class="p-2 fs-4">Ripeti nuova password</label>
+            <input type="password" class="form-control m-2" id="ripetiNuovaPassword"
+                formControlName="ripetiNuovaPassword" name="ripetiNuovaPassword">
+            <p class="text-danger" *ngIf="cambiaPassword.get('ripetiNuovaPassword')?.invalid&&form.submitted">Lunghezza
+                minima : 8 caratteri.</p>
+            <button class="btn btn-outline-primary fw-bold my-3" (click)="putPassword(form)">Cambia password</button>
+        </form>
+        <p *ngIf="isCodeRequeste && !isCodeVerified" class="text-success fw-bold fs-4 py-3">Inserisci qui sotto il
+            codice che ti abbiamo
+            mandato per mail. {{"- " + secondsToInterval}}</p>
+        <form [formGroup]="codeForm" *ngIf="isCodeRequeste && !isCodeVerified">
+            <label for="code" class="fs-4 py-2">Inserisci il codice</label>
+            <input type="text" class="form-control" formControlName="code" name="code" id="code">
+            <button class="btn my-3" (click)="putPassword()">Verifica il codice</button>
+        </form>
+        <p class="text-success fs-4 py-2" *ngIf="isCodeVerified">Perfetto! Cambia la password!</p>
+    </div>
+    <div class="col-md-12" *ngIf="section=='Cambia altre informazioni'">
+        <h2>Cambia altre informazioni</h2>
+        <form [formGroup]="altreImpostazioniForm" class="m-auto my-4 p-4 w-75">
+            <label for="nome" class="p-2 fs-3">Nome</label>
+            <input type="text" class="form-control text-center w-75 m-auto" placeholder="Scrivi il tuo nome" id="nome"
+                formControlName="nome">
+            <label for="cognome" class="p-2 fs-3">Cognome</label>
+            <input type="text" class="form-control text-center w-75 m-auto" placeholder="Scrivi il tuo cognome"
+                id="cognome" formControlName="cognome">
+            <label for="citta" class="p-2 fs-3">Città</label>
+            <select name="citta" id="citta" formControlName="citta" class="form-select text-center w-75 m-auto"
+                placeholder="Scegli la città" onfocus="this.size=7" onblur="this.size=1" onchange="this.blur()">
+                <option value="{{c.id}}" *ngFor="let c of citta">{{c.nome}}</option>
+            </select>
+            <button class="btn my-3 btn-outline-primary fw-bold" [disabled]="
+            !altreImpostazioniForm.touched
+            ||
+            altreImpostazioniForm.invalid
+            ||
+            (user!.nome == altreImpostazioniForm.get('nome')?.value && user!.cognome == altreImpostazioniForm.get('cognome')?.value && user!.citta!.id == altreImpostazioniForm.get('citta')?.value)" (click)="updateProfile()" type="button">Modifica profilo
+            </button>
+        </form>
+    </div>
+    <div class="col-md-12" *ngIf="section=='Monitora le tue richieste'">
+        <h2>Monitora le tue richieste</h2>
+        <p class="py-5 fs-3" *ngIf="richieste == null || richieste?.content?.length == 0">
+            Non ci sono richieste da visualizzare al momento.
+        </p>
+        <form [formGroup]="richiestaParametersForm" class="row py-5">
+            <div class="col-md-6">
+                <label for="size">Numero di elementi per pagina</label>
+                <select name="size" id="size" class="form-select" formControlName="size">
+                    <option value="{{s}}" *ngFor="let s of richiestaSizes">{{s}}</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="sort">Ordina per</label>
+                <select name="sort" id="sort" class="form-select" formControlName="sort">
+                    <option value="{{s=='data di caricamento'?'createdAt':s}}" *ngFor="let s of richiestaSorts">{{s}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="order">Ordine </label>
+                <select name="order" id="order" class="form-select" formControlName="order">
+                    <option [value]="s[1]" *ngFor="let s of richiestaOrders">{{s[0]}}</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="oggetto">Oggetto contenente</label>
+                <input type="text" class="form-control" id="oggetto" name="oggetto" formControlName="oggetto">
+            </div>
+            <div class="col-md-12">
+                <label for="descrizione">Descrizione contenente</label>
+                <textarea type="text" class="form-control" id="descrizione" rows="3" name="descrizione"
+                    formControlName="descrizione">
+                </textarea>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="from" class="p-1">Da</label>
+                        <input type="date" name="from" formControlName="from" id="from" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="to" class="p-1">A</label>
+                        <input type="date" name="to" formControlName="to" id="to" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-center py-3">
+                <button class="btn btn-outline-primary fw-bold" (click)="getRichiesteByParams();">Cerca</button>
+            </div>
+        </form>
+        <div *ngIf="richieste?.content?.length > 0">
+            <div class="col-md-12 p-3" *ngFor="let r of richieste?.content">
+                <div class="p-2 border shadow-lg">
+                    <p class="d-flex justify-content-end">
+                        <button class="btn" matTooltip="Modifica" matTooltipPosition="above"
+                            (click)="modifyRichiesta(r)">
+                            <i class="bi bi-pencil-fill h4 text-primary"></i>
+                        </button>
+                    </p>
+                    <h2>{{r?.oggetto}}</h2>
+                    <p class="sub-title">Creata il <span class="fw-bold">{{format(r?.createdAt)}}</span></p>
+                    <p class="py-5 shadow-sm" [ngClass]="mode=='light'?'bg-light text-dark':'bg-dark text-white'">
+                        {{r?.descrizionePreview}}
+                    </p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-around py-3">
+                <button class="btn" (click)="richiestaPage= richiestaPage-1;getRichiesteByParams();"
+                    *ngIf="!richieste?.first">
+                    <i class="bi bi-arrow-left-circle-fill h4"></i>
+                </button>
+                <button class="btn" (click)="richiestaPage= richiestaPage+1;getRichiesteByParams();"
+                    *ngIf="!richieste?.last">
+                    <i class="bi bi-arrow-right-circle-fill h4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

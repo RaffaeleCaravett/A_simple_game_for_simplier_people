@@ -1,0 +1,83 @@
+@import url("login-animations.scss");
+@import url("../../../../shared/style/style.scss");
+
+
+.w-auto {
+  max-width: 130px;
+  position: relative;
+
+  .menu {
+    width: 100px;
+    transition: 1s;
+    position: absolute;
+    right: 10px;
+    z-index: 40;
+
+    div {
+      .p {
+        &:hover {
+          background-color: red;
+        }
+      }
+    }
+  }
+}
+
+.login-form {
+  box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem lightblue,
+    0 0 0.8rem lightblue,
+    0 0 2.8rem lightblue,
+    inset 0 0 1.3rem lightblue;
+}
+
+.box-1 {
+  width: 100px;
+  height: 100px;
+  border-left: 5px solid red;
+  border-top: 5px solid red;
+  top: 10%;
+  left: 20%;
+  animation-name: red-box;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+}
+
+.box-2 {
+  width: 100px;
+  height: 100px;
+  border-right: 5px solid green;
+  border-top: 5px solid green;
+  top: 10%;
+  left: 80%;
+  animation-name: green-box;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+}
+
+.box-3 {
+  width: 100px;
+  height: 100px;
+  border-left: 5px solid orange;
+  border-bottom: 5px solid orange;
+  top: 90%;
+  left: 20%;
+  animation-name: orange-box;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+}
+.box-4 {
+  width: 100px;
+  height: 100px;
+  border-right: 5px solid rgb(0, 26, 255);
+  border-bottom: 5px solid rgb(0, 26, 255);
+  top: 90%;
+  left: 80%;
+  animation-name: blue-box;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+}
+.secret-code{
+  height: 50px;
+}

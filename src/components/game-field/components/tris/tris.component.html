@@ -1,0 +1,85 @@
+<div class="row m-auto py-5 my-5 text-center" *ngIf="!isLoading">
+    <div class="col-md-12 py-5">
+        <h1>Tris</h1>
+    </div>
+    <div class="col-md-2">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Stats.</h2>
+            </div>
+            <div class="col-md-12">
+                <p>Partite giocate : </p>
+                <p class="fs-5">{{totalMatchesPlayed}}</p>
+            </div>
+            <div class="col-md-12">
+                <p>Partite vinte : </p>
+                <p class="text-success fs-5">{{usersMatchesWon}}</p>
+            </div>
+            <div class="col-md-12">
+                <p>Partite perse : </p>
+                <p class="text-danger fs-5">{{enemysMatchesWon}}</p>
+            </div>
+            <div class="col-md-12">
+                <p>Partite pareggiate : </p>
+                <p class="fs-5">{{totalSplitMatches}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="row m-auto overflow-hidden particular-row">
+            <p class="fs-5">Hai giocato in totale : {{partiteHistory==null? totalMatchesPlayed&&totalMatchesPlayed == 1?  totalMatchesPlayed + " partita" : totalMatchesPlayed + " partite" : partiteHistory.totalElements==1? partiteHistory.totalElements + " partita" : partiteHistory.totalElements + " partite a questo gioco."}} </p>
+            <div class="col-md-12">
+                <h2 [ngClass]="isEnemyMoving?'enemy-moving':'enemy-not-moving'">
+                    L'avversario sta facendo la sua mossa
+                </h2>
+                <h2 [ngClass]="isEnemyMoving?'enemy-not-moving':'text-success'" *ngIf="!enemyWins&&!userWins&&!isFull&&cominciata">
+                    Fai la tua mossa
+                </h2>
+                <h2 *ngIf="enemyWins">
+                    L'avversario ha vinto!
+                </h2>
+                <h2 *ngIf="userWins">
+                    Hai vinto!
+                </h2>
+                <h2 *ngIf="isFull">
+                    Ben fatto! Comincia un'altra partita.
+                </h2>
+            </div>
+            <div class="col-4 col-sm-4 p-5" (click)="position($event)" id="0">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5 border border-top-0 border-dark" (click)="position($event)" id="1">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5" (click)="position($event)" id="2">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5 border border-start-0 border-dark" (click)="position($event)" id="3">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5" (click)="position($event)" id="4">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5 border border-end-0 border-dark" (click)="position($event)" id="5">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5" (click)="position($event)" id="6">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5 border border-bottom-0 border-dark" (click)="position($event)" id="7">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-4 col-sm-4 p-5" (click)="position($event)" id="8">
+                <div class="position-absolute"></div>
+            </div>
+            <div class="col-md-12">
+                <button class="btn my-5 btn-outline-success" *ngIf="enemyWins||userWins||isFull"
+                    (click)="ricomincia()">Ricomincia</button>
+                <button class="btn my-5 btn-outline-success" *ngIf="!cominciata" (click)="comincia()">Comincia</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row py-5 my-5 particular-row" *ngIf="isLoading">
+    <app-spinner></app-spinner>
+</div>

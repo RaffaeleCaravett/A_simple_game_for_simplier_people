@@ -1,0 +1,46 @@
+@import url("../../shared/style/style.scss");
+
+.profile-card {
+  transition:1s;
+  border-top: 5px solid rgb(73, 255, 143);
+  border-right: 5px solid rgb(141, 255, 160);
+  border-bottom: 5px solid rgb(213, 255, 217);
+  border-left: 5px solid rgb(64, 255, 0);
+}
+.profile-card-container {
+  transition:1s;
+  width:300px;
+  left:5%;
+}
+.lobby-nav-button {
+  min-width: 150px;
+  transition: 1s;
+
+  button {
+    font-size: 20px;
+  }
+
+  &:hover {
+    border-right: 1px solid rgb(64, 255, 0);
+    border-left: 1px solid rgb(64, 255, 0);
+    background-color: rgb(141, 255, 160);
+    transition: 1s;
+  }
+}
+
+.green-dots {
+  width: 20px;
+  height: 10px;
+  margin-top: 25px;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.scrollable-container{
+  overflow-x: auto;
+}
+.profile-image{
+  height: 150px;
+  width: 150px;
+
+}

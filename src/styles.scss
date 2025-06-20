@@ -1,0 +1,82 @@
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ec0404;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ec0404;
+}
+
+@import 'ngx-toastr/toastr';
+html, body { height: 100%;width:100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.bg-light-personal{
+  background-color: rgb(234, 234, 234)!important;
+  border: 1px solid darkgray;
+}
+.bg-personal-transparent{
+background-color: rgba(255,255,255,.5);
+}
+
+.form-control, .form-select{
+  border: 1px solid gray!important;
+  text-align: center!important;
+}
+.descrizione{
+  border: 1px solid gray!important;
+}
+
+.btn{
+  border:none!important;
+}
+[mat-dialog-content] {
+  max-height: 700px !important;
+  overflow: auto;
+  margin-top: auto;
+}
+mat-dialog-container {
+  height: fit-content !important;
+  max-height: 700px !important;
+  overflow: auto;
+  margin-top: auto;
+}

@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+.btn {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    transform: rotate(.1deg);
+    z-index: 10 !important;
+    box-shadow: 0 0 .00001rem #f3aa6f,
+        0 0 .00001rem #f3aa6f,
+        0 0 2rem #ff7300,
+        0 0 0.8rem #ff7300,
+        0 0 2.8rem #ff7300,
+        inset 0 0 1.3rem #ff7300;
+
+}
+
+.bi-arrow-up::before {
+    width: 38px;
+}
+
+.bg-personal {
+    background-color: gray;
+}

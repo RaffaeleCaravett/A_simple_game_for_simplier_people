@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="row" *ngIf="!isDescrizioneLoading">
+        <div class="col-md-12">
+            <label class="form-label fs-4 text-danger">Descrizione</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <app-text-editor [textareaInnerHTML]="descrizioneInnerHTML"
+                        (sendUpdates)="onReceiveUpdatesFromTextEditor($event)"
+                        [remainingCharacters]="remainingCharacters"></app-text-editor>
+                </div>
+                <div class="col-sm-3">
+                    <div class="p-2">
+                        <div class="p-1">
+                            <button class="btn shadow-none border-0" *ngFor="let t of textStyles"
+                                (click)="updateDescrizioneClasslist(t.value)">
+                                <i [class]="[t.label,mode=='light'?'text-dark':'text-white']" class="h3"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <app-emoji (sendEmoji)="onReceiveEmoji($event)"></app-emoji>
+                </div>
+            </div>
+            <div class="p-5 border border-secondary shadow bg-white text-center text-dark rounded shadow"
+                placeholder="max 5000 caratteri ...." contenteditable="true"
+                (input)="calculateRemainingCharacters(descrizione);" #descrizione>
+            </div>
+            <p class="text-end">Caratteri a disposizione : <span class="fw-bolder fs-5"
+                    [ngClass]="remainingCharacters>3000? 'text-success': remainingCharacters>1000 && remainingCharacters <= 3000? 'text-warning':'text-danger'">{{remainingCharacters}}</span>
+            </p>
+        </div>
+        <div class="col-md-12 d-flex justify-content-around">
+            <button class="btn mt-2 border-0" type="button" [disabled]='descrizione.innerHTML.length>5000'
+                (click)="aggiungiDescrizione(descrizione)">Aggiorna descrizione</button>
+            <button class="btn mt-2 btn-danger border-0" type="button" [disabled]='descrizione.innerHTML.length==0 || (descrizione?.innerHTML === "<br>" && descrizione.innerHTML.length === 4)'
+                (click)="descrizione.innerHTML = '';descrizioneInnerHTML ='';calculateRemainingCharacters(descrizione)">Pulisci</button>
+        </div>
+    </div>
+    <div class="row" *ngIf="isDescrizioneLoading">
+        <app-spinner></app-spinner>
+    </div>
+</div>

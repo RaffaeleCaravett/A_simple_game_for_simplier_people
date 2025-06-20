@@ -1,0 +1,102 @@
+<div class="py-5 w-100" [ngClass]="mode=='light'?'bg-white':'bg-personal'">
+    <div class="container p-5 text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="mt-5"><span class="text-danger">W</span>elcome {{user?.nome}} 👋</h1>
+            </div>
+            <div class="col-md-12 text-start position-relative px-3">
+                <button class="btn" (click)="showMenu=!showMenu">
+                    <i class="bi bi-list h2" title="Espandi il profilo"></i>
+                </button>
+                <div class="profile-card-container position-absolute top-25" *ngIf="showMenu">
+                    <div class="row text-start p-3 bg-light shadow overflow-auto profile-card">
+                        <div class="col-md-12 text-center">
+                            <h2>Il tuo profilo</h2>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <img src="{{user?.immagineProfilo}}" class=" profile-image m-auto rounded-circle shadow-sm"
+                                alt="immagine_profilo">
+                        </div>
+                        <div class="col-lg-6 fs-2 p-2">
+                            <p class="fs-4 text-danger">Nome</p>
+                            {{user?.nome}}
+                        </div>
+                        <div class="col-lg-6 fs-2 p-2">
+                            <p class="fs-4 text-danger">Cognome</p>
+                            {{user?.cognome}}
+                        </div>
+                        <div class="col-lg-12 fs-2 p-2">
+                            <p class="fs-4 text-danger">Email</p>
+                            {{user?.email}}
+                        </div>
+                        <div class="col-lg-12 fs-2 p-2">
+                            <p class="fs-4 text-danger">Città</p>
+                            {{user?.citta?.nome}}
+                        </div>
+                        <div class="col-lg-12 fs-2 p-2">
+                            <p class="fs-4 text-danger">Profilo creato in data</p>
+                            {{user?.createdAt}}
+                        </div>
+                        <div class="col-md-12 text-end">
+                            <button class="btn brn-light text-success" title="Vai al gioco"
+                                (click)="navigateToProfile()">
+                                <i class="bi bi-arrow-up-right h3 p-3 text-success"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 pt-5 mt-5 px-3 text-start">
+                <div class="row">
+                    <div class="col-md-12 scrollable-container d-flex" [ngClass]="mode=='light'?'bg-light':'bg-secondary'">
+                        <div class="p-2 lobby-nav-button text-center" [ngClass]="location=='giochi'? 'bg-warning':''">
+                            <button class="btn" (click)="changeLocation('giochi')">
+                                Giochi disponibili
+                            </button>
+                        </div>
+                        <img src="assets/lobby/green-dots.png" alt="green_dot" class="green-dots">
+                        <div class="p-2 lobby-nav-button text-center"
+                            [ngClass]="location=='classifiche'? 'bg-warning':''">
+                            <button class="btn" (click)="changeLocation('classifiche')">
+                                Classifiche
+                            </button>
+                        </div>                    
+                        <img src="assets/lobby/green-dots.png" alt="green_dot" class="green-dots">
+                        <div class="p-2 lobby-nav-button text-center"
+                            [ngClass]="location=='statistiche'? 'bg-warning':''">
+                            <button class="btn" (click)="changeLocation('statistiche')">
+                                Statistiche
+                            </button>
+                        </div>
+                        <img src="assets/lobby/green-dots.png" alt="green_dot" class="green-dots">
+                        <div class="p-2 lobby-nav-button text-center" [ngClass]="location=='about-us'? 'bg-warning':''">
+                            <button class="btn" (click)="changeLocation('about-us')">
+                                About us
+                            </button>
+                        </div>
+                        <img src="assets/lobby/green-dots.png" alt="green_dot" class="green-dots">
+                        <div class="p-2 lobby-nav-button text-center"
+                            [ngClass]="location=='assistenza'? 'bg-warning':''">
+                            <button class="btn" (click)="changeLocation('assistenza')">
+                                Assistenza
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 p-2">
+                        <div class="w-100 border shadow-sm p-3 overflow-auto" [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'" *ngIf="!isLoading">
+                            <app-giochi *ngIf="location=='giochi'" [user]="user" (canSwitchLocation)="onReceiveSwitchLocation($event)" [mode]="mode"></app-giochi>
+                            <app-classifiche *ngIf="location=='classifiche'" [mode]="mode"
+                                [classificaId]="classificaId"></app-classifiche>
+                            <app-statistiche *ngIf="location=='statistiche'" [mode]="mode"></app-statistiche>
+                            <app-about-us *ngIf="location=='about-us'" [mode]="mode"></app-about-us>
+                            <app-assistenza *ngIf="location=='assistenza'" [mode]="mode"></app-assistenza>
+                        </div>
+                        <div class="w-100 border shadow-sm p-3 bg-light overflow-auto" *ngIf="isLoading">
+                            <app-spinner></app-spinner>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

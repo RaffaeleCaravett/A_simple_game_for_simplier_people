@@ -1,0 +1,397 @@
+<div class="py-5 w-100 text-center" [ngClass]="mode=='light'?'bg-white':'bg-personal text-light'">
+    <div class="container">
+        <div class="row py-5 my-5 align-items-stretch">
+            <div class="col-md-12 py-3">
+                <h1>{{visitedUser?.fullName}}</h1>
+            </div>
+            <div class="col-md-3" *ngIf="windowWidth>699 else reducedMenu">
+                <ul class="text-start">
+                    <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
+                        <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                        <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
+                            <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                            <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
+                                <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
+                                    {{s.toUpperCase()}}</li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <ng-template #reducedMenu>
+                <div class="col-md-12 text-start">
+                    <button class="btn" (click)="showMenu=!showMenu">
+                        <i class="bi bi-list h1" [ngClass]="mode=='light'?'text-dark':'text-light'"></i>
+                    </button>
+                </div>
+                <div class="col-6 p-3 position-relative" *ngIf="showMenu">
+                    <div class="ml-5 mt-5 p-3 border rounded" [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
+                        <ul class="text-start">
+                            <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
+                                <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                                <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
+                                    <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                                    <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
+                                        <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
+                                            {{s.toUpperCase()}}</li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="col-md-9">
+                <div *ngIf="section=='Profilo'">
+                    <div class="col-12 p-3 d-flex align-items-end justify-content-center">
+                        <div class="profile-image rounded-circle shadow"
+                            style.backgroundImage="url('{{visitedUser?.immagineProfilo}}')"></div>
+                        <p class="fs-2 px-2">{{visitedUser?.fullName}}</p>
+                    </div>
+                    <div class="col-md-12 p-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12 fs-2 p-4">
+                                        <p class="fs-4 text-danger">Nome</p>
+                                        {{visitedUser?.nome}}
+                                    </div>
+                                    <div class="col-md-12 fs-2 p-4">
+                                        <p class="fs-4 text-danger">Cognome</p>
+                                        {{visitedUser?.cognome}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 fs-2 p-4 overflow-x-auto overflow-y-hidden">
+                                <p class="fs-4 text-danger">Email</p>
+                                {{visitedUser?.email}}
+                            </div>
+                            <div class="col-md-6 fs-2 p-4">
+                                <p class="fs-4 text-danger">Città</p>
+                                {{visitedUser?.citta?.nome}}
+                            </div>
+                            <div class="col-md-6 fs-2 p-4">
+                                <p class="fs-4 text-danger">Profilo creato in data</p>
+                                {{formatDate(visitedUser!.createdAt)}}
+                            </div>
+                            <!-- <div class="col-md-12 py-5">
+                                <app-leaflet [x]="cityX" [y]="cityY" *ngIf="cityX!=0&&cityY!=0"></app-leaflet>
+                            </div> -->
+                            <div>
+                                <app-descrizione [visitedUser]="visitedUser">
+                                </app-descrizione>
+                            </div>
+                            <div class="map-container pt-5 mt-5" *ngIf="mapOptions">
+                                <google-map [options]="mapOptions" [width]="'100%'">
+                                    <map-advanced-marker *ngFor="let marker of markers"
+                                        [position]="marker"></map-advanced-marker>
+                                </google-map>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Recensioni'">
+                    <div class="row text-center">
+                        <div class="col-md-12">
+                            <h2>Recensioni effettuate</h2>
+                        </div>
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <div class="p-1">
+                                <label for="ordina" class="form-label">Ordina per</label>
+                                <select class="form-select" name="ordina" id="ordina" #ordina
+                                    (change)="receSortOrder=ordina.value.substring(ordina.value.lastIndexOf(',')+1);receOrderBy=ordina.value.split('',(ordina.value.length-ordina.value.substring(ordina.value.lastIndexOf(',')).length)).join().replaceAll(',','');getRecensioni()">
+                                    <option [value]="oA.values" *ngFor="let oA of ordinaArray">{{oA.label}}</option>
+                                </select>
+                            </div>
+                            <div class="p-1">
+                                <label for="ordina" class="form-label">Elementi per pagina</label>
+                                <select class="form-select" name="elementi" id="elementi" #elementi
+                                    (change)="receSize=toNumber(elementi.value);getRecensioni()">
+                                    <option [value]="s" *ngFor="let s of sizes">{{s}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" *ngIf="recensioni?.content?.length>0">
+                            <div class="row">
+                                <div class="col-md-6 p-2 text-center" *ngFor="let r of recensioni?.content">
+                                    <div class="border rounded shadow-sm">
+                                        <div class="w-100 text-center d-flex justify-content-center pt-2 rounded-top"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'">
+                                            <img src="{{'data:image/png;base64,'+r?.giocoImage}}" class="gioco-image"
+                                                alt="immagine gioco">
+                                            <p class="p-2 fs-4">
+                                                {{r?.giocoName}}
+                                            </p>
+                                        </div>
+                                        <div class="pt-4 pb-2"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-personal text-light'">
+                                            <div class="d-flex justify-content-center">
+                                                <i class="bi bi-star-fill text-warning h3"
+                                                    *ngFor="let vp of validationPoints, index as i"
+                                                    [ngClass]="i+1<=r?.punteggio?'textg-warning':'d-none'"></i>
+                                            </div>
+                                            <div>
+                                                <p class="d-flex justify-content-center align-items-end">
+                                                    <img src="{{r?.userProfileImage}}" alt="profile image"
+                                                        class="rounded-circle border gioco-image">
+                                                    <span class="px-3 fs-5">{{r?.userFullName}}</span>
+                                                </p>
+                                                <p class="fs-3 py-3 border-bottom">
+                                                    {{r?.commento}}
+                                                </p>
+                                                <p class="date">
+                                                    {{r?.createdAt}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex justify-content-center"
+                            *ngIf="recensioni&&recensioni?.content?.length>0">
+                            <button class="btn m-1" *ngIf="recensioni?.first == false"
+                                (click)="recePage=recePage-1;getRecensioni();"><i class="bi bi-caret-left"></i>
+                            </button>
+                            <button class="btn m-1" *ngIf="recensioni?.last == false"
+                                (click)="recePage=recePage+1;getRecensioni();"><i class="bi bi-caret-right"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-12" *ngIf="recensioni == null || recensioni?.content?.length==0">
+                            <h2 *ngIf="authService.getUser()!.id != visitedUser?.id">{{visitedUser?.fullName}} non ha
+                                ancora
+                                lasciato recensioni.</h2>
+                            <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Non hai ancora lasciato recensioni.
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Trofei'">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Trofei vinti</h2>
+                        </div>
+                        <div class="col-md-12" *ngIf="!trofei || !trofei?.content || trofei?.content?.length==0">
+                            <h2 *ngIf="authService.getUser()!.id != visitedUser?.id">{{visitedUser?.fullName}} non ha
+                                ancora
+                                vinto trofei.</h2>
+                            <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Non hai ancora vinto trofei.</h2>
+
+                        </div>
+                        <div class="col-md-12 p-3" *ngIf="trofei && trofei?.content && trofei?.content?.length>0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>I tuoi trofei</h2>
+                                </div>
+                                <div class="col-md-4 p-2" *ngFor="let t of trofei?.content">
+                                    <div class="border shadow">
+                                        <p class="fs-5 p-2"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'">
+                                            {{t?.gioco?.nomeGioco}}
+                                        </p>
+                                        <img src="assets/profilo/trofeo_vittoria.png" alt="trofeo" class="w-100 p-2">
+                                        <p class=" p-2">
+                                            {{t?.createdAt}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 p-3" *ngIf="trofei && trofei?.content && trofei?.content?.length>0">
+                            <button class="btn fs-5" *ngIf="!trofei?.first"
+                                (click)="trofeiPage=0;getTrofei();">First</button>
+                            <button class="btn" *ngIf="!trofei?.first" (click)="trofeiPage=trofeiPage-1;getTrofei();">
+                                <i class="bi bi-arrow-left-circle-fill h4"></i>
+                            </button>
+                            <button class="btn fs-5" *ngIf="!trofei?.last"
+                                (click)="trofeiPage=trofeiPage+1;getTrofei();">
+                                <i class="bi bi-arrow-right-circle-fill h4"></i>
+                            </button>
+                            <button class="btn" *ngIf="!trofei?.last"
+                                (click)="trofeiPage=trofei?.totalPages-1;getTrofei();">Last</button>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Giochi'">
+                    <div class="px-2">
+                        <div class="row text-center">
+                            <div class="col-md-12 p-3">
+                                <h2>Giochi utilizzati</h2>
+                            </div>
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <label for="sort">Ordina per</label>
+                                <select name="sort" id="sort"
+                                    (change)="giochiSortOrder=sort.value.substring(sort.value.lastIndexOf(',')+1);giochiOrderBy=sort.value.split('',(sort.value.length-sort.value.substring(sort.value.lastIndexOf(',')).length)).join().replaceAll(',','');getGiochi()"
+                                    #sort class="form-select">
+                                    <option *ngFor="let o of ordinaGiocoArray" value="{{o.values}}">{{o.label}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 p-3" *ngFor="let g of giochi?.content, index as i">
+                                <div class="p-3 game-card border shadow"
+                                    [ngClass]="mode=='light'?'bg-light':'bg-personal text-light'">
+                                    <div class="w-100 text-center position-relative">
+                                        <img src="{{'data:image/png;base64,'+g?.image}}" class="w-50 m-auto"
+                                            alt="gioco_image">
+                                    </div>
+                                    <div class="text-center py-2 mb-2">
+                                        <h2>{{g.nomeGioco}}</h2>
+                                    </div>
+                                    <div class="border my-2">
+                                        <p class="border-bottom p-2 fs-4"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'">Livello di
+                                            difficoltà : {{g.difficolta
+                                            <=2?'FACILE':g.difficolta>2&&g.difficolta
+                                                <=4?'MEDIO':'DIFFICILE'}} </p>
+                                                    <div
+                                                        class="d-flex justify-content-around difficult-points-container">
+                                                        <p class="p-2 border border-dark rounded-circle {{i+1<=g.difficolta?'d-block':'d-none'}} m-1"
+                                                            [ngClass]="g.difficolta<=2?'bg-success':g.difficolta<=4?'bg-warning':'bg-danger'"
+                                                            *ngFor="let c of circles,index as i"></p>
+                                                    </div>
+                                    </div>
+                                </div>
+                                <div class="w-100 p-2 bg-info text-center d-flex justify-content-around align-items-center text-light button shadow"
+                                    (click)="openGameDialog(g)">
+                                    <p class="fs-4 fw-bold pt-3"
+                                        [ngClass]="g.difficolta<=2?'text-success':g.difficolta<=4?'text-warning':'text-danger'">
+                                        VAI AL GIOCO
+                                    </p>
+                                    <i class="bi bi-arrow-up-right h3 p-3 " title="Vai al gioco"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-12 py-2 bg-white" *ngIf="giochi == null || giochi?.content?.length == 0">
+                                <h2 *ngIf="authService.getUser()!.id != visitedUser?.id">{{visitedUser?.fullName}} non
+                                    ha
+                                    giocato a nessun gioco ancora.</h2>
+                                <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Non hai giocato a nessun gioco
+                                    ancora.</h2>
+                            </div>
+                            <div class="col-md-12" *ngIf="giochi&&giochi?.content">
+                                <button class="btn fs-5" *ngIf="!giochi?.first"
+                                    (click)="giochiPage=0;getGiochi();">First</button>
+                                <button class="btn" *ngIf="!giochi?.first"
+                                    (click)="giochiPage=giochiPage-1;getGiochi();">
+                                    <i class="bi bi-arrow-left-circle-fill h4"></i>
+                                </button>
+                                <button class="btn fs-5" *ngIf="!giochi?.last"
+                                    (click)="giochiPage=giochiPage+1;getGiochi();">
+                                    <i class="bi bi-arrow-right-circle-fill h4"></i>
+                                </button>
+                                <button class="btn" *ngIf="!giochi?.last"
+                                    (click)="giochiPage=giochi?.totalPages-1;getGiochi();">Last</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Classifiche'">
+                    <div class="row">
+                        <div class="col-md-12"
+                            *ngIf="!classifiche|| !classifiche?.content||classifiche?.content?.length==0">
+                            <h2 *ngIf="authService.getUser()!.id != visitedUser?.id">Al momento,
+                                {{visitedUser?.fullName}}
+                                non partecipa a nessuna classifica.</h2>
+                            <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Al momento non partecipi a nessuna
+                                classifica.</h2>
+                        </div>
+                        <div class="col-md-12"
+                            *ngIf="classifiche&&classifiche?.content&&classifiche?.content?.length>0">
+                            <div class="row">
+                                <div class="col-md-4 p-3" *ngFor="let c of classifiche?.content">
+                                    <div class="border shadow">
+                                        <p class="fs-1 p-3 py-4"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'">Classifica
+                                        </p>
+                                        <p class="p-4 fs-4">
+                                            {{c?.gioco?.nomeGioco}}
+                                        </p>
+                                        <p class="text-end p-2">
+                                            <button class="btn" title="Vai alla classifica" (click)="goToRanking(c)">
+                                                <i class="bi bi-box-arrow-up-right h4"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn fs-5" *ngIf="!classifiche?.first"
+                                        (click)="classifichePage=0;getClassifiche();">First</button>
+                                    <button class="btn" *ngIf="!classifiche?.first"
+                                        (click)="classifichePage=classifichePage-1;getClassifiche();">
+                                        <i class="bi bi-arrow-left-circle-fill h4"></i>
+                                    </button>
+                                    <button class="btn fs-5" *ngIf="!classifiche?.last"
+                                        (click)="classifichePage=classifichePage+1;getClassifiche();">
+                                        <i class="bi bi-arrow-right-circle-fill h4"></i>
+                                    </button>
+                                    <button class="btn" *ngIf="!classifiche?.last"
+                                        (click)="classifichePage=classifiche?.totalPages-1;getClassifiche();">Last</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Partite'">
+                    <div class="row">
+                        <div class="col-md-12 py-3" *ngIf="partite && partite?.content && partite?.contet?.size>0">
+                            <h2>Partite giocate</h2>
+                        </div>
+                        <div class="col-md-12" *ngIf="!partite || !partite?.content || partite?.content?.length == 0">
+                            <h2 *ngIf="authService.getUser()!.id != visitedUser?.id">{{visitedUser?.fullName}} non ha
+                                ancora
+                                giocato!</h2>
+                            <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Non hai ancora giocato!</h2>
+                        </div>
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6" *ngIf="partite&&partite?.content&&partite?.content?.length>0">
+                            <label for="sort">Ordina per : </label>
+                            <select name="sort" id="sort" #sort class="form-select" (change)="partiteSortOrder = sort.value.substring(sort.value.indexOf(',')+1);
+                    partiteOrderBy = sort.value.substring(0,sort.value.indexOf(',')); getPartite()"
+                                (mousedown)="sort.size=5;" (change)="sort.blur();" (blur)="sort.size=1;">
+                                <option value="{{o.values}}" *ngFor="let o of ordinaPartiteArray">{{o.label}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 p-3" *ngFor="let p of partite?.content">
+                            <div class="border shadow">
+                                <p [ngClass]="mode=='light'?'bg-light p-2':'bg-secondary text-light p-2'">{{p.id + " - "
+                                    + p.createdAt}}</p>
+                                <div class="d-flex justify-content-around p-2">
+                                    <img src="{{'data:image/png;base64,' + p?.gioco?.image}}" alt="immagine_gioco"
+                                        class="w-25">
+                                    <p class="fs-4"> - {{p?.gioco?.nomeGioco}}</p>
+                                </div>
+                                <div class="p-2">
+                                    <p>Esito partita : <span [ngClass]="calculateEsito(p?.esito)"
+                                            class="fw-bold">{{p?.esito}}</span></p>
+                                </div>
+                                <div class="p-2">
+                                    <p *ngIf="!p?.punteggio">La partita non prevede punteggio.</p>
+                                    <p *ngIf="p?.punteggio!=null">Punteggio : {{p?.punteggio?.punteggio}} </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" *ngIf="partite&&partite?.content">
+                            <button class="btn fs-5" *ngIf="!partite?.first"
+                                (click)="partitePage=0;getPartite();">First</button>
+                            <button class="btn" *ngIf="!partite?.first"
+                                (click)="partitePage=partitePage-1;getPartite();">
+                                <i class="bi bi-arrow-left-circle-fill h4"></i>
+                            </button>
+                            <button class="btn fs-5" *ngIf="!partite?.last"
+                                (click)="partitePage=partitePage+1;getPartite();">
+                                <i class="bi bi-arrow-right-circle-fill h4"></i>
+                            </button>
+                            <button class="btn" *ngIf="!partite?.last"
+                                (click)="partitePage=partite?.totalPages-1;getPartite();">Last</button>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Impostazioni' && authService.getUser()!.id == visitedUser!.id">
+                    <app-impostazioni [section]="impostazioniSection" [user]="visitedUser" [mode]="mode"></app-impostazioni>
+                </div>
+                <div *ngIf="section== 'Preferiti'">
+                    <app-preferiti [userInput]="visitedUser"></app-preferiti>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

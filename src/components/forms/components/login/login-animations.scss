@@ -1,0 +1,263 @@
+@keyframes red-box {
+    18% {
+        border-left: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    22% {
+        border-left: 5px solid red;
+        border-top: 5px solid red;
+    }
+
+    25% {
+        top: 2%;
+        left: 74%;
+        transform: rotate(90deg);
+    }
+
+    38% {
+        border-left: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    47% {
+        border-left: 5px solid red;
+        border-top: 5px solid red;
+    }
+
+    50% {
+        top: 75%;
+        left: 74%;
+        transform: rotate(180deg);
+    }
+
+    58% {
+        border-left: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    72% {
+        border-left: 5px solid red;
+        border-top: 5px solid red;
+    }
+
+    75% {
+        top: 75%;
+        left: 10%;
+        transform: rotate(270deg);
+    }
+
+    78% {
+        border-left: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    92% {
+        border-left: 5px solid red;
+        border-top: 5px solid red;
+    }
+
+    100% {
+        top: 2%;
+        left: 10%;
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes green-box {
+    18% {
+        border-right: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    22% {
+        border-right: 5px solid green;
+        border-top: 5px solid green;
+    }
+
+    25% {
+        top: 75%;
+        left: 74%;
+        transform: rotate(90deg);
+    }
+
+    38% {
+        border-right: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    47% {
+        border-right: 5px solid green;
+        border-top: 5px solid green;
+    }
+
+    50% {
+        top: 75%;
+        left: 10%;
+        transform: rotate(180deg);
+    }
+
+    58% {
+        border-right: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    72% {
+        border-right: 5px solid green;
+        border-top: 5px solid green;
+    }
+
+    75% {
+        top: 2%;
+        left: 10%;
+        transform: rotate(270deg);
+    }
+
+    78% {
+        border-right: 5px solid transparent;
+        border-top: 5px solid transparent;
+    }
+
+    92% {
+        border-right: 5px solid green;
+        border-top: 5px solid green;
+    }
+
+    100% {
+        top: 2%;
+        left: 74%;
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes orange-box {
+    18% {
+        border-left: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    22% {
+        border-left: 5px solid orange;
+        border-bottom: 5px solid orange;
+    }
+
+    25% {
+        top: 2%;
+        left: 10%;
+        transform: rotate(90deg);
+    }
+
+    38% {
+        border-left: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    47% {
+        border-left: 5px solid orange;
+        border-bottom: 5px solid orange;
+    }
+
+    50% {
+        top: 2%;
+        left: 74%;
+        transform: rotate(180deg);
+    }
+
+    58% {
+        border-left: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    72% {
+        border-left: 5px solid orange;
+        border-bottom: 5px solid orange;
+    }
+
+    75% {
+        top: 75%;
+        left: 74%;
+        transform: rotate(270deg);
+    }
+
+    78% {
+        border-left: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    92% {
+        border-left: 5px solid orange;
+        border-bottom: 5px solid orange;
+    }
+
+    100% {
+        top: 75%;
+        left: 10%;
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes blue-box {
+    18% {
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    22% {
+        border-right: 5px solid rgb(0, 26, 255);
+        border-bottom: 5px solid rgb(0, 26, 255);
+    }
+
+    25% {
+        top: 75%;
+        left: 10%;
+        transform: rotate(90deg);
+    }
+
+    38% {
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    47% {
+        border-right: 5px solid rgb(0, 26, 255);
+        border-bottom: 5px solid rgb(0, 26, 255);
+    }
+
+    50% {
+        top: 2%;
+        left: 10%;
+        transform: rotate(180deg);
+    }
+
+    58% {
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    72% {
+        border-right: 5px solid rgb(0, 26, 255);
+        border-bottom: 5px solid rgb(0, 26, 255);
+    }
+
+    75% {
+        top: 2%;
+        left: 74%;
+        transform: rotate(270deg);
+    }
+
+    78% {
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    92% {
+        border-right: 5px solid rgb(0, 26, 255);
+        border-bottom: 5px solid rgb(0, 26, 255);
+    }
+
+    100% {
+        top: 75%;
+        left: 74%;
+        transform: rotate(360deg);
+    }
+}

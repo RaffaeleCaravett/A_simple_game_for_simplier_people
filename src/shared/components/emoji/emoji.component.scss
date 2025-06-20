@@ -1,0 +1,12 @@
+.overflow-auto {
+    max-height: 200px !important;
+    overflow-x: none !important;
+}
+
+.emoji-button {
+    transition: .5s;
+    &:hover {
+        scale: 1.05;
+        transition: .5s;
+    }
+}

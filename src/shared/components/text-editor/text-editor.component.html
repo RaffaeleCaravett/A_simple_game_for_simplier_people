@@ -1,0 +1,20 @@
+<div class="row text-start p-2">
+    <div class="col-md-12 p-1">
+        <button class="btn shadow-none border-0" *ngFor="let i of icons" (click)="selectItems(i.value)" >
+            <i class="bi bi {{i.label}} h2" [ngClass]="mode=='light'?'text-dark':'text-light'"></i></button>
+    </div>
+    <div class="col-12 p-1">
+        <label for="colors" class="p-2 fs-4">Color </label>
+        <select name="colors" id="colors" #color onfocus="this.size=5" onblur="this.size=1"
+        onchange="this.blur()" (change)="selectItems(color.value);" class="form-select w-100" [ngClass]="color.value">
+            <option value="{{c.value}}" (click)="checkValue(c.value,'color')" *ngFor="let c of colors" class="{{c.value}} text-start fs-4">{{c.label}}</option>
+        </select>
+    </div>
+    <div class="col-12 p-1">
+        <label for="sizes" class="p-2 fs-4">Size </label>
+        <select name="sizes" id="sizes" #size onfocus="this.size=3" onblur="this.size=1"
+        onchange="this.blur()" (change)="selectItems(size.value);" class="form-select text-start w-100" [ngClass]="size.value">
+        <option value="{{c.value}}" (click)="checkValue(c.value,'size')" *ngFor="let c of sizes" class="{{c.value}} text-start">{{c.label}}</option>
+        </select>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="p-2 bg-light-personal border-bottom">
+    <p class="text-end">
+        <button class="btn text-danger fw-bolder" (click)="close()">
+            <i class="bi bi-x-lg h4"></i>
+        </button>
+    </p>
+    <h2 class="px-5">Dettagli della classifica di {{gioco.nomeGioco}}</h2>
+</div>
+<mat-dialog-content class="p-5">
+    <div class="p-2" *ngFor="let c of users; index as i">
+        <span class="fs-2 fw-bold">{{i +1}}</span>
+        <span class="fs-4"> - </span>
+        <span class="fw-bold fs-2">{{c.user.fullName}}</span>
+        <p class="fs-4">Punti totali* : <span class="fw-bold fs-3 text-success">
+                {{c?.totalPoints}}
+            </span></p>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions class="p-5">
+    * I punti totali sono calcolati in base alla somma delle partite con il punteggio ottenuto, laddove è previsto punteggio.
+</mat-dialog-actions>

@@ -1,0 +1,118 @@
+<div class="container py-5 my-5">
+    <div class="row py-5 my-5">
+        <div class="col-md-12 py-5 text-center">
+            <h1>
+                Memory
+            </h1>
+        </div>
+        <div class="col-md-12 d-flex justify-content-start">
+            <button class="btn" title="
+1. Scegli la difficoltà, ti mostreremo 5, 10 o 20 carte. 
+2. In base alla difficoltà hai 20, 40 o 60 secondi di tempo per memorizzarle e memorizzare la posizione. Se vuoi, puoi stoppare prima. 
+3. Ti mostreremo una carta alla volta, e tu dovrai dirci , cliccandoci sopra, dove è la carta uguale.
+4. Otterrai il massimo dei punti se finirai nel tempo limite e senza errori.">Regole del gioco <i
+                    class="bi bi-info-circle"></i>
+            </button>
+        </div>
+        <div class="col-md-12 p-5 w-100 text-center" *ngIf="step==1">
+            <label class="fs-2 py-3">Scegli la difficoltà</label>
+            <div class="d-flex justify-content-center py-3">
+                <div class="p-2">
+                    <label for="difficoltaLow" class="px-2 py-3 fs-5 text-success">Bassa</label>
+                    <input type="radio" name="difficolta" id="difficoltaLow" class="mt-3 form-check-input" value="bassa"
+                        #low (change)="difficolta = low.value">
+                </div>
+                <div class="p-2">
+                    <label for="difficoltaMedium" class="px-2 py-3 fs-5 text-warning">Media</label>
+                    <input type="radio" name="difficolta" id="difficoltaMedium" class="mt-3 form-check-input"
+                        value="media" #medium (change)="difficolta = medium.value">
+                </div>
+                <div class="p-2">
+                    <label for="difficoltaHigh" class="px-2 py-3 fs-5 text-danger">Alta</label>
+                    <input type="radio" name="difficolta" id="difficoltaHigh" class="mt-3 form-check-input" value="alta"
+                        #high (change)="difficolta = high.value">
+                </div>
+            </div>
+            <div class="py-3">
+                <button class="btn" title="Vai avanti" [disabled]="difficolta == ''" (click)="go()">Continua</button>
+            </div>
+        </div>
+        <div class="col-md-12" *ngIf="step==2&&difficolta!=''">
+            <div class="row">
+                <div class="col-md-12 text-end w-75">
+                    <button class="btn" (click)="difficolta='';step=1;"><i class="bi bi-arrow-90deg-left"></i>
+                        <span class="px-2"> Vai indietro</span> </button>
+                </div>
+                <div class="col-md-12 text-center">
+                    <p class="fs-5">Hai scelto la difficolta <span
+                            [ngClass]="difficolta=='bassa'?'text-success':difficolta=='media'?'text-warning':difficolta=='alta'?'text-danger':''">{{difficolta}}</span>
+                    </p>
+                    <p class="fs-3 my-5">
+                        Sei pronto?
+                    </p>
+                    <p class="fs-5 my-5">
+                        Se vuoi, posiziona il mouse su "Regole del gioco". Qui, in alto a sinistra e leggi le regole.
+                    </p>
+                    <p class="fs-5 my-5">
+                        Ti mostreremo <span
+                            class="p-2 rounded-circle bg-dark text-white">{{difficolta=='bassa'?'5':difficolta=='media'?'10':difficolta=='alta'?'20':''}}</span>
+                        carte.
+                    </p>
+                    <button class="btn my-2 btn-outline-success" (click)="go()">Mostra le carte</button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="step==3" class="col-md-12 py-5">
+            <div class="row text-center pt-5">
+                <div class="col-md-12 w-75 text-start m-auto pt-5">
+                    <ul>
+                        <li>
+                            Carte da trovare : {{remainingCardToFind}}
+                        </li>
+                        <li>
+                            Punteggio partita : {{punti||0}}
+                        </li>
+                        <li>
+                            Partite giocate a questo gioco : {{totalPartite||0}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-12" *ngIf="showSpinner">
+                    <app-spinner></app-spinner>
+                </div>
+                <div class="col-md-12 text-center m-auto pt-5 fs-4 advice" *ngIf="secondsToFlip!=0">
+                    Le carte verrano girate in {{secondsToFlip}} secondi.
+                </div>
+                <div class="col-md-12 pt-5 mt-5">
+                    <div class="row row-container" id="carte-field" >
+                        <div class="flip-card col-md-3 m-auto d-inline" (click)="checkCardEquals($event)" *ngFor="let c of officialCards">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front p-5 border rounded">
+                                    <p class="fs-5 fwv-bold">
+                                        {{c}}
+                                    </p>
+                                </div>
+                                <div class="flip-card-back p-5 border rounded">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 pt-5 mt-5">
+
+                    <div class="p-5 border rounded pointer mt-5 col-2 m-auto" *ngIf="givenCard != 0">
+                        <p class="fs-5 fw-bold"> {{givenCard}}</p>
+                    </div>
+                    <div class="p-5 row" *ngIf="rigioca&&officialCards.length==0">
+                        <div class="col-md-12 p-3 fs-5">
+                            Fine! Hai totalizzato {{punti}} {{punti == 1? ' punto': ' punti'}} su 5.
+                        </div>
+                        <div class="col-md-12 p-3">
+                            <button class="btn" (click)="giveCards()">Gioca di nuovo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

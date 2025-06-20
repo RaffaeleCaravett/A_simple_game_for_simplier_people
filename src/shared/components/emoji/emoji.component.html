@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-md-12">
+        <button class="btn fs-4" (click)="showMenu=!showMenu">
+            😊
+        </button>
+    </div>
+    <div class="col-md-12 overflow-auto" *ngIf="showMenu">
+        <div class="row">
+            <div class="col-md-12 d-flex">
+                <form [formGroup]="searchEmojiesForm" class="w-75">
+                    <input type="text" class="form-control" formControlName="field" #field (input)="searchEmojies()">
+                </form>
+            </div>
+        </div>
+        <div class="row" *ngIf="!emojiesSearched else searchedEmojies">
+            <h2 class="col-md-12 text-start">Activities</h2>
+            <div *ngFor="let a of activities index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Animals nature</h2>
+            <div *ngFor="let a of animalsNature index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Flags</h2>
+            <div *ngFor="let a of flags index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Food drink</h2>
+            <div *ngFor="let a of foodDrink index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Objects</h2>
+            <div *ngFor="let a of objects index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">People body</h2>
+            <div *ngFor="let a of peopleBody index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Smileys emotion</h2>
+            <div *ngFor="let a of smileysEmotion index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Symbols</h2>
+            <div *ngFor="let a of symbols index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+            <h2 class="col-md-12 text-start">Travel places</h2>
+            <div *ngFor="let a of travelPlaces index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(a.emoji)">
+                    {{a.emoji}}
+                </button>
+            </div>
+        </div>
+        <ng-template #searchedEmojies>
+            <div class="row">
+                <div class="col-md-12 text-start">
+                <h2>Correspondant emojies</h2>
+                </div>
+                <div *ngFor="let e of emojies index as i" class="col-2 fs-4">
+                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(e.emoji)">
+                    {{e.emoji}}
+                </button>
+            </div>
+            </div>
+        </ng-template>
+    </div>
+</div>

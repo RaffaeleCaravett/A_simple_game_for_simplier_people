@@ -1,0 +1,145 @@
+<div class="w-100 bg-light-personal text-center">
+    <h2 class="">{{'Le recensioni di ' + gioco?.nomeGioco}}</h2>
+</div>
+<div class="p-3 text-center position-relative">
+    <mat-dialog-content class="py-2">
+        <div *ngIf="recensione!=null">
+            <h2>La tua recensione</h2>
+        </div>
+        <div class="bg-light border rounded shadow-sm" *ngIf="recensione!=null else recensisci">
+            <div class="w-100 text-center bg-light-personal rounded-top">
+                <div class="d-flex justify-content-end">
+                    <button class="btn text-dark fw-bolder" [matMenuTriggerFor]="appMenu">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <mat-menu #appMenu="matMenu" class="overflow-hidden">
+                        <ng-template matMenuContent>
+                            <div>
+                                <button mat-menu-item class="btn btn-light fs-4"
+                                    (click)="updateRece(recensione)">Modifica</button>
+                                <button mat-menu-item class="btn fs-4 btn-danger"
+                                    (click)="deleteRece(recensione)">Elimina</button>
+                            </div>
+                        </ng-template>
+                    </mat-menu>
+                </div>
+                <div class="d-flex justify-content-center pt-2">
+                    <img src="{{gioco?.image}}" class="gioco-image" alt="immagine gioco">
+                    <p class="p-2 fs-4">
+                        {{gioco?.nomeGioco}}
+                    </p>
+                </div>
+            </div>
+            <div class="pt-4 pb-2">
+                <div class="d-flex justify-content-center">
+                    <i class="bi bi-star-fill text-warning h3" *ngFor="let vp of validationPoints, index as i"
+                        [ngClass]="i+1<=recensione?.punteggio?'textg-warning':'d-none'"></i>
+                </div>
+                <div>
+                    <p class="d-flex justify-content-center align-items-end">
+                        <img src="{{recensione?.user?.immagineProfilo}}" alt="profile image"
+                            class="rounded-circle border">
+                        <span class="px-3 fs-5">{{recensione?.user?.fullName}}</span>
+                    </p>
+                    <p class="fs-3 py-3 border-bottom">
+                        {{recensione?.commento}}
+                    </p>
+                    <p class="date">
+                        {{recensione?.createdAt}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <ng-template #recensisci>
+            <div class="text-center">
+                <p class="fs-4">Lascia una recensione su {{gioco?.nomeGioco}}</p>
+                <form [formGroup]="recensioneForm">
+                    <label for="punteggio" class="p-2">Scegli il punteggio</label><span><i
+                            class="bi bi-star-fill text-warning h3" *ngFor="let vp of validationPoints, index as i"
+                            [ngClass]="i+1<=recensioneForm.get('punteggio')?.value?'textg-warning':'d-none'"></i></span>
+                    <select name="punteggio" formControlName="punteggio" id="punteggio" class="form-select">
+                        <option value=""></option>
+                        <option value="{{p}}" *ngFor="let p of validationPoints">{{p}}</option>
+                    </select>
+                    <p class="text-danger" *ngIf="isRecensioneFormSubmitted&&recensioneForm.get('punteggio')!.invalid">
+                        Inserisci un punteggio tra 1 e 5.</p>
+                    <label for="commento" class="p-2">Scrivi un commento</label>
+                    <textarea name="commento" formControlName="commento" id="commento" class="form-control">
+                    </textarea>
+                    <p class="text-danger" *ngIf="isRecensioneFormSubmitted&&checkCommento()">Inserisci un commento
+                        valido.</p>
+                </form>
+                <button class="btn my-2" type="button" (click)="recensisciGioco()">Recensisci</button>
+            </div>
+        </ng-template>
+        <div class="recensioni-container row py-5 my-2 border-top">
+            <div *ngIf="recensioni&&recensioni?.content&&recensioni.content.length>0">
+                <h2>Le altre recensioni</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="ordina" class="form-label">Ordina per</label>
+                        <select class="form-select" name="ordina" id="ordina" #ordina
+                            (change)="sortOrder=ordina.value.substring(ordina.value.lastIndexOf(',')+1);orderBy=ordina.value.split('',(ordina.value.length-ordina.value.substring(ordina.value.lastIndexOf(',')).length)).join().replaceAll(',','');getRecensioni(true,page,size,orderBy,sortOrder)">
+                            <option [value]="oA.values" *ngFor="let oA of ordinaArray">{{oA.label}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="ordina" class="form-label">Elementi per pagina</label>
+                        <select class="form-select" name="elementi" id="elementi" #elementi
+                            (change)="size=toNumber(elementi.value);getRecensioni(true,page,size,orderBy,sortOrder)">
+                            <option [value]="s" *ngFor="let s of sizes">{{s}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 p-2" *ngFor="let r of recensioni?.content">
+                <div class="bg-light border rounded shadow-sm">
+                    <div class="w-100 text-center bg-light-personal d-flex justify-content-center pt-2 rounded-top">
+                        <img src="{{gioco?.image}}" class="gioco-image" alt="immagine gioco">
+                        <p class="p-2 fs-4">
+                            {{gioco?.nomeGioco}}
+                        </p>
+                    </div>
+                    <div class="pt-4 pb-2">
+                        <div class="d-flex justify-content-center">
+                            <i class="bi bi-star-fill text-warning h3" *ngFor="let vp of validationPoints, index as i"
+                                [ngClass]="i+1<=recensione?.punteggio?'textg-warning':'d-none'"></i>
+                        </div>
+                        <div>
+                            <p class="d-flex justify-content-center align-items-end">
+                                <img src="{{r?.user?.immagineProfilo}}" alt="profile image"
+                                    class="rounded-circle border">
+                                <span class="px-3 fs-5 btn" (click)="goToProfile(r?.user)">{{r?.user?.fullName}}</span>
+                            </p>
+                            <p class="fs-3 py-3 border-bottom">
+                                {{r?.commento}}
+                            </p>
+                            <p class="date">
+                                {{r?.createdAt}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-light m-1" (click)="getRecensioni(true,page=page-1,size,orderBy,sortOrder)"
+                    *ngIf="recensioni&&recensioni?.content&&recensioni?.content?.length>0&&!recensioni?.first">
+                    Precedenti
+                </button>
+                <button class="btn btn-light m-1" (click)="getRecensioni(true,page=page+1,size,orderBy,sortOrder)"
+                    *ngIf="recensioni&&recensioni?.content&&recensioni?.content?.length>0&&!recensioni?.last">
+                    Successive
+                </button>
+            </div>
+            <div *ngIf="!recensioni || !recensioni?.content || recensioni?.content?.length == 0">
+                <p class="fs-4">Non ci sono altre recensioni.</p>
+            </div>
+            <div *ngIf="gioco?.recensione == null || gioco?.recensione?.length == 0">
+                <p class="fs-4">Non ci sono recensioni.</p>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="text-end position-absolute bottom-0 end-0">
+        <button class="btn" [mat-dialog-close]>Chiudi</button>
+    </mat-dialog-actions>
+</div>

@@ -1,0 +1,173 @@
+<div class="w-100" [ngClass]="mode=='light'?'bg-white':'bg-personal'">
+    <div class="container text-center py-5">
+        <div class="row py-5">
+            <div class="col-md-12 d-flex justify-content-end">
+                <div class="w-auto text-center">
+                    <button class="btn" (click)="toggleMenu(!isOpen)">
+                        <i class="bi bi-list h2"></i>
+                    </button>
+                    <div class="menu text-center overflow-hidden" [style.height]="isOpen?'100px':'0px'"
+                        [ngClass]="[isOpen ? 'border rounded shadow' : '' , mode=='light'?'bg-light':'bg-dark']">
+                        <p>
+                            <button class="btn" (click)="switchRoute('login')"
+                                [ngClass]="mode=='light'?'text-dark':'text-white'">
+                                Login
+                            </button>
+                        </p>
+                        <p>
+                            <button class="btn" (click)="switchRoute('forms')"
+                                [ngClass]="mode=='light'?'text-dark':'text-white'">
+                                Forms
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h1>Signup here</h1>
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-12 py-5">
+                        <h2>Lorem ipsum</h2>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <p class="fs-4">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+                            ut
+                            aliquip
+                            ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                            cillum
+                            dolore eu
+                            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+                            officia
+                            deserunt mollit anim id est laborum.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 py-5 my-5">
+                <form [formGroup]="signupForm" class="p-3 login-form m-auto py-5 border rounded shadow w-75"
+                    [ngClass]="mode=='light'?'bg-light text-dark':'bg-dark text-light'" *ngIf="!isLoading">
+                    <div *ngIf="signupStep==1">
+                        <label for="nome" class="py-3">Inserisci il tuo nome</label>
+                        <input type="text" name="nome" id="nome" formControlName="nome" class="form-control">
+                        <label for="cognome" class="py-3">Inserisci il tuo cognome</label>
+                        <input type="text" name="cognome" id="cognome" formControlName="cognome" class="form-control">
+                        <div class="d-flex justify-content-around">
+                            <button class="btn my-3 btn-warning border" (click)="signupStep=2">Next</button>
+                        </div>
+                    </div>
+                    <div *ngIf="signupStep==2">
+                        <label for="email" class="py-3">Inserisci la tua email</label>
+                        <input type="email" name="email" id="email" formControlName="email" class="form-control">
+                        <label for="password" class="py-3">Inserisci la tua password</label>
+                        <input type="password" name="password" id="password" formControlName="password"
+                            class="form-control">
+                        <div class="d-flex justify-content-around">
+                            <button class="btn my-3 btn-warning border" (click)="signupStep=1">Previous</button>
+                            <button class="btn my-3 btn-warning border" (click)="signupStep=3">Next</button>
+                        </div>
+                    </div>
+                    <div *ngIf="signupStep==3">
+                        <label for="citta" class="py-3">Inserisci la tua città</label>
+                        <select type="text" name="citta" id="citta" formControlName="citta" class="form-select"
+                            (change)="updateSelectedCity()" onfocus="this.size=7" onblur="this.size=1"
+                            onchange="this.blur()">
+                            <option value="">Seleziona una città.</option>
+                            <option *ngFor="let c of cities" [value]="c.id">{{c.nome}}</option>
+                        </select>
+                        <label for="immagineProfilo" class="py-3">Inserisci la tua immagine del profilo</label>
+                        <input type="file" name="immagineProfilo" id="immagineProfilo" class="form-control" #file
+                            accept="image/png, image/gif, image/jpeg" (change)="handleProfileImage($event)">
+                        <div *ngIf="url!=''" class="py-3">
+                            <p class="text-end">
+                                <button class="btn" (click)="deleteProfileImage(file)">Elimina</button>
+                            </p>
+                            <img [src]="url" alt="your_choosed_profile_image"
+                                class="profile-image border rounded-circle shadow-sm m-auto">
+                        </div>
+                        <div class="d-flex justify-content-around">
+                            <button class="btn my-3 btn-warning border" (click)="signupStep=2">Previous</button>
+                            <button class="btn my-3 btn-warning border" (click)="updateFourthStep()">Next</button>
+                        </div>
+                    </div>
+                    <div *ngIf="signupStep==4">
+                        <h2>Riepilogo dei tuoi dati </h2>
+                        <div class="row text-start">
+                            <div class="col-md-6 p-2 border-bottom">
+                                <p class="text-danger">
+                                    Nome
+                                </p>
+                                <span>
+                                    {{signupForm.controls['nome'].value}}
+                                </span>
+                            </div>
+                            <div class="col-md-6 p-2 border-bottom">
+                                <p class="text-danger">
+                                    Cognome
+                                </p>
+                                <span>
+                                    {{signupForm.controls['cognome'].value}}
+                                </span>
+                            </div>
+                            <div class="col-md-12 p-2 border-bottom">
+                                <p class="text-danger">
+                                    Email
+                                </p>
+                                <span>
+                                    {{signupForm.controls['email'].value}}
+                                </span>
+                            </div>
+                            <div class="col-md-12 p-2 border-bottom">
+                                <p class="text-danger">
+                                    Password
+                                </p>
+                                <span *ngIf="showPassword">
+                                    {{maskedPassword}}
+                                </span>
+                                <span *ngIf="!showPassword">
+                                    {{signupForm.controls['password'].value}}
+                                </span>
+                            </div>
+                            <div class="col-md-4 p-2 border-bottom">
+                                <p class="text-danger">
+                                    Città
+                                </p>
+                                <span>
+                                    {{selectedCity.name}}
+                                </span>
+                            </div>
+                            <div class="col-md-8 p-2 border-bottom text-center">
+                                <img [src]="url!=''?url:'assets/forms/signup/empty_avatar.jpg'"
+                                    alt="your_choosed_profile_image"
+                                    class="profile-image border rounded-circle shadow-sm m-auto">
+                            </div>
+                        </div>
+                        <div class="py-1 d-block" *ngIf="missedDatas.length>0">
+                            <p class="text-danger">Dati mancanti o incompleti: </p>
+                            <span *ngFor="let d of missedDatas, index as i">{{d}} {{i+1==missedDatas.length?".":',
+                                '}} </span>
+                        </div>
+                        <div class="d-flex justify-content-around">
+                            <button class="btn my-3 btn-warning border" (click)="signupStep=3">Previous</button>
+                            <button class="btn my-3 btn-warning border" (click)="signup()"
+                                *ngIf="signupCheck()">Signup</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="m-auto w-75 d-flex justify-content-center" *ngIf="isLoading">
+                    <app-spinner></app-spinner>
+                </div>
+                <div class="w-75 m-auto d-flex">
+                    <div class="p-1 position-relative" *ngFor="let l of lines, index as i" id="l-{{i+1}}">
+                        <div class="p-1" id="l-child-{{i+1}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

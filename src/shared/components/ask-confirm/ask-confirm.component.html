@@ -1,0 +1,32 @@
+<div class="w-100 bg-light-personal text-center">
+    <h2 class="">{{action}}</h2>
+</div>
+<div class="p-3 text-center position-relative bg-white">
+    <mat-dialog-content class="py-2">
+        <div class="bg-light border rounded shadow-sm" *ngIf="recensione!=null">
+            <div class="w-100 text-center bg-light-personal d-flex justify-content-center pt-2 rounded-top">
+                <img src="{{giocoImage}}" class="gioco-image" alt="immagine gioco">
+                    <p class="p-2 fs-4">{{giocoName}}</p>
+            </div>
+            <div class="py-4">
+                <div class="d-flex justify-content-center">
+                    <i class="bi bi-star-fill h3" *ngFor="let vp of validationPoints, index as i"
+                        [ngClass]="i+1<=recePoints?'text-warning':'text-secondary'" (click)="recePoints=i+1;"></i>
+                </div>
+                <div>
+                    <p class="d-flex justify-content-center align-items-end">
+                        <img src="{{user.immagineProfilo}}" alt="profile image" class="rounded-circle border">
+                        <span class="px-3 fs-5">{{user.fullName}}</span>
+                    </p>
+                        <textarea class="p-2 fs-4" cols="40" rows="3" [disabled]="action!='Modifica'" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"
+                         #commento value=" {{recensione?.commento}}" (input)="recensione.commento=commento.value;" style="height : fit-content">
+                        </textarea>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="text-end position-absolute bottom-0 end-0">
+        <button class="btn btn-success m-1" (click)="modifica()">{{action}}</button>
+        <button class="btn btn-danger m-1" [mat-dialog-close]="false">Annulla</button>
+    </mat-dialog-actions>
+</div>

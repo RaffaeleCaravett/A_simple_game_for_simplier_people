@@ -1,0 +1,338 @@
+@keyframes rotation-1 {
+
+    0% {
+      top: 0;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+  
+    }
+  
+    20% {
+      top: 25%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(144, 238, 144,.2);
+    }
+  
+    40% {
+      top: 75%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(238, 130, 238,.2);
+    }
+  
+    60% {
+      top: 100%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 0,.2);
+    }
+  
+    80% {
+      top: 75%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(173, 216, 230,.2);
+    }
+  
+    100% {
+      top: 25%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 165, 0,.2);
+    }
+  }
+  
+  @keyframes rotation-2 {
+    0% {
+      top: 25%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+    }
+  
+    20% {
+      top: 75%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(144, 238, 144,.2);
+    }
+  
+    40% {
+      top: 100%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(238, 130, 238,.2);
+    }
+  
+    60% {
+      top: 75%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 0,.2);
+    }
+  
+    80% {
+      top: 25%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(173, 216, 230,.2);
+    }
+  
+    100% {
+      top: 0;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 165, 0,.2);
+    }
+  
+  }
+  
+  @keyframes rotation-3 {
+    0% {
+      top: 75%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+    }
+  
+    20% {
+      top: 100%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(144, 238, 144,.2);
+    }
+  
+    40% {
+      top: 75%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(238, 130, 238,.2);
+    }
+  
+    60% {
+      top: 25%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 0,.2);
+  
+    }
+  
+    80% {
+      top: 0%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(173, 216, 230,.2);
+    }
+  
+    100% {
+      top: 25%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 165, 0,.2);
+    }
+  }
+  
+  @keyframes rotation-4 {
+    0% {
+      top: 100%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+    }
+  
+    20% {
+      top: 75%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(144, 238, 144,.2);
+    }
+  
+    40% {
+      top: 25%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(238, 130, 238,.2);
+    }
+  
+    60% {
+      top: 0;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 0,.2);
+    }
+  
+    80% {
+      top: 25%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(173, 216, 230,.2);
+    }
+  
+    100% {
+      top: 75%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 165, 0,.2);
+  
+    }
+  }
+  
+  @keyframes rotation-5 {
+    0% {
+      top: 75%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+    }
+  
+    20% {
+      top: 25%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(144, 238, 144,.2);
+    }
+  
+    40% {
+      top: 0;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(238, 130, 238,.2);
+    }
+  
+    60% {
+      top: 25%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 0,.2);
+    }
+  
+    80% {
+      top: 75%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(173, 216, 230,.2);
+    }
+  
+    100% {
+      top: 100%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 165, 0,.2);
+    }
+  }
+  
+  @keyframes rotation-6 {
+    0% {
+      top: 25%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+    }
+  
+    20% {
+      top: 0%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(144, 238, 144,.2);
+    }
+  
+    40% {
+      top: 25%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(238, 130, 238,.2);
+    }
+  
+    60% {
+      top: 75%;
+      right: 20%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 0,.2);
+  
+    }
+  
+    80% {
+      top: 100%;
+      right: 50%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(173, 216, 230,.2);
+  
+    }
+  
+    100% {
+      top: 75%;
+      right: 80%;
+      transition: 1s;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 165, 0,.2);
+  
+    }
+  }
+  

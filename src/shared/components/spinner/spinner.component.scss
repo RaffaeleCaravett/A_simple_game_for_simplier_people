@@ -1,0 +1,371 @@
+.inside-spinner {
+    animation-name: spinner;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+}
+
+#p-1 {
+    top: 10%;
+    left: 50%;
+    animation-name: p-1;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-2 {
+    top: 20%;
+    left: 70%;
+    animation-name: p-2;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-3 {
+    top: 40%;
+    left: 85%;
+    animation-name: p-3;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-4 {
+    top: 60%;
+    left: 85%;
+    animation-name: p-4;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-5 {
+    top: 80%;
+    left: 70%;
+    animation-name: p-5;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-6 {
+    top: 85%;
+    left: 50%;
+    animation-name: p-6;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-7 {
+    top: 80%;
+    left: 30%;
+    animation-name: p-7;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-8 {
+    top: 60%;
+    left: 15%;
+    animation-name: p-8;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-9 {
+    top: 40%;
+    left: 15%;
+    animation-name: p-9;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+#p-10 {
+    top: 20%;
+    left: 25%;
+    animation-name: p-10;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    visibility: hidden;
+}
+
+// @keyframes spinner {
+//     3% {
+//         bottom: 0%;
+//         left: 0%;
+//     }
+//     6% {
+//         bottom: 20%;
+//         left: 20%;
+//     }
+//     9% {
+//         bottom: 40%;
+//         left: 40%;
+//     }
+//     12% {
+//         bottom: 60%;
+//         left: 60%;
+//     }
+//     15% {
+//         bottom: 80%;
+//         left: 80%;
+//     }
+//     18% {
+//         bottom: 100%;
+//         left: 100%;
+//     }
+//     21% {
+//         bottom: 120%;
+//         left: 120%;
+//     }
+//     24% {
+//         bottom: 100%;
+//         left: 100%;
+//         transform: rotate(90deg);
+//     }
+//     27% {
+//         bottom: 80%;
+//         left: 80%;
+//     }
+//     30% {
+//         bottom: 60%;
+//         left: 60%;
+//     }
+//     33% {
+//         bottom: 40%;
+//         left: 40%;
+//     }
+//     36% {
+//         bottom: 20%;
+//         left: 20%;
+//     }
+//     39% {
+//         bottom: 0%;
+//         left: 0%;
+//     }
+//     42% {
+//         bottom: -20%;
+//         left: -20%;
+//     }
+//     45% {
+//         bottom: -20%;
+//         left: 120%;
+//         transform: rotate(270deg);
+//     }
+//     48% {
+//         bottom: 0%;
+//         left: 100%;
+//     }
+//     51% {
+//         bottom: 20%;
+//         left: 80;
+//     }
+//     54% {
+//         bottom: 40%;
+//         left: 60%;
+//     }
+//     57% {
+//         bottom: 60%;
+//         left: 40%;
+//     }
+//     60% {
+//         bottom: 80%;
+//         left: 20%;
+//     }
+//     63% {
+//         bottom: 100%;
+//         left: 0%;
+//     }
+//     66% {
+//         bottom: 120%;
+//         left: -20%;
+//     }
+//     69% {
+//         bottom: 100%;
+//         left: 0%;
+//     }
+//     72% {
+//         bottom: 80%;
+//         left: 20%;
+//     }
+//     75% {
+//         bottom: 60%;
+//         left: 40%;
+//     }
+//     78% {
+//         bottom: 40%;
+//         left: 60%;
+//         transform: rotate(270deg);
+//     }
+//     81% {
+//         bottom: 20%;
+//         left: 80%;
+//     }
+//     84% {
+//         bottom: 0%;
+//         left: 100%;
+//     }
+//     87% {
+//         bottom: 120%;
+//         left: 120%;
+//     }
+//     90% {
+//         bottom: 90%;
+//         left: 90%;
+//         transform: rotate(180deg);
+//     }
+//     93% {
+//         bottom: 70%;
+//         left: 70%;
+//     }
+//     96% {
+//         bottom: 50%;
+//         left: 50%;
+//     }
+//     99% {
+//         bottom: 30%;
+//         left: 30%;
+//     }
+//     100% {
+//         bottom: 10%;
+//         left: 10%;
+//     }
+
+// }
+
+@keyframes p-1 {
+    90% {
+        visibility: hidden;
+    }
+
+    100% {
+        visibility: visible;
+    }
+
+
+}
+
+@keyframes p-2 {
+    80% {
+        visibility: hidden;
+    }
+
+    90% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-3 {
+    70% {
+        visibility: hidden;
+    }
+
+    80% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-4 {
+    60% {
+        visibility: hidden;
+    }
+
+    70% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-5 {
+    50% {
+        visibility: hidden;
+    }
+
+    60% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-6 {
+    40% {
+        visibility: hidden;
+    }
+
+    50% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-7 {
+    30% {
+        visibility: hidden;
+    }
+
+    40% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-8 {
+    20% {
+        visibility: hidden;
+    }
+
+    30% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-9 {
+    10% {
+        visibility: hidden;
+    }
+
+    20% {
+        visibility: visible;
+    }
+}
+
+@keyframes p-10 {
+    0% {
+        visibility: hidden;
+    }
+
+    10% {
+        visibility: visible;
+    }
+}
+
+@keyframes spinner {
+    15% {
+        border: 4px solid black;
+    }
+
+    30% {
+        border: 3px solid black;
+    }
+
+    45% {
+        border: 2px solid black;
+    }
+
+    50% {
+        border: 1px solid black;
+    }
+
+    75% {
+        border: 2px solid black;
+    }
+
+    90% {
+        border: 3px solid black;
+    }
+
+    100% {
+        border: 4px solid black;
+    }
+}

@@ -1,0 +1,54 @@
+<nav class="pt-3 text-center" [ngClass]="mode=='light'?'bg-personal':'bg-personal-opposite'">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-end mode">
+                <button class="btn text-light light fs-4" (click)="updateMode('light')" *ngIf="mode=='dark'">
+                    LIGHT MODE ☀️
+                </button>
+                <button class="btn text-dark dark fs-4" (click)="updateMode('dark')" *ngIf="mode=='light'">
+                    DARK MODE 🌙
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'"
+                    [routerLink]="'/home'">🏠 HOME</button>
+            </div>
+            <div class="col-md-4">
+                <button class="btn fs-4" *ngIf="isAuthenticatedUser" [ngClass]="mode!='light'?'text-light':'text-dark'"
+                    [routerLink]="'/lobby'">🎮 LOBBY</button>
+            </div>
+            <div class="col-md-4" *ngIf="!isAuthenticatedUser;else logOut">
+                <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'"
+                    [routerLink]="'/forms'">🚪 LOGIN</button>
+            </div>
+            <ng-template #logOut>
+                <div class="col-md-4" *ngIf="isAuthenticatedUser">
+                    <div class="d-flex flex-column justify-content-center align-items-center"
+                        *ngIf="(null&&undefined)!=user">
+                        <div class="w-auto d-flex flex-column justify-content-center align-items-center"
+                            *ngIf="!isLoadingLogoutOrRoute else isLoading">
+                            <div class="rounded-circle shadow to-point profile-pic m-auto mat-trigger"
+                                (click)="p.click()" style.backgroundImage="url('{{user!.immagineProfilo}}')"></div>
+                            <button class="btn" [matMenuTriggerFor]="appMenu" [ngClass]="mode!='light'?'text-light':'text-dark'" #p>{{user.fullName}}</button>
+                        </div>
+                        <ng-template #isLoading>
+                            <app-spinner [width]="100" [height]="100" [baseColor]="'blue'"></app-spinner>
+                        </ng-template>
+                    </div>
+                </div>
+                <mat-menu #appMenu="matMenu" class="overflow-hidden">
+                    <ng-template matMenuContent>
+                        <div>
+                            <button mat-menu-item class="btn fs-4 text-dark"
+                                (click)="goToRoute('lobby/profile')">🪪 Profile</button>
+                            <button mat-menu-item class="btn fs-4 text-dark"
+                                (click)="goToRoute('lobby/preferiti')">💌 Preferiti</button>
+                            <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
+                                [routerLink]="'/home'">➡️ Logout</button>
+                        </div>
+                    </ng-template>
+                </mat-menu>
+            </ng-template>
+        </div>
+    </div>
+</nav>

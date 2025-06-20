@@ -1,0 +1,111 @@
+@import url("signup-animations.scss");
+@import url("../../../../shared/style/style.scss");
+
+.w-auto {
+  max-width: 130px;
+  position: relative;
+
+  .menu {
+    width: 100px;
+    transition: 1s;
+    position: absolute;
+    right: 10px;
+    z-index: 40;
+
+    div {
+      .p {
+        &:hover {
+          background-color: red;
+        }
+      }
+    }
+  }
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+span {
+  font-weight: bold;
+}
+
+.signup-form {
+  box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem orange,
+    0 0 0.8rem orange,
+    0 0 2.8rem orange,
+    inset 0 0 1.3rem orange;
+}
+
+#l-1 {
+  div {
+    background-image:linear-gradient(0.25turn,rgb(255, 255, 255), rgb(255, 194, 194));
+    height: 4px;
+    width: 100%;
+    transform:translate(-105%);
+    animation-name: l-1;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+  }
+
+  overflow: hidden;
+  width: 23%;
+}
+
+#l-2 {
+  div {
+    background:linear-gradient(0.25turn,rgb(255, 194, 194),rgb(255, 135, 135),);
+    height: 4px;
+    width: 100%;
+    transform:translate(-105%);
+    animation-name: l-2;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+  }
+
+
+  overflow: hidden;
+  margin-left: 2%;
+  width: 23%;
+}
+
+#l-3 {
+  div {
+    background:linear-gradient(0.25turn,rgb(255, 135, 135),rgb(255, 96, 96));
+    height: 4px;
+    width: 100%;
+    transform:translate(-105%);
+    animation-name: l-3;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+  }
+
+
+  overflow: hidden;
+  margin-left: 2%;
+  width: 23%;
+}
+
+#l-4 {
+  div {
+    background:linear-gradient(0.25turn,rgb(255, 96, 96),rgb(255, 0, 0));
+    height: 4px;
+    width: 100%;
+    transform:translate(-105%);
+    animation-name: l-4;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+  }
+
+
+  overflow: hidden;
+  margin-left: 2%;
+  width: 23%;
+}

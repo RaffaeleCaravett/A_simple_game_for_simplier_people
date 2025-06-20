@@ -1,0 +1,56 @@
+.btn {
+    color: lightgray;
+    transition: .5s;
+
+    &:hover {
+        color: rgb(98, 255, 0) !important;
+        transition: .5s !important;
+        scale: 1.1 !important;
+        font-weight: bold !important;
+    }
+}
+.mode {
+    .light {
+        transition: .5s;
+        &:hover {
+            color: white !important;
+            transition: .5s !important;
+            scale: 1.1 !important;
+            font-weight: bold !important;
+        }
+    }
+
+    .dark {
+        transition: .5s;
+        &:hover {
+            color: black !important;
+            transition: .5s !important;
+            scale: 1.1 !important;
+            font-weight: bold !important;
+        }
+    }
+}
+.h1,
+h2,
+* {
+  font-family: "Just Me Again Down Here", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.bg-personal{
+    background-image: linear-gradient(black, white);
+}
+.bg-personal-opposite{
+    background-image: linear-gradient(black, gray);
+}
+.profile-pic {
+    width: 50px;
+    min-height: 50px!important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: linear-gradient(black, gray);
+}
+.mat-trigger{
+    cursor: pointer;
+}

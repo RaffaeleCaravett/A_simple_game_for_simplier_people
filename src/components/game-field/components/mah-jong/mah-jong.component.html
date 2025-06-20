@@ -1,0 +1,106 @@
+<div class="row text-center">
+    <div class="col-md-12 pt-5">
+        <h1>{{gioco?.nomeGioco}}</h1>
+    </div>
+    <div class="col-md-12 py-5 my-3" *ngIf="step == 1">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Regole del gioco</h2>
+                <ol class="fs-5 text-start">
+                    <li class="py-1">
+                        <span class="fw-bold"><i class="bi bi-suit-club-fill text-danger p-1"></i>
+                            <i class="bi bi-suit-club-fill text-danger p-1"></i> Abbinamento: </span> Rimuovi coppie di
+                        tessere identiche, che non siano bloccate da altre tessere.
+                    </li>
+                    <li class="py-1">
+                        <span class="fw-bold"> <i class="bi bi-unlock-fill text-warning p-1"></i> Tessere libere:
+                        </span> Le tessere
+                        libere sono quelle che hanno almeno due lati liberi da altre tessere.
+                    </li>
+                    <li class="py-1">
+                        <span class="fw-bold"><i class="bi bi-check2-all text-success p-1"></i> Risolvere il puzzle:
+                        </span> Lo scopo è eliminare tutte le tessere dal
+                        tabellone.
+                    </li>
+                    <li class="py-1">
+                        <span class="fw-bold"><i class="bi bi-hand-index-thumb-fill text-danger-emphasis p-1"></i>
+                            Esecuzione: </span> Tocca le tessere corrispondenti per
+                        rimuoverle.
+                    </li>
+                    <li class="py-1">
+                        <span class="fw-bold"><i class="bi bi-arrow-clockwise text-info p-1"></i> Rimescolamento:
+                        </span> Rimescola le
+                        tessere rimaste se si è bloccati.
+                    </li>
+                </ol>
+            </div>
+            <div class="col-md-6">
+                <h2>Da sapere :</h2>
+                <ul class="m-auto text-start">
+                    <li class="p-1">
+                        Questo gioco ha una difficoltà : {{gioco?.difficolta}} /5
+                    </li>
+                    <li class="p-1">
+                        Puoi comunque impostare una difficoltà per questa partita, oltre alla difficoltà di base del
+                        gioco.
+                        <form [formGroup]="difficoltaPartitaForm" class="d-flex justify-content-evenly">
+                            <p>Difficoltà partita:
+                                <span>
+                                    <i class="bi bi-1-circle-fill h5 p-1" [ngClass]="toNumber(difficolta.value)==1?'text-success':
+                                    toNumber(difficolta.value)==2?'text-warning':toNumber(difficolta.value)==3?'text-danger'
+                                    :toNumber(difficolta.value)==4?'text-super-danger':''"
+                                        *ngIf="toNumber(difficolta.value)>=1" (click)="setDifficolta(1)"></i>
+                                    <i class="bi bi-2-circle h5 p-1" *ngIf="toNumber(difficolta.value)<2"
+                                        (click)="setDifficolta(2)"></i>
+                                    <i class="bi bi-2-circle-fill h5 p-1" [ngClass]="toNumber(difficolta.value)==2?'text-warning':toNumber(difficolta.value)==3?'text-danger'
+                                        :toNumber(difficolta.value)==4?'text-super-danger':''"
+                                        *ngIf="toNumber(difficolta.value)>1" (click)="setDifficolta(2)"></i>
+                                    <i class="bi bi-3-circle h5 p-1" *ngIf="toNumber(difficolta.value)<3"
+                                        (click)="setDifficolta(3)"></i>
+                                    <i class="bi bi-3-circle-fill h5 p-1"
+                                        [ngClass]="toNumber(difficolta.value)==3?'text-danger':toNumber(difficolta.value)==4?'text-super-danger':''"
+                                        *ngIf="toNumber(difficolta.value)>2" (click)="setDifficolta(3)"></i>
+                                    <i class="bi bi-4-circle h5 p-1" *ngIf="toNumber(difficolta.value)<4"
+                                        (click)="setDifficolta(4)"></i>
+                                    <i class="bi bi-4-circle-fill h5 p-1 text-super-danger"
+                                        *ngIf="toNumber(difficolta.value)>3" (click)="setDifficolta(4)"></i>
+                                </span>
+                            </p>
+                            <select name="difficolta" id="difficolta" formControlName="difficolta" #difficolta
+                                class="form-select w-25">
+                                <option [value]="i" *ngFor="let i of difficoltaAvailables">{{i}}</option>
+                            </select>
+                        </form>
+                    </li>
+                    <li class="p-1">Verrà salvata una partita. Appena inizierai il gioco cliccando sul pulsante qui
+                        sotto "Avanti", inizierà una partita.
+                        A prescindere dal fatto se la completerai o no, noi la salveremo. Ovviamente, se non sarà
+                        completata, l'esito sarà : <span class="text-danger">PERSA</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-12 pt-3">
+                <button class="btn border-0 shadow-none btn-warning" matTooltip="Distribuisci tessere"
+                    matTooltipPosition="above" (click)="letsPlay()"> Inizia</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" *ngIf="step==2">
+        <div class="row">
+            <div class="col-md-12 text-start">
+                <button class="btn btn-warning" (click)="indietro()">Indietro</button>
+            </div>
+            <div class="col-md-12 pt-5 position-relative" *ngIf="startCount">
+                <h1 class="one">1</h1>
+                <h1 class="two">2</h1>
+                <h1 class="three">3</h1>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-outline-danger" *ngIf="!startCount" (click)="mescolaCarte()">Mescola carte</button>
+            </div>
+            <div class="col-md-12 pt-5 position-relative z-1" *ngIf="!startCount" id="base" #base>
+
+            </div>
+        </div>
+    </div>
+</div>

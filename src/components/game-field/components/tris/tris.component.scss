@@ -1,0 +1,58 @@
+@import url("../../../../shared/style/style.scss");
+
+.row {
+    width: 75%!important;
+    .col-4 {
+        cursor: pointer !important;
+        position: relative;
+        .position-absolute{
+           left: 45%;
+           top: 45%;
+        }
+    }
+}
+.particular-row{
+    min-width:300px!important;
+    width: 100%!important;
+}
+
+.enemy-moving {
+    animation-name: 'lighting';
+    animation-duration: 4s;
+    color: red;
+}
+
+@keyframes lighting {
+
+    25% {
+        transition: 1s;
+        color: transparent;
+        scale: .9;
+    }
+
+    50% {
+        transition: 1s;
+        color: red;
+        scale: 1.1;
+    }
+
+    75% {
+        transition: 1s;
+        color: transparent;
+        scale: .9;
+    }
+
+    100% {
+        transition: 1s;
+        color: red;
+        scale: 1.1;
+    }
+}
+
+.enemy-not-moving {
+    color: transparent;
+}
+
+.text-success{
+    transition: .5s!important;
+}
