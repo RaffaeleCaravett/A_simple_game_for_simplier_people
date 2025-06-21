@@ -86,7 +86,7 @@ mat-dialog-container {
 
 .width-77 {
     left: 13%;
-    top: -93%;
+    top: -85.5%;
     width: 77% !important;
     height: auto;
     // z-index: 1 !important;
@@ -99,7 +99,7 @@ mat-dialog-container {
 
 .width-60 {
     left: 22.5%;
-    top: -167%;
+    top: -152%;
     width: 60% !important;
     height: auto;
     // z-index: 2 !important;
@@ -112,7 +112,7 @@ mat-dialog-container {
 
 .width-35 {
     left: 35%;
-    top: -221%;
+    top: -200%;
     width: 35% !important;
     height: auto;
     // z-index: 3 !important;
@@ -125,7 +125,7 @@ mat-dialog-container {
 
 .width-25 {
     left: 41%;
-    top: -254%;
+    top: -229%;
     width: 25% !important;
     height: auto;
     // z-index: 4 !important;
@@ -152,4 +152,7 @@ mat-dialog-container {
 
 .tessera {
     cursor: pointer;
+}
+#base{
+  min-width: 696px!important;
 }

@@ -174,7 +174,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     floorContainer.classList.add('fs-3');
     floorContainer.classList.add('fw-bold');
     floorContainer.classList.add('position-relative');
-    floorContainer.classList.add('p-2');
     switch (zIndex) {
       case (5): {
         floorContainer.classList.add('w-100');
@@ -279,15 +278,13 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
             div.textContent = '';
             div.style.transition = '1s';
             div.style.display = '';
-            div.style.borderColor = '';
-            div.style.borderColor = 'transparent';
+            div.style.border = 'none';
             div.style.opacity = '0';
             div.style.height = standardHeight;
             document.getElementById(this.selectedCard?.id)!.textContent = '';
             document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
             document.getElementById(this.selectedCard?.id)!.style.display = '';
-            document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
-            document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
+            document.getElementById(this.selectedCard?.id)!.style.border = 'none';
             document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
             document.getElementById(this.selectedCard?.id)!.style.height = standardHeight;
             this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
