@@ -158,6 +158,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       div.classList.add('justify-content-center');
       div.classList.add('tessera');
       div.classList.add(col ? `col-${col}` : 'col-1');
+      // div.classList.add(floorNumber == 'first' ? 'z-0' : floorNumber == 'second' ? 'z-1' : floorNumber == 'third' ? 'z-2' : floorNumber == 'fourth' ? 'z-3' :
+      // floorNumber == 'fifth' ? 'z-4' : 'z-0');
       div.textContent = walls[w];
       div.id = floorNumber + '-' + (w + 1);
       div.addEventListener('click', (event: any) => this.checkMove(div, event));
@@ -171,7 +173,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     floorContainer.classList.add('row');
     floorContainer.classList.add('fs-3');
     floorContainer.classList.add('fw-bold');
-    floorContainer.classList.add('position-absolute');
+    floorContainer.classList.add('position-relative');
     floorContainer.classList.add('p-2');
     switch (zIndex) {
       case (5): {
@@ -237,67 +239,80 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary', 'p-2'];
     firstCard.classList.remove('bg-gradient');
     secondCard.classList.remove('bg-gradient');
-    firstCard.classList.add('m-0');
-    secondCard.classList.add('m-0');
-    secondCard.classList.add('p-0');
-    secondCard.classList.add('p-0');
-    firstCard.classList.add('pe-none');
-    secondCard.classList.add('pe-none');
 
     for (let c of colors) {
       firstCard.classList.remove(c);
       secondCard.classList.remove(c);
     }
   }
-
+  isDivClicked: boolean = false;
   checkMove(div: HTMLDivElement, event: any) {
-    let rows = this.checkRows(div);
-    let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
-    let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
-    if (isCardFree) {
-      if (div.textContent == '') return;
-      if (this.selectedCard && this.selectedCard == div) {
-        this.selectedCard = null;
+    let selectedDiv: HTMLDivElement = document.createElement('div');
+    (document.elementsFromPoint(event.clientX, event.clientY) as HTMLDivElement[])
+      .forEach((el: HTMLDivElement) => {
+        if (el instanceof HTMLDivElement && el.classList.contains('tessera') && el.textContent != '' && !this.isDivClicked) {
+          el.click();
+          selectedDiv = el;
+          div = el;
+          this.isDivClicked = true;
+        }
+      });
+    if (this.isDivClicked) {
+      let rows = this.checkRows(div);
+      let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
+      let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
+      if (isCardFree) {
+        if (div.textContent == '') return;
+        if (this.selectedCard && this.selectedCard == div) {
+          this.selectedCard = null;
+          div.style.transition = '1s';
+          div.style.borderColor = '';
+          div.style.borderColor = 'black';
+          div.style.scale = '1';
+          if (div.id == selectedDiv.id) {
+            this.isDivClicked = false;
+          }
+          return;
+        } else if (this.selectedCard && this.selectedCard != div) {
+          if (div.textContent == this.selectedCard.textContent) {
+            let standardHeight = div.style.height;
+            div.textContent = '';
+            div.style.transition = '1s';
+            div.style.display = '';
+            div.style.borderColor = '';
+            div.style.borderColor = 'transparent';
+            div.style.opacity = '0';
+            div.style.height = standardHeight;
+            document.getElementById(this.selectedCard?.id)!.textContent = '';
+            document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
+            document.getElementById(this.selectedCard?.id)!.style.display = '';
+            document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
+            document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
+            document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
+            document.getElementById(this.selectedCard?.id)!.style.height = standardHeight;
+            this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
+            this.selectedCard = null
+            if (div.id == selectedDiv.id) {
+              this.isDivClicked = false;
+            }
+            return;
+          } else {
+            document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
+            document.getElementById(this.selectedCard?.id)!.style.scale = '1';
+            document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
+            document.getElementById(this.selectedCard?.id)!.style.borderColor = 'black';
+          }
+        }
+
         div.style.transition = '1s';
         div.style.borderColor = '';
-        div.style.borderColor = 'black';
-        div.style.scale = '1';
-        return;
-      } else if (this.selectedCard && this.selectedCard != div) {
-        if (div.textContent == this.selectedCard.textContent) {
-          let standardHeight = div.style.height;
-          div.textContent = '';
-          div.style.transition = '1s';
-          div.style.display = '';
-          div.style.borderColor = '';
-          div.style.borderColor = 'transparent';
-          div.style.opacity = '0';
-          div.style.height = standardHeight;
-          div.style.zIndex='-1';
-          document.getElementById(this.selectedCard?.id)!.textContent = '';
-          document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
-          document.getElementById(this.selectedCard?.id)!.style.display = '';
-          document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
-          document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
-          document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
-          document.getElementById(this.selectedCard?.id)!.style.height = standardHeight;
-          document.getElementById(this.selectedCard?.id)!.style.zIndex='-1';
-          this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
-          this.selectedCard = null
-          return;
-        } else {
-          document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
-          document.getElementById(this.selectedCard?.id)!.style.scale = '1';
-          document.getElementById(this.selectedCard?.id)!.style.borderColor = '';
-          document.getElementById(this.selectedCard?.id)!.style.borderColor = 'black';
-        }
+        div.style.borderColor = 'green';
+        div.style.scale = '1.1';
+        this.selectedCard = div;
       }
-
-      div.style.transition = '1s';
-      div.style.borderColor = '';
-      div.style.borderColor = 'green';
-      div.style.scale = '1.1';
-      this.selectedCard = div;
+      if (div.id == selectedDiv.id) {
+        this.isDivClicked = false;
+      }
     }
   }
 
