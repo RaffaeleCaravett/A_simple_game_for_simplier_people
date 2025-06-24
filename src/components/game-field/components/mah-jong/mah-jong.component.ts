@@ -5,6 +5,7 @@ import { User } from '../../../../interfaces/interfaces';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-mah-jong',
@@ -31,7 +32,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   allTessers: HTMLDivElement[] = [];
   @ViewChild('base', { static: false }) base: any;
   selectedCard: any = null;
-  constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef) { }
+  maximumTry: number = 20;
+  constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
@@ -400,37 +402,47 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     return (undefined != div && null != div);
   }
   mescolaCarte() {
-    let remainingTessers: HTMLDivElement[] = [];
-    let mixedTessers: HTMLDivElement[] = [];
-    for (let c of this.allTessers) {
-      if (c?.textContent != "") {
-        remainingTessers.push(c);
+    if (this.maximumTry > 0) {
+      this.maximumTry--;
+      let remainingTessers: HTMLDivElement[] = [];
+      let mixedTessers: HTMLDivElement[] = [];
+      for (let c of this.allTessers) {
+        if (c?.textContent != "") {
+          remainingTessers.push(c);
+        }
       }
-    }
-    let remainingTessersInitialLength = remainingTessers.length;
-    for (let i = 1; i <= remainingTessersInitialLength; i++) {
+      let remainingTessersInitialLength = remainingTessers.length;
+      for (let i = 1; i <= remainingTessersInitialLength; i++) {
 
-      let randomNumber = Math.floor(Math.random() * remainingTessers.length);
-      if (randomNumber < 0) randomNumber = 0;
-      else if (randomNumber > remainingTessers.length || (randomNumber == remainingTessers.length && remainingTessers.length > 1)) randomNumber = randomNumber - 1;
-      mixedTessers.push(remainingTessers[randomNumber])
-      remainingTessers = remainingTessers.filter((m: any) => m.id != remainingTessers[randomNumber].id);
-
-    }
-    for (let c of this.allTessers) {
-      if (c.textContent != '') {
-        let randomNumber = Math.floor(Math.random() * mixedTessers.length);
+        let randomNumber = Math.floor(Math.random() * remainingTessers.length);
         if (randomNumber < 0) randomNumber = 0;
-        else if (randomNumber >= mixedTessers.length || (randomNumber == mixedTessers.length && mixedTessers.length > 1)) randomNumber = randomNumber - 1;
-        c.textContent = mixedTessers[randomNumber].textContent;
-        mixedTessers = mixedTessers.filter((m: any) => m.id != mixedTessers[randomNumber].id);
+        else if (randomNumber > remainingTessers.length || (randomNumber == remainingTessers.length && remainingTessers.length > 1)) randomNumber = randomNumber - 1;
+        mixedTessers.push(remainingTessers[randomNumber])
+        remainingTessers = remainingTessers.filter((m: any) => m.id != remainingTessers[randomNumber].id);
+
       }
-    }
-    for (let c of this.allTessers) {
-      if (c.textContent != '') {
-        document.getElementById(c.id)!.textContent = c.textContent;
+      for (let c of this.allTessers) {
+        if (c.textContent != '') {
+          let randomNumber = Math.floor(Math.random() * mixedTessers.length);
+          if (randomNumber < 0) randomNumber = 0;
+          else if (randomNumber >= mixedTessers.length || (randomNumber == mixedTessers.length && mixedTessers.length > 1)) randomNumber = randomNumber - 1;
+          c.textContent = mixedTessers[randomNumber].textContent;
+          mixedTessers = mixedTessers.filter((m: any) => m.id != mixedTessers[randomNumber].id);
+        }
       }
+      for (let c of this.allTessers) {
+        if (c.textContent != '') {
+          document.getElementById(c.id)!.textContent = c.textContent;
+        }
+      }
+      this.colorCards(true);
+    } else {
+      this.toastr.error("Hai esaurito il numero massimo di tentativi per mischiare le tessere.");
     }
-    this.colorCards(true);
+    if (this.maximumTry == 10) {
+      this.toastr.warning("Hai utilizzato la metà dei tentativi disponibili per mischiare le tessere.");
+    } else if (this.maximumTry == 5) {
+      this.toastr.warning("Hai solo 5 tentativi disponibili per mischiare le tessere.");
+    }
   }
 }
