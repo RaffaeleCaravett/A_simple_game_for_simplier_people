@@ -208,7 +208,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     }
   }
 
-  colorCards() {
+  colorCards(isMoreThanFirst?: boolean) {
     let nephewsArray: HTMLDivElement[] = [];
     for (let child of this.base.nativeElement.children) {
       for (let nephew of child.children) {
@@ -217,7 +217,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     }
     for (let i = 0; i <= nephewsArray.length - 1; i++) {
       for (let j = i + 1; j <= nephewsArray.length - 1; j++) {
-        if (nephewsArray[i].textContent == nephewsArray[j].textContent) {
+        if ((nephewsArray[i].textContent == nephewsArray[j].textContent) && nephewsArray[i].textContent != "") {
+          if (isMoreThanFirst) this.removeBackgroundColor(nephewsArray[i], nephewsArray[j], isMoreThanFirst);
           this.assignBackgroundColor(nephewsArray[i], nephewsArray[j]);
         }
       }
@@ -234,14 +235,16 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     firstCard.classList.add(colors[randomColor]);
     secondCard.classList.add(colors[randomColor]);
   }
-  removeBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement) {
+  removeBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement, isMoreThanFirst?: boolean) {
     let colors: string[] = ['bg-warning', 'bg-light', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary', 'p-2'];
     firstCard.classList.remove('bg-gradient');
     secondCard.classList.remove('bg-gradient');
 
     for (let c of colors) {
-      firstCard.classList.remove(c);
-      secondCard.classList.remove(c);
+      if (!isMoreThanFirst || (isMoreThanFirst && c != "p-2")) {
+        firstCard.classList.remove(c);
+        secondCard.classList.remove(c);
+      }
     }
   }
   isDivClicked: boolean = false;
@@ -273,7 +276,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           }
           return;
         } else if (this.selectedCard && this.selectedCard != div) {
-          if (div.textContent == this.selectedCard.textContent) {
+          if ((div.textContent == this.selectedCard.textContent) && this.checkSameBackground(this.selectedCard, div)) {
             div.textContent = '';
             div.style.transition = '1s';
             div.style.display = '';
@@ -311,7 +314,19 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       }
     }
   }
+  checkSameBackground(selectedCard: HTMLDivElement, div: HTMLDivElement): boolean {
+    let sCC: string[] = selectedCard.classList as unknown as string[];
+    let dC: string[] = div.classList as unknown as string[];
 
+    for (let c of sCC) {
+      for (let dc of dC) {
+        if (c == dc && c != 'bg-gradient' && c.startsWith('bg')) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   checkRows(div: HTMLDivElement): number {
     if (div?.id.startsWith('first')) return 5;
@@ -413,5 +428,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         document.getElementById(c.id)!.textContent = c.textContent;
       }
     }
+    this.colorCards(true);
   }
 }
