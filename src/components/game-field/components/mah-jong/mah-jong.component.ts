@@ -35,7 +35,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
-    document.addEventListener('click',(event:any)=>{console.log(event)},true);
     this.getGioco();
     this.initializeForms();
   }
@@ -274,6 +273,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           div.style.borderColor = 'transparent';
           div.style.opacity = '0';
           div.style.height = standardHeight;
+          div.style.zIndex='-1';
           document.getElementById(this.selectedCard?.id)!.textContent = '';
           document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
           document.getElementById(this.selectedCard?.id)!.style.display = '';
@@ -281,6 +281,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           document.getElementById(this.selectedCard?.id)!.style.borderColor = 'transparent';
           document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
           document.getElementById(this.selectedCard?.id)!.style.height = standardHeight;
+          document.getElementById(this.selectedCard?.id)!.style.zIndex='-1';
           this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
           this.selectedCard = null
           return;
