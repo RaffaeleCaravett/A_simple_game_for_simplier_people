@@ -35,6 +35,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+    document.addEventListener('click',(event:any)=>{console.log(event)},true);
     this.getGioco();
     this.initializeForms();
   }
@@ -160,7 +161,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       div.classList.add(col ? `col-${col}` : 'col-1');
       div.textContent = walls[w];
       div.id = floorNumber + '-' + (w + 1);
-      div.addEventListener('click', () => this.checkMove(div));
+      div.addEventListener('click', (event: any) => this.checkMove(div, event));
       floor.push(div);
       this.allTessers.push(div);
     }
@@ -250,8 +251,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     }
   }
 
-  checkMove(div: HTMLDivElement) {
-
+  checkMove(div: HTMLDivElement, event: any) {
     let rows = this.checkRows(div);
     let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
     let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
