@@ -274,19 +274,18 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           return;
         } else if (this.selectedCard && this.selectedCard != div) {
           if (div.textContent == this.selectedCard.textContent) {
-            let standardHeight = div.style.height;
             div.textContent = '';
             div.style.transition = '1s';
             div.style.display = '';
             div.style.border = 'none';
             div.style.opacity = '0';
-            div.style.height = standardHeight;
+            div.style.height = '48px';
             document.getElementById(this.selectedCard?.id)!.textContent = '';
             document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
             document.getElementById(this.selectedCard?.id)!.style.display = '';
             document.getElementById(this.selectedCard?.id)!.style.border = 'none';
             document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
-            document.getElementById(this.selectedCard?.id)!.style.height = standardHeight;
+            document.getElementById(this.selectedCard?.id)!.style.height = '48px';
             this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
             this.selectedCard = null
             if (div.id == selectedDiv.id) {
