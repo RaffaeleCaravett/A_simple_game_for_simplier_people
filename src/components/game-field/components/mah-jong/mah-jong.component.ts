@@ -212,10 +212,11 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   colorCards(isMoreThanFirst?: boolean) {
+    console.clear();
     let nephewsArray: HTMLDivElement[] = [];
     for (let child of this.base.nativeElement.children) {
       for (let nephew of child.children) {
-        nephewsArray.push(nephew);
+        if (nephew.textContent != '') nephewsArray.push(nephew);
       }
     }
     for (let i = 0; i <= nephewsArray.length - 1; i++) {
@@ -223,6 +224,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         if ((nephewsArray[i].textContent == nephewsArray[j].textContent) && nephewsArray[i].textContent != "") {
           if (isMoreThanFirst) this.removeBackgroundColor(nephewsArray[i], nephewsArray[j], isMoreThanFirst);
           this.assignBackgroundColor(nephewsArray[i], nephewsArray[j]);
+          if (nephewsArray[i].classList.value.substring(nephewsArray[i].classList.value.lastIndexOf('bg-')) != nephewsArray[j].classList.value.substring(nephewsArray[j].classList.value.lastIndexOf('bg-')))
+            console.log(nephewsArray[i].classList.value.substring(nephewsArray[i].classList.value.lastIndexOf('bg-')), " - ", nephewsArray[j].classList.value.substring(nephewsArray[j].classList.value.lastIndexOf('bg-')))
         }
       }
     }
@@ -428,11 +431,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           else if (randomNumber >= mixedTessers.length || (randomNumber == mixedTessers.length && mixedTessers.length > 1)) randomNumber = randomNumber - 1;
           c.textContent = mixedTessers[randomNumber].textContent;
           mixedTessers = mixedTessers.filter((m: any) => m.id != mixedTessers[randomNumber].id);
-        }
-      }
-      for (let c of this.allTessers) {
-        if (c.textContent != '') {
-          document.getElementById(c.id)!.textContent = c.textContent;
         }
       }
       this.colorCards(true);
