@@ -33,6 +33,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   @ViewChild('base', { static: false }) base: any;
   selectedCard: any = null;
   maximumTry: number = 20;
+  gameEnd:boolean = false;
+  victory:boolean = false;
   constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef, private toastr: ToastrService) { }
 
   ngOnInit(): void {
@@ -230,6 +232,11 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         }
       }
     }
+    let i = 0;
+    this.allTessers.forEach(t=>{
+      if(t.textContent!="") i++;
+    })
+    if(i==0) this.youWon();
   }
   checkBackgroundPresent(div: HTMLDivElement): boolean {
     return div.classList.contains('bg-gradient');
@@ -439,5 +446,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     } else if (this.maximumTry == 5) {
       this.toastr.warning("Hai solo 5 tentativi disponibili per mischiare le tessere.");
     }
+  }
+  youWon(){
+    this.toastr.success("Congratulazioni! \n Hai vinto!");
+    this.gameEnd = true;
+    this.victory = true;
+  }
+  
+  giveUp(){
+    this.gameEnd = true;
+    this.victory = false;
   }
 }
