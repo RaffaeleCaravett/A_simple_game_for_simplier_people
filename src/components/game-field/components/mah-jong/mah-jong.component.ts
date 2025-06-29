@@ -49,38 +49,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.timeLeftSeconds = 0;
     this.getGioco();
     this.initializeForms();
-    switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
-      case 1: {
-        this.initialMaximumTry = 35;
-        this.maximumTry = 35;
-        this.timeLeftMinutes = 10;
-      }
-        break;
-      case 2: {
-        this.initialMaximumTry = 30;
-        this.maximumTry = 30;
-        this.timeLeftMinutes = 9;
-      }
-        break;
-      case 3: {
-        this.initialMaximumTry = 25;
-        this.maximumTry = 25;
-        this.timeLeftMinutes = 7;
-      }
-        break;
-      case 4: {
-        this.initialMaximumTry = 20;
-        this.maximumTry = 20;
-        this.timeLeftMinutes = 5;
-      }
-        break;
-      default: {
-        this.initialMaximumTry = 35;
-        this.maximumTry = 35;
-        this.timeLeftMinutes = 10;
-      }
-        break;
-    }
   }
 
   initializeForms() {
@@ -96,7 +64,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     });
   }
 
-  calculatePoints():number {
+  calculatePoints(): number {
     if (this.pointsCalculated) return this.punti;
     else {
       this.pointsCalculated = true
@@ -112,9 +80,44 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.difficoltaPartitaForm.updateValueAndValidity();
   }
   letsPlay() {
+    this.gameEnd = false;
+    this.victory = false;
+    this.punti = 0;
     this.pointsCalculated = false;
     this.step = 2;
     this.startCount = true;
+        switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
+      case (1): {
+        this.initialMaximumTry = 35;
+        this.maximumTry = 35;
+        this.timeLeftMinutes = 10;
+      }
+        break;
+      case (2): {
+        this.initialMaximumTry = 30;
+        this.maximumTry = 30;
+        this.timeLeftMinutes = 9;
+      }
+        break;
+      case (3): {
+        this.initialMaximumTry = 25;
+        this.maximumTry = 25;
+        this.timeLeftMinutes = 7;
+      }
+        break;
+      case (4): {
+        this.initialMaximumTry = 20;
+        this.maximumTry = 20;
+        this.timeLeftMinutes = 5;
+      }
+        break;
+      default: {
+        this.initialMaximumTry = 35;
+        this.maximumTry = 35;
+        this.timeLeftMinutes = 10;
+      }
+        break;
+    }
     this.countCount = setTimeout(() => {
       this.startCount = false;
       this.giveCards();
@@ -143,6 +146,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       } else {
         this.timeLeftMinutes = 0;
         this.timeLeftSeconds = 0;
+        this.gameEnd = true;
+        this.victory = false;
       }
     }, 1000)
   }
@@ -309,17 +314,35 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     return div.classList.contains('bg-gradient');
   }
   assignBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement) {
-    let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary'];
+    let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success'];
+    if (this.difficoltaPartitaForm.controls['difficolta'].value == 4) {
+      colors.push('bg-info', 'bg-secondary', 'bg-primary');
+    } else if (this.difficoltaPartitaForm.controls['difficolta'].value == 3) {
+      colors.push('bg-info', 'bg-secondary');
+    } else if (this.difficoltaPartitaForm.controls['difficolta'].value == 2) {
+      colors.push('bg-info');
+    } else {
+      console.log("");
+    }
     firstCard.classList.add('bg-gradient');
     secondCard.classList.add('bg-gradient');
 
-    let randomColor = Math.floor(Math.random() * colors.length - 1);
+    let randomColor = Math.floor(Math.random() * (colors.length - 1));
     if (randomColor < 0) randomColor = 0;
     firstCard.classList.add(colors[randomColor]);
     secondCard.classList.add(colors[randomColor]);
   }
   removeBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement, isMoreThanFirst?: boolean) {
-    let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary', 'p-2'];
+    let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success'];
+    if (this.difficoltaPartitaForm.controls['difficolta'].value == 4) {
+      colors.push('bg-info', 'bg-secondary', 'bg-primary');
+    } else if (this.difficoltaPartitaForm.controls['difficolta'].value == 3) {
+      colors.push('bg-info', 'bg-secondary');
+    } else if (this.difficoltaPartitaForm.controls['difficolta'].value == 2) {
+      colors.push('bg-info');
+    } else {
+      console.log("");
+    }
     firstCard.classList.remove('bg-gradient');
     secondCard.classList.remove('bg-gradient');
 
@@ -482,37 +505,37 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     return (undefined != div && null != div);
   }
   mescolaCarte() {
-    // if (this.maximumTry > 0) {
-    this.maximumTry--;
-    const onlyTextContentAllTessers: HTMLDivElement[] = [...this.allTessers];
+    if (this.maximumTry > 0) {
+      this.maximumTry--;
+      // const onlyTextContentAllTessers: HTMLDivElement[] = [...this.allTessers];
 
-    let currentIndex = this.allTessers.length;
-    while (currentIndex != 0) {
+      let currentIndex = this.allTessers.length;
+      while (currentIndex != 0) {
 
-      let randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      if (this.allTessers[currentIndex].textContent != "" && this.allTessers[randomIndex].textContent != "") {
-        let arr: string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',', '');
-        this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',', '');
-        this.allTessers[randomIndex].textContent = arr;
+        let randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        if (this.allTessers[currentIndex].textContent != "" && this.allTessers[randomIndex].textContent != "") {
+          let arr: string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',', '');
+          this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',', '');
+          this.allTessers[randomIndex].textContent = arr;
+        }
       }
-    }
 
-    // for (let t of this.allTessers.filter(t => t.textContent != "")) {
-    //   let randomIndex = Math.floor(Math.random() * this.allTessers.filter(t => t.textContent != "").length);
-    //   if (randomIndex < 0) randomIndex = 0;
-    //   else if (randomIndex == this.allTessers.filter(t => t.textContent != "").length && this.allTessers.filter(t => t.textContent != "").length > 1) randomIndex = this.allTessers.filter(t => t.textContent != "").length - 1;
-    //   t.textContent = this.allTessers.filter(t => t.textContent != "")[randomIndex].textContent;
-    // }
-    this.colorCards(true);
-    // } else {
-    // this.toastr.error("Hai esaurito il numero massimo di tentativi per mischiare le tessere.");
-    // }
+      // for (let t of this.allTessers.filter(t => t.textContent != "")) {
+      //   let randomIndex = Math.floor(Math.random() * this.allTessers.filter(t => t.textContent != "").length);
+      //   if (randomIndex < 0) randomIndex = 0;
+      //   else if (randomIndex == this.allTessers.filter(t => t.textContent != "").length && this.allTessers.filter(t => t.textContent != "").length > 1) randomIndex = this.allTessers.filter(t => t.textContent != "").length - 1;
+      //   t.textContent = this.allTessers.filter(t => t.textContent != "")[randomIndex].textContent;
+      // }
+      this.colorCards(true);
+    } else {
+      this.toastr.error("Hai esaurito il numero massimo di tentativi per mischiare le tessere.");
+    }
     if (this.maximumTry == 10) {
       this.toastr.warning("Ti rimangono 10 tentativi disponibili per mischiare le tessere.");
     } else if (this.maximumTry == 5) {
       this.toastr.warning("Hai solo 5 tentativi disponibili per mischiare le tessere.");
-    }else if (this.maximumTry == 3) {
+    } else if (this.maximumTry == 3) {
       this.toastr.error("Hai solo 3 tentativi disponibili per mischiare le tessere.");
     }
   }
