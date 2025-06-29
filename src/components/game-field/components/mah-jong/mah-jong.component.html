@@ -98,7 +98,8 @@
                     <h1 class="three">3</h1>
                 </div>
                 <div class="col-md-12 text-center" *ngIf="!startCount">
-                    <div *ngIf="maximumTry!=0 else noTry">
+                    <!-- *ngIf="maximumTry!=0 else noTry" -->
+                    <div >
                         <button class="btn btn-outline-danger" (click)="mescolaCarte()">Mescola carte</button>
                         <p class="px-2">(Ancora {{maximumTry}} {{maximumTry==1?'tentativo disponibile.':'tentativi disponibili.'}})</p>
                     </div>

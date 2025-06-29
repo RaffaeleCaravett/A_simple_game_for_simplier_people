@@ -159,7 +159,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       div.classList.add('align-items-middle');
       div.classList.add('justify-content-center');
       div.classList.add('tessera');
-      div.classList.add('shadow-sm');
+      div.classList.add('shadow-lg');
       div.classList.add(col ? `col-${col}` : 'col-1');
       // div.classList.add(floorNumber == 'first' ? 'z-0' : floorNumber == 'second' ? 'z-1' : floorNumber == 'third' ? 'z-2' : floorNumber == 'fourth' ? 'z-3' :
       // floorNumber == 'fifth' ? 'z-4' : 'z-0');
@@ -212,7 +212,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   colorCards(isMoreThanFirst?: boolean) {
-    console.clear();
     let nephewsArray: HTMLDivElement[] = [];
     for (let child of this.base.nativeElement.children) {
       for (let nephew of child.children) {
@@ -221,16 +220,20 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     }
     for (let i = 0; i <= nephewsArray.length - 1; i++) {
       for (let j = i + 1; j <= nephewsArray.length - 1; j++) {
-        if ((nephewsArray[i].textContent == nephewsArray[j].textContent) && nephewsArray[i].textContent != "") {
-          if (isMoreThanFirst) this.removeBackgroundColor(nephewsArray[i], nephewsArray[j], isMoreThanFirst);
+        if (isMoreThanFirst) this.removeBackgroundColor(nephewsArray[i], nephewsArray[j], isMoreThanFirst);
+      }
+    }
+    for (let i = 0; i <= nephewsArray.length - 1; i++) {
+      for (let j = i + 1; j <= nephewsArray.length - 1; j++) {
+        if ((nephewsArray[i].textContent == nephewsArray[j].textContent) && nephewsArray[i].textContent != "" && !(this.checkBackgroundPresent(nephewsArray[i]) || this.checkBackgroundPresent(nephewsArray[j]))) {
           this.assignBackgroundColor(nephewsArray[i], nephewsArray[j]);
-          if (nephewsArray[i].classList.value.substring(nephewsArray[i].classList.value.lastIndexOf('bg-')) != nephewsArray[j].classList.value.substring(nephewsArray[j].classList.value.lastIndexOf('bg-')))
-            console.log(nephewsArray[i].classList.value.substring(nephewsArray[i].classList.value.lastIndexOf('bg-')), " - ", nephewsArray[j].classList.value.substring(nephewsArray[j].classList.value.lastIndexOf('bg-')))
         }
       }
     }
   }
-
+  checkBackgroundPresent(div: HTMLDivElement): boolean {
+    return div.classList.contains('bg-gradient');
+  }
   assignBackgroundColor(firstCard: HTMLDivElement, secondCard: HTMLDivElement) {
     let colors: string[] = ['bg-warning', 'bg-danger', 'bg-success', 'bg-info', 'bg-secondary', 'bg-primary'];
     firstCard.classList.add('bg-gradient');
@@ -405,38 +408,32 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     return (undefined != div && null != div);
   }
   mescolaCarte() {
-    if (this.maximumTry > 0) {
-      this.maximumTry--;
-      let remainingTessers: HTMLDivElement[] = [];
-      let mixedTessers: HTMLDivElement[] = [];
-      for (let c of this.allTessers) {
-        if (c?.textContent != "") {
-          remainingTessers.push(c);
-        }
-      }
-      let remainingTessersInitialLength = remainingTessers.length;
-      for (let i = 1; i <= remainingTessersInitialLength; i++) {
+    // if (this.maximumTry > 0) {
+    this.maximumTry--;
+    const onlyTextContentAllTessers: HTMLDivElement[] = [...this.allTessers];
 
-        let randomNumber = Math.floor(Math.random() * remainingTessers.length);
-        if (randomNumber < 0) randomNumber = 0;
-        else if (randomNumber > remainingTessers.length || (randomNumber == remainingTessers.length && remainingTessers.length > 1)) randomNumber = randomNumber - 1;
-        mixedTessers.push(remainingTessers[randomNumber])
-        remainingTessers = remainingTessers.filter((m: any) => m.id != remainingTessers[randomNumber].id);
+    let currentIndex = this.allTessers.length;
+    while (currentIndex != 0) {
 
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      if (this.allTessers[currentIndex].textContent != "" && this.allTessers[randomIndex].textContent != "") {
+        let arr:string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',','');
+        this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',','');
+        this.allTessers[randomIndex].textContent = arr;
       }
-      for (let c of this.allTessers) {
-        if (c.textContent != '') {
-          let randomNumber = Math.floor(Math.random() * mixedTessers.length);
-          if (randomNumber < 0) randomNumber = 0;
-          else if (randomNumber >= mixedTessers.length || (randomNumber == mixedTessers.length && mixedTessers.length > 1)) randomNumber = randomNumber - 1;
-          c.textContent = mixedTessers[randomNumber].textContent;
-          mixedTessers = mixedTessers.filter((m: any) => m.id != mixedTessers[randomNumber].id);
-        }
-      }
-      this.colorCards(true);
-    } else {
-      this.toastr.error("Hai esaurito il numero massimo di tentativi per mischiare le tessere.");
     }
+
+    // for (let t of this.allTessers.filter(t => t.textContent != "")) {
+    //   let randomIndex = Math.floor(Math.random() * this.allTessers.filter(t => t.textContent != "").length);
+    //   if (randomIndex < 0) randomIndex = 0;
+    //   else if (randomIndex == this.allTessers.filter(t => t.textContent != "").length && this.allTessers.filter(t => t.textContent != "").length > 1) randomIndex = this.allTessers.filter(t => t.textContent != "").length - 1;
+    //   t.textContent = this.allTessers.filter(t => t.textContent != "")[randomIndex].textContent;
+    // }
+    this.colorCards(true);
+    // } else {
+    // this.toastr.error("Hai esaurito il numero massimo di tentativi per mischiare le tessere.");
+    // }
     if (this.maximumTry == 10) {
       this.toastr.warning("Hai utilizzato la metà dei tentativi disponibili per mischiare le tessere.");
     } else if (this.maximumTry == 5) {
