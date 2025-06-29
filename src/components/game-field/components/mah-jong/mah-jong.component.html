@@ -97,18 +97,35 @@
                     <h1 class="two">2</h1>
                     <h1 class="three">3</h1>
                 </div>
-                <div class="col-md-12 text-center" *ngIf="!startCount">
+                <div class="col-md-12 text-center" *ngIf="!startCount && !gameEnd">
                     <!-- *ngIf="maximumTry!=0 else noTry" -->
-                    <div >
+                    <div>
                         <button class="btn btn-outline-danger" (click)="mescolaCarte()">Mescola carte</button>
-                        <p class="px-2">(Ancora {{maximumTry}} {{maximumTry==1?'tentativo disponibile.':'tentativi disponibili.'}})</p>
+                        <p class="px-2">{{(timeLeftMinutes>=10?"":0)+""+timeLeftMinutes}} : {{timeLeftSeconds + "" +(timeLeftSeconds==0?0:"")}}</p>
+                        <p class="px-2">(Ancora {{maximumTry}} {{maximumTry==1?'tentativo disponibile.':
+                            'tentativi disponibili.'}})</p>
                     </div>
                     <ng-template #noTry>
                         <p class="text-danger">Hai esaurito i tentativi di mescolare le carte.</p>
                     </ng-template>
                 </div>
-                <div class="col-md-12 pt-5 position-relative z-1" *ngIf="!startCount" id="base" #base>
+                <div class="col-md-12 pt-5 position-relative z-1" *ngIf="!startCount && !gameEnd" id="base" #base>
 
+                </div>
+                <div class="col-md-12 pt-5 mt-5" *ngIf="gameEnd">
+                    <div *ngIf="victory else lose">
+                        <h2 class="text-success">Complimenti!</h2>
+                        <p>Hai terminato la partita. Ecco un po ' le tue statistiche :</p>
+                        <ol>
+                            <li>Tentativi di mix rimasti : {{maximumTry}} su {{initialMaximumTry}}. </li>
+                            <li>Tempo rimsto : {{timeLeftMinutes!=0? (timeLeftMinutes+ ":"+timeLeftSeconds + ' minuti')
+                                : timeLeftSeconds + ' secondi'}} su {{initialTimeLeft}} minuti</li>
+                            <li>Hai totalizzato : {{calculatePoints() + punti == 1? 'punto' : 'punti'}} </li>
+                        </ol>
+                    </div>
+                    <ng-template #lose>
+                        <h2 class="text-danger">Oh no!</h2>
+                    </ng-template>
                 </div>
             </div>
         </div>

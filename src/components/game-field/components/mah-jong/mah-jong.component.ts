@@ -22,6 +22,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   difficoltaPartitaForm: FormGroup = new FormGroup({});
   difficoltaAvailables: number[] = [1, 2, 3, 4];
   startCount: boolean = false;
+  countCount: any;
   countTimer: any;
   firstFloor: string[] = [];
   secondFloor: string[] = [];
@@ -32,15 +33,54 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   allTessers: HTMLDivElement[] = [];
   @ViewChild('base', { static: false }) base: any;
   selectedCard: any = null;
-  maximumTry: number = 20;
-  gameEnd:boolean = false;
-  victory:boolean = false;
+  maximumTry: number = 0;
+  gameEnd: boolean = false;
+  victory: boolean = false;
+  initialMaximumTry: number = 0;
+  timeLeftMinutes: number = 0;
+  timeLeftSeconds: number = 0;
+  initialTimeLeft: number = 0;
+  punti: number = 0;
+  pointsCalculated: boolean = false;
   constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+    this.timeLeftSeconds = 0;
     this.getGioco();
     this.initializeForms();
+    switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
+      case 1: {
+        this.initialMaximumTry = 35;
+        this.maximumTry = 35;
+        this.timeLeftMinutes = 10;
+      }
+        break;
+      case 2: {
+        this.initialMaximumTry = 30;
+        this.maximumTry = 30;
+        this.timeLeftMinutes = 9;
+      }
+        break;
+      case 3: {
+        this.initialMaximumTry = 25;
+        this.maximumTry = 25;
+        this.timeLeftMinutes = 7;
+      }
+        break;
+      case 4: {
+        this.initialMaximumTry = 20;
+        this.maximumTry = 20;
+        this.timeLeftMinutes = 5;
+      }
+        break;
+      default: {
+        this.initialMaximumTry = 35;
+        this.maximumTry = 35;
+        this.timeLeftMinutes = 10;
+      }
+        break;
+    }
   }
 
   initializeForms() {
@@ -55,6 +95,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       }
     });
   }
+
+  calculatePoints():number {
+    if (this.pointsCalculated) return this.punti;
+    else {
+      this.pointsCalculated = true
+      this.punti = 1;
+      return this.punti;
+    }
+  }
   toNumber(value: string) {
     return Number(value);
   }
@@ -63,21 +112,39 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.difficoltaPartitaForm.updateValueAndValidity();
   }
   letsPlay() {
+    this.pointsCalculated = false;
     this.step = 2;
     this.startCount = true;
-    this.countTimer = setTimeout(() => {
+    this.countCount = setTimeout(() => {
       this.startCount = false;
       this.giveCards();
+      this.startTimer();
     }, 4000)
   }
   indietro() {
-    clearTimeout(this.countTimer)
+    clearTimeout(this.countCount);
+    clearInterval(this.countTimer);
+    this.pointsCalculated = false;
     this.startCount = false;
     this.step = 1;
     this.changeDetectorRef.detectChanges();
   }
   ngOnDestroy(): void {
-    clearTimeout(this.countTimer)
+    clearTimeout(this.countCount);
+    clearInterval(this.countTimer);
+  }
+  startTimer() {
+    this.countTimer = setInterval(() => {
+      if (this.timeLeftSeconds == 0 && this.timeLeftMinutes > 0) {
+        this.timeLeftMinutes--;
+        this.timeLeftSeconds = 59;
+      } else if (this.timeLeftSeconds != 0 && this.timeLeftMinutes >= 0) {
+        this.timeLeftSeconds--;
+      } else {
+        this.timeLeftMinutes = 0;
+        this.timeLeftSeconds = 0;
+      }
+    }, 1000)
   }
   giveCards() {
     setTimeout(() => {
@@ -233,10 +300,10 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       }
     }
     let i = 0;
-    this.allTessers.forEach(t=>{
-      if(t.textContent!="") i++;
+    this.allTessers.forEach(t => {
+      if (t.textContent != "") i++;
     })
-    if(i==0) this.youWon();
+    if (i == 0) this.youWon();
   }
   checkBackgroundPresent(div: HTMLDivElement): boolean {
     return div.classList.contains('bg-gradient');
@@ -425,8 +492,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       let randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
       if (this.allTessers[currentIndex].textContent != "" && this.allTessers[randomIndex].textContent != "") {
-        let arr:string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',','');
-        this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',','');
+        let arr: string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',', '');
+        this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',', '');
         this.allTessers[randomIndex].textContent = arr;
       }
     }
@@ -442,18 +509,20 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     // this.toastr.error("Hai esaurito il numero massimo di tentativi per mischiare le tessere.");
     // }
     if (this.maximumTry == 10) {
-      this.toastr.warning("Hai utilizzato la metà dei tentativi disponibili per mischiare le tessere.");
+      this.toastr.warning("Ti rimangono 10 tentativi disponibili per mischiare le tessere.");
     } else if (this.maximumTry == 5) {
       this.toastr.warning("Hai solo 5 tentativi disponibili per mischiare le tessere.");
+    }else if (this.maximumTry == 3) {
+      this.toastr.error("Hai solo 3 tentativi disponibili per mischiare le tessere.");
     }
   }
-  youWon(){
+  youWon() {
     this.toastr.success("Congratulazioni! \n Hai vinto!");
     this.gameEnd = true;
     this.victory = true;
   }
-  
-  giveUp(){
+
+  giveUp() {
     this.gameEnd = true;
     this.victory = false;
   }
