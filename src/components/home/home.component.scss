@@ -216,6 +216,7 @@ h1 {
 
 .shaking {
   transition: 1s;
+  width: 100% !important;
 
   &:hover {
     transition: 1s;
@@ -311,6 +312,8 @@ h1 {
 }
 
 .rotation-image {
+  width: 80% !important;
+
   &:hover {
     animation-name: rotation;
     animation-duration: 5s,
@@ -402,8 +405,6 @@ h1 {
   background-image: radial-gradient(rgb(255, 0, 0) 1.3px, transparent 0);
   background-size: 40px 40px;
   background-position: -19px -19px;
-  box-shadow: inset 0 0 250px 100px white;
-  padding: 30px;
 }
 
 .ant {
@@ -424,6 +425,7 @@ h1 {
 
   .ball-container {
     min-height: 1900px;
+    width: 100% !important;
 
     div {
       background-color: rgba(rgb(0, 254, 68), .5);
