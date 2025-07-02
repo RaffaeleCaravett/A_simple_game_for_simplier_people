@@ -458,13 +458,14 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     [...nephews].some((div: HTMLDivElement) => {
       let positiveBottom = div.getBoundingClientRect().bottom > 0 ? div.getBoundingClientRect().bottom : -(div.getBoundingClientRect().bottom);
       let positiveRight = div.getBoundingClientRect().right > 0 ? div.getBoundingClientRect().right : -(div.getBoundingClientRect().right);
+      let positiveLeft = div.getBoundingClientRect().left > 0 ? div.getBoundingClientRect().left : -(div.getBoundingClientRect().left);
 
       let positiveBottomCurrent = currentDiv!.getBoundingClientRect().bottom > 0 ? currentDiv!.getBoundingClientRect().bottom : -(currentDiv!.getBoundingClientRect().bottom);
       let positiveRightCurrent = currentDiv!.getBoundingClientRect().right > 0 ? currentDiv!.getBoundingClientRect().right : -(currentDiv!.getBoundingClientRect().right);
+      let positiveLeftCurrent = currentDiv!.getBoundingClientRect().left > 0 ? currentDiv!.getBoundingClientRect().left : -(currentDiv!.getBoundingClientRect().left);
       let vertical = 0;
       let horizontal = 0;
       let windowHorizontalCenter = window.innerWidth / 2;
-      let windowVerticalCenter = window.innerHeight / 2;
       if (positionInGround == "first" && div.id.includes("second")) {
         if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
         if (positiveRightCurrent > windowHorizontalCenter) {
@@ -486,7 +487,11 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
         if (positiveRightCurrent > windowHorizontalCenter) {
           if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -45.6 : -33.6))) horizontal++;
         } else {
-          if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 45.6 : 33.6))) horizontal++;
+          if (currentDiv?.id == 'third-3' || currentDiv?.id == 'third-15' || currentDiv?.id == 'third-27') {
+            if ((positiveLeft - positiveLeftCurrent < (window.innerWidth > 991.20 ? 45.6 : 33.6))) horizontal++;
+          } else {
+            if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 45.6 : 33.6))) horizontal++;
+          }
         }
         if (horizontal != 0 && vertical != 0) hasDivOnto = true;
       }
