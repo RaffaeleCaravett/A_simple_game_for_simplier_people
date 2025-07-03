@@ -456,49 +456,86 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
 
     let hasDivOnto: boolean = false;
     [...nephews].some((div: HTMLDivElement) => {
-      let positiveBottom = div.getBoundingClientRect().bottom > 0 ? div.getBoundingClientRect().bottom : -(div.getBoundingClientRect().bottom);
-      let positiveRight = div.getBoundingClientRect().right > 0 ? div.getBoundingClientRect().right : -(div.getBoundingClientRect().right);
-      let positiveLeft = div.getBoundingClientRect().left > 0 ? div.getBoundingClientRect().left : -(div.getBoundingClientRect().left);
+      let positiveBottom = undefined;
+      let positiveRight = undefined;
+      let positiveLeft = undefined;
+      let positiveTop = undefined;
+      if (div.textContent != '') {
+        positiveBottom = div.getBoundingClientRect().bottom > 0 ? div.getBoundingClientRect().bottom : -(div.getBoundingClientRect().bottom);
+        positiveRight = div.getBoundingClientRect().right > 0 ? div.getBoundingClientRect().right : -(div.getBoundingClientRect().right);
+        positiveLeft = div.getBoundingClientRect().left > 0 ? div.getBoundingClientRect().left : -(div.getBoundingClientRect().left);
+        positiveTop = div.getBoundingClientRect().top > 0 ? div.getBoundingClientRect().top : -(div.getBoundingClientRect().top);
+
+      }
 
       let positiveBottomCurrent = currentDiv!.getBoundingClientRect().bottom > 0 ? currentDiv!.getBoundingClientRect().bottom : -(currentDiv!.getBoundingClientRect().bottom);
       let positiveRightCurrent = currentDiv!.getBoundingClientRect().right > 0 ? currentDiv!.getBoundingClientRect().right : -(currentDiv!.getBoundingClientRect().right);
       let positiveLeftCurrent = currentDiv!.getBoundingClientRect().left > 0 ? currentDiv!.getBoundingClientRect().left : -(currentDiv!.getBoundingClientRect().left);
+      let positiveTopCurrent = currentDiv!.getBoundingClientRect().top > 0 ? currentDiv!.getBoundingClientRect().top : -(currentDiv!.getBoundingClientRect().top);
       let vertical = 0;
       let horizontal = 0;
       let windowHorizontalCenter = window.innerWidth / 2;
-      if (positionInGround == "first" && div.id.includes("second")) {
-        if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
-        if (positiveRightCurrent > windowHorizontalCenter) {
-          if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -78 : -57.99))) horizontal++;
-        } else {
-          if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 78 : 57.99))) horizontal++;
-        }
-        if (horizontal != 0 && vertical != 0) hasDivOnto = true;
-      } else if (positionInGround == "second" && div.id.includes("third")) {
-        if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
-        if (positiveRightCurrent > windowHorizontalCenter) {
-          if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -58.51 : -43.11))) horizontal++;
-        } else {
-          if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 58.51 : 43.11))) horizontal++;
-        }
-        if (horizontal != 0 && vertical != 0) hasDivOnto = true;
-      } else if (positionInGround == "third" && div.id.includes("fourth")) {
-        if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
-        if (positiveRightCurrent > windowHorizontalCenter) {
-          if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -45.6 : -33.6))) horizontal++;
-        } else {
-          if (currentDiv?.id == 'third-3' || currentDiv?.id == 'third-15' || currentDiv?.id == 'third-27') {
-            if ((positiveLeft - positiveLeftCurrent < (window.innerWidth > 991.20 ? 45.6 : 33.6))) horizontal++;
+      let windowVerticalCenter = window.innerHeight / 2;
+
+      if (div.textContent != "") {
+        if (positionInGround == "first" && div.id.includes("second")) {
+          if (positiveBottom && positiveBottom < positiveTopCurrent) {
+          } else if (positiveTop && positiveTop > positiveBottomCurrent) {
           } else {
-            if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 45.6 : 33.6))) horizontal++;
+            if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
+          }
+          if (positiveRight && positiveRight < positiveLeftCurrent) {
+          } else if (positiveLeft && positiveLeft > positiveRightCurrent) {
+          } else {
+            if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -78 : -57))) {
+              horizontal++;
+            } else {
+              if (positiveRight != undefined && (positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 78 : 57))) horizontal++;
+            }
+          }
+        } else if (positionInGround == "second" && div.id.includes("third")) {
+          if (positiveBottom && positiveBottom < positiveTopCurrent) {
+          } else if (positiveTop && positiveTop > positiveBottomCurrent) {
+          } else {
+            if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
+          }
+          if (positiveRight && positiveRight < positiveLeftCurrent) {
+          } else if (positiveLeft && positiveLeft > positiveRightCurrent) {
+          } else {
+            if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -58.51 : -43))) {
+              horizontal++;
+            } else {
+              if (positiveRight != undefined && (positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 58.51 : 43))) horizontal++;
+            }
+          }
+        } else if (positionInGround == "third" && div.id.includes("fourth")) {
+          if (positiveBottom && positiveBottom < positiveTopCurrent) {
+          } else if (positiveTop && positiveTop > positiveBottomCurrent) {
+          } else {
+            if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
+          }
+          if (positiveRight && positiveRight < positiveLeftCurrent) {
+          } else if (positiveLeft && positiveLeft > positiveRightCurrent) {
+          } else {
+            if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -45.6 : -33))) {
+              horizontal++;
+            } else {
+              if (currentDiv?.id == 'third-3' || currentDiv?.id == 'third-15' || currentDiv?.id == 'third-27') {
+                if (positiveLeft != undefined && (positiveLeft - positiveLeftCurrent < (window.innerWidth > 991.20 ? 45.6 : 33))) horizontal++;
+              } else {
+                if (positiveRight != undefined && (positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 45.6 : 33))) horizontal++;
+              }
+            }
           }
         }
-        if (horizontal != 0 && vertical != 0) hasDivOnto = true;
+      }
+      if (horizontal != 0 && vertical != 0) {
+        hasDivOnto = true;
       }
     }
     );
+
     if (hasDivOnto) {
-      console.log("c'è qualcosa sopra.");
       return false;
     }
     let optionalDivLeft: HTMLDivElement | null = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 1)) as HTMLDivElement;
@@ -565,18 +602,23 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       this.maximumTry--;
       // const onlyTextContentAllTessers: HTMLDivElement[] = [...this.allTessers];
 
-      let currentIndex = this.allTessers.length;
-      while (currentIndex != 0) {
+      // let currentIndex = this.allTessers.length;
+      // while (currentIndex != 0) {
 
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-        if (this.allTessers[currentIndex].textContent != "" && this.allTessers[randomIndex].textContent != "") {
-          let arr: string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',', '');
-          this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',', '');
-          this.allTessers[randomIndex].textContent = arr;
+      //   let randomIndex = Math.floor(Math.random() * currentIndex);
+      //   currentIndex--;
+      //   if (this.allTessers[currentIndex].textContent != "" && this.allTessers[randomIndex].textContent != "") {
+      //     let arr: string = [...this.allTessers[currentIndex].textContent as string].toString().replaceAll(',', '');
+      //     this.allTessers[currentIndex].textContent = [...this.allTessers[randomIndex].textContent as string].toString().replaceAll(',', '');
+      //     this.allTessers[randomIndex].textContent = arr;
+      //   }
+      // }
+      for (let i = this.allTessers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        if (this.allTessers[i].textContent != "" && this.allTessers[j].textContent != "") {
+          [this.allTessers[i].textContent, this.allTessers[j].textContent] = [this.allTessers[j].textContent, this.allTessers[i].textContent];
         }
       }
-
       // for (let t of this.allTessers.filter(t => t.textContent != "")) {
       //   let randomIndex = Math.floor(Math.random() * this.allTessers.filter(t => t.textContent != "").length);
       //   if (randomIndex < 0) randomIndex = 0;
@@ -599,10 +641,28 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.toastr.success("Congratulazioni! \n Hai vinto!");
     this.gameEnd = true;
     this.victory = true;
+    this.firstFloor = [];
+    this.secondFloor = [];
+    this.thirdFloor = [];
+    this.fourthFloor = [];
+    this.allCards = [];
+    this.allTessers = [];
+    this.mixedAllCards = [];
+    clearInterval(this.countTimer);
+    clearTimeout(this.countCount);
   }
 
   giveUp() {
     this.gameEnd = true;
     this.victory = false;
+    this.firstFloor = [];
+    this.secondFloor = [];
+    this.thirdFloor = [];
+    this.fourthFloor = [];
+    this.allCards = [];
+    this.allTessers = [];
+    this.mixedAllCards = [];
+    clearInterval(this.countTimer);
+    clearTimeout(this.countCount);
   }
 }

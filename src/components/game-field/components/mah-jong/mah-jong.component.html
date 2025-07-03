@@ -100,11 +100,8 @@
                 <div class="col-md-12 text-center" *ngIf="!startCount && !gameEnd">
                     <!-- *ngIf="maximumTry!=0 else noTry" -->
                     <div>
-                        <button class="btn btn-outline-danger" (click)="mescolaCarte()">Mescola carte</button>
                         <p class="px-2">{{(timeLeftMinutes>=10?"":0)+""+timeLeftMinutes}} : {{timeLeftSeconds + ""
                             +(timeLeftSeconds==0?0:"")}}</p>
-                        <p class="px-2">(Ancora {{maximumTry}} {{maximumTry==1?'tentativo disponibile.':
-                            'tentativi disponibili.'}})</p>
                     </div>
                     <ng-template #noTry>
                         <p class="text-danger">Hai esaurito i tentativi di mescolare le carte.</p>
@@ -117,6 +114,11 @@
                 </div>
                 <div class="col-md-12 pt-5 position-relative z-1" *ngIf="!startCount && !gameEnd" id="base" #base>
 
+                </div>
+                <div *ngIf="!startCount&&!gameEnd">
+                    <button class="btn btn-outline-danger" (click)="mescolaCarte()">Mescola carte</button>
+                    <p class="px-2">(Ancora {{maximumTry}} {{maximumTry==1?'tentativo disponibile.':
+                        'tentativi disponibili.'}})</p>
                 </div>
                 <div class="col-md-12 pt-5 mt-5" *ngIf="gameEnd">
                     <div *ngIf="victory else lose">
