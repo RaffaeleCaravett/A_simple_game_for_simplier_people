@@ -364,20 +364,21 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     if (this.isDivClicked) {
       let rows = this.checkRows(div);
       let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
+      if (div.textContent == '') return;
+      if (this.selectedCard && this.selectedCard == div) {
+        this.selectedCard = null;
+        div.style.transition = '1s';
+        div.style.borderColor = '';
+        div.style.borderColor = 'black';
+        div.style.scale = '1';
+        if (div.id == selectedDiv.id) {
+          this.isDivClicked = false;
+        }
+        return;
+      }
       let isCardFree: boolean = this.checkIfFree(div, idNumber, rows, event);
       if (isCardFree) {
-        if (div.textContent == '') return;
-        if (this.selectedCard && this.selectedCard == div) {
-          this.selectedCard = null;
-          div.style.transition = '1s';
-          div.style.borderColor = '';
-          div.style.borderColor = 'black';
-          div.style.scale = '1';
-          if (div.id == selectedDiv.id) {
-            this.isDivClicked = false;
-          }
-          return;
-        } else if (this.selectedCard && this.selectedCard != div) {
+        if (this.selectedCard && this.selectedCard != div) {
           if ((div.textContent == this.selectedCard.textContent) && this.checkSameBackground(this.selectedCard, div)) {
             div.textContent = '';
             div.style.transition = '1s';
@@ -484,8 +485,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < positiveLeftCurrent) {
-          } else if (positiveLeft && positiveLeft > positiveRightCurrent) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
+          } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -78 : -57))) {
               horizontal++;
@@ -499,8 +500,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < positiveLeftCurrent) {
-          } else if (positiveLeft && positiveLeft > positiveRightCurrent) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
+          } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -58.51 : -43))) {
               horizontal++;
@@ -514,8 +515,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < positiveLeftCurrent) {
-          } else if (positiveLeft && positiveLeft > positiveRightCurrent) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
+          } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -45.6 : -33))) {
               horizontal++;
