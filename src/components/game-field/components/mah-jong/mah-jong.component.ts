@@ -86,7 +86,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.pointsCalculated = false;
     this.step = 2;
     this.startCount = true;
-        switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
+    switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
       case (1): {
         this.initialMaximumTry = 35;
         this.maximumTry = 35;
@@ -321,8 +321,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       colors.push('bg-info', 'bg-secondary');
     } else if (this.difficoltaPartitaForm.controls['difficolta'].value == 2) {
       colors.push('bg-info');
-    } else {
-      console.log("");
     }
     firstCard.classList.add('bg-gradient');
     secondCard.classList.add('bg-gradient');
@@ -340,8 +338,6 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       colors.push('bg-info', 'bg-secondary');
     } else if (this.difficoltaPartitaForm.controls['difficolta'].value == 2) {
       colors.push('bg-info');
-    } else {
-      console.log("");
     }
     firstCard.classList.remove('bg-gradient');
     secondCard.classList.remove('bg-gradient');
@@ -368,7 +364,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     if (this.isDivClicked) {
       let rows = this.checkRows(div);
       let idNumber = Number(div?.id.substring(div?.id?.lastIndexOf('-') + 1));
-      let isCardFree: boolean = this.checkIfFree(div, idNumber, rows);
+      let isCardFree: boolean = this.checkIfFree(div, idNumber, rows, event);
       if (isCardFree) {
         if (div.textContent == '') return;
         if (this.selectedCard && this.selectedCard == div) {
@@ -445,7 +441,61 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     else return 0;
   }
 
-  checkIfFree(div: HTMLDivElement, idNumber: number, rows: number): boolean {
+  checkIfFree(div: HTMLDivElement, idNumber: number, rows: number, event: any): boolean {
+
+    let currentDiv = document.getElementById(div.id);
+    let base = document.getElementById("base");
+    let childrenBase: HTMLCollectionOf<HTMLDivElement> = base?.children as HTMLCollectionOf<HTMLDivElement>;
+    let nephews: any[] = [];
+    for (let i = 0; i <= childrenBase.length - 1; i++) {
+      for (let a = 0; a <= childrenBase[i].children.length - 1; a++) {
+        nephews.push(childrenBase[i].children[a])
+      }
+    }
+    let positionInGround = currentDiv?.id.substring(0, currentDiv.id.lastIndexOf("-"));
+
+    let hasDivOnto: boolean = false;
+    [...nephews].some((div: HTMLDivElement) => {
+      let positiveBottom = div.getBoundingClientRect().bottom > 0 ? div.getBoundingClientRect().bottom : -(div.getBoundingClientRect().bottom);
+      let positiveRight = div.getBoundingClientRect().right > 0 ? div.getBoundingClientRect().right : -(div.getBoundingClientRect().right);
+
+      let positiveBottomCurrent = currentDiv!.getBoundingClientRect().bottom > 0 ? currentDiv!.getBoundingClientRect().bottom : -(currentDiv!.getBoundingClientRect().bottom);
+      let positiveRightCurrent = currentDiv!.getBoundingClientRect().right > 0 ? currentDiv!.getBoundingClientRect().right : -(currentDiv!.getBoundingClientRect().right);
+      let vertical = 0;
+      let horizontal = 0;
+      let windowHorizontalCenter = window.innerWidth / 2;
+      let windowVerticalCenter = window.innerHeight / 2;
+      if (positionInGround == "first" && div.id.includes("second")) {
+        if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
+        if (positiveRightCurrent > windowHorizontalCenter) {
+          if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -78 : -57.99))) horizontal++;
+        } else {
+          if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 78 : 57.99))) horizontal++;
+        }
+        if (horizontal != 0 && vertical != 0) hasDivOnto = true;
+      } else if (positionInGround == "second" && div.id.includes("third")) {
+        if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
+        if (positiveRightCurrent > windowHorizontalCenter) {
+          if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -58.51 : -43.11))) horizontal++;
+        } else {
+          if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 58.51 : 43.11))) horizontal++;
+        }
+        if (horizontal != 0 && vertical != 0) hasDivOnto = true;
+      } else if (positionInGround == "third" && div.id.includes("fourth")) {
+        if ((positiveBottom - positiveBottomCurrent) < 48) vertical++;
+        if (positiveRightCurrent > windowHorizontalCenter) {
+          if ((positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -45.6 : -33.6))) horizontal++;
+        } else {
+          if ((positiveRight - positiveRightCurrent < (window.innerWidth > 991.20 ? 45.6 : 33.6))) horizontal++;
+        }
+        if (horizontal != 0 && vertical != 0) hasDivOnto = true;
+      }
+    }
+    );
+    if (hasDivOnto) {
+      console.log("c'è qualcosa sopra.");
+      return false;
+    }
     let optionalDivLeft: HTMLDivElement | null = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber - 1)) as HTMLDivElement;
     let optionalDivRight: HTMLDivElement | null = document.getElementById(div.id.substring(0, div.id.lastIndexOf('-')) + '-' + (idNumber + 1)) as HTMLDivElement;
     let optionalDivUp: HTMLDivElement | null = null;
@@ -478,6 +528,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       else if ((idNumber == 2 || idNumber == 3 || idNumber == 5 || idNumber == 6) && document.getElementById('fifth-2')?.textContent != '') return false;
 
     }
+
     let free: number = 0;
     if (null == optionalDivDown || optionalDivDown?.textContent == '') free += 1;
     if (null == optionalDivLeft || optionalDivLeft?.textContent == '') free += 1;
