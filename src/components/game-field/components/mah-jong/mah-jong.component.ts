@@ -86,6 +86,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.pointsCalculated = false;
     this.step = 2;
     this.startCount = true;
+    this.firstFloor = [];
+    this.secondFloor = [];
+    this.thirdFloor = [];
+    this.fourthFloor = [];
+    this.allCards = [];
+    this.allTessers = [];
+    this.mixedAllCards = [];
+    clearInterval(this.countTimer);
+    clearTimeout(this.countCount);
     switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
       case (1): {
         this.initialMaximumTry = 35;
@@ -485,7 +494,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 1.9 : positiveLeftCurrent)) {
           } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -78 : -57))) {
@@ -500,7 +509,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 1.9 : positiveLeftCurrent)) {
           } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -58.51 : -43))) {
@@ -515,7 +524,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 1.9 : positiveLeftCurrent)) {
           } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -45.6 : -33))) {
