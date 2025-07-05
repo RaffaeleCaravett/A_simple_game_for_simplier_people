@@ -42,6 +42,8 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   initialTimeLeft: number = 0;
   punti: number = 0;
   pointsCalculated: boolean = false;
+  partiteGiocate: number = 0;
+  selectedPartita: number = 0;
   constructor(private gameFieldService: GamefieldService, private authService: AuthService, private changeDetectorRef: ChangeDetectorRef, private toastr: ToastrService) { }
 
   ngOnInit(): void {
@@ -49,8 +51,15 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.timeLeftSeconds = 0;
     this.getGioco();
     this.initializeForms();
+    this.getPartite();
   }
-
+  getPartite() {
+    this.gameFieldService.getPartitaByUserAndGioco(this.user!.id, this.game).subscribe({
+      next: (partite: any) => {
+        this.partiteGiocate = partite?.totalElements;
+      }
+    })
+  }
   initializeForms() {
     this.difficoltaPartitaForm = new FormGroup({
       difficolta: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(3)])
@@ -68,7 +77,27 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     if (this.pointsCalculated) return this.punti;
     else {
       this.pointsCalculated = true
-      this.punti = 1;
+      if (this.maximumTry < 2 && this.maximumTry > 0) {
+        this.punti += 1;
+      } else if (this.maximumTry > 2) {
+        this.punti += Math.floor(this.maximumTry / 2.5);
+      }
+
+      if (this.maximumTry < 3) {
+        this.punti += 1;
+      } else if (this.maximumTry < 5) {
+        this.punti += 2;
+      } else if (this.maximumTry < 10) {
+        this.punti += 4;
+      } else if (this.maximumTry < 15) {
+        this.punti += 6;
+      } else if (this.maximumTry < 20) {
+        this.punti += 8;
+      } else {
+        this.punti += 6;
+      }
+
+      this.punti += this.timeLeftMinutes;
       return this.punti;
     }
   }
@@ -80,6 +109,20 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     this.difficoltaPartitaForm.updateValueAndValidity();
   }
   letsPlay() {
+    let partite: any[] = [];
+    let partita = {
+      punteggio: 0,
+      userId: this.user!.id,
+      giocoId: this.gioco.id,
+      esito: "PERSA"
+    }
+    partite.push(partita);
+    this.gameFieldService.postPartite(partite).subscribe({
+      next: (value: any) => {
+        this.selectedPartita = value.id;
+        this.partiteGiocate++;
+      }
+    });
     this.gameEnd = false;
     this.victory = false;
     this.punti = 0;
@@ -648,6 +691,18 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     }
   }
   youWon() {
+    let partita = {
+      punteggio: this.calculatePoints(),
+      userId: this.user!.id,
+      giocoId: this.gioco.id,
+      esito: "VINTA"
+    }
+
+    this.gameFieldService.putPartita(this.selectedPartita, partita).subscribe({
+      next: (partita: any) => {
+        this.partiteGiocate++;
+      }
+    })
     this.toastr.success("Congratulazioni! \n Hai vinto!");
     this.gameEnd = true;
     this.victory = true;
@@ -663,6 +718,21 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
   }
 
   giveUp() {
+    let partite: any[] = [];
+    let partita = {
+      punteggio: this.calculatePoints(),
+      userId: this.user!.id,
+      giocoId: this.gioco.id,
+      esito: "PERSA"
+    }
+    partite.push(partita);
+    if (!this.selectedPartita) {
+      this.gameFieldService.postPartite(partite).subscribe({
+        next: (value: any) => {
+          this.partiteGiocate++;
+        }
+      });
+    }
     this.gameEnd = true;
     this.victory = false;
     this.firstFloor = [];
