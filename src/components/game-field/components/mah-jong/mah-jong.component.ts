@@ -140,33 +140,38 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     clearTimeout(this.countCount);
     switch (this.difficoltaPartitaForm.controls['difficolta'].value) {
       case (1): {
-        this.initialMaximumTry = 35;
-        this.maximumTry = 35;
-        this.timeLeftMinutes = 10;
+        this.initialMaximumTry = 50;
+        this.maximumTry = 50;
+        this.timeLeftMinutes = 15;
+        this.initialTimeLeft = 15;
       }
         break;
       case (2): {
-        this.initialMaximumTry = 30;
-        this.maximumTry = 30;
-        this.timeLeftMinutes = 9;
+        this.initialMaximumTry = 45;
+        this.maximumTry = 45;
+        this.timeLeftMinutes = 14;
+        this.initialTimeLeft = 14;
       }
         break;
       case (3): {
-        this.initialMaximumTry = 25;
-        this.maximumTry = 25;
-        this.timeLeftMinutes = 7;
+        this.initialMaximumTry = 40;
+        this.maximumTry = 40;
+        this.timeLeftMinutes = 13;
+        this.initialTimeLeft = 13;
       }
         break;
       case (4): {
-        this.initialMaximumTry = 20;
-        this.maximumTry = 20;
-        this.timeLeftMinutes = 5;
+        this.initialMaximumTry = 35;
+        this.maximumTry = 35;
+        this.timeLeftMinutes = 12;
+        this.initialTimeLeft = 12;
       }
         break;
       default: {
-        this.initialMaximumTry = 35;
-        this.maximumTry = 35;
-        this.timeLeftMinutes = 10;
+        this.initialMaximumTry = 50;
+        this.maximumTry = 50;
+        this.timeLeftMinutes = 15;
+        this.initialTimeLeft = 15;
       }
         break;
     }
@@ -285,7 +290,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
       div.classList.add('align-items-middle');
       div.classList.add('justify-content-center');
       div.classList.add('tessera');
-      div.classList.add('shadow-lg');
+      div.classList.add('personal-box-shadow');
       div.classList.add(col ? `col-${col}` : 'col-1');
       // div.classList.add(floorNumber == 'first' ? 'z-0' : floorNumber == 'second' ? 'z-1' : floorNumber == 'third' ? 'z-2' : floorNumber == 'fourth' ? 'z-3' :
       // floorNumber == 'fifth' ? 'z-4' : 'z-0');
@@ -438,14 +443,14 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
             div.style.border = 'none';
             div.style.opacity = '0';
             div.style.height = '48px';
-            div?.classList.remove('shadow-sm');
+            div?.classList.remove('personal-box-shadow');
             document.getElementById(this.selectedCard?.id)!.textContent = '';
             document.getElementById(this.selectedCard?.id)!.style.transition = '1s';
             document.getElementById(this.selectedCard?.id)!.style.display = '';
             document.getElementById(this.selectedCard?.id)!.style.border = 'none';
             document.getElementById(this.selectedCard?.id)!.style.opacity = '0';
             document.getElementById(this.selectedCard?.id)!.style.height = '48px';
-            document.getElementById(this.selectedCard?.id)?.classList.remove('shadow-sm');
+            document.getElementById(this.selectedCard?.id)?.classList.remove('personal-box-shadow');
             this.removeBackgroundColor(div, document.getElementById(this.selectedCard?.id) as HTMLDivElement);
             this.selectedCard = null
             if (div.id == selectedDiv.id) {
@@ -552,7 +557,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
           } else {
             if (positiveBottom != undefined && (positiveBottom - positiveBottomCurrent) < 48) vertical++;
           }
-          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 1.9 : positiveLeftCurrent)) {
+          if (positiveRight && positiveRight < (positiveLeftCurrent < windowHorizontalCenter ? positiveLeftCurrent - 2 : positiveLeftCurrent)) {
           } else if (positiveLeft && positiveLeft > (positiveRightCurrent > windowHorizontalCenter ? positiveRightCurrent : positiveRightCurrent - 2)) {
           } else {
             if (positiveRight != undefined && (positiveRight - positiveRightCurrent > (window.innerWidth > 991.20 ? -58.51 : -43))) {

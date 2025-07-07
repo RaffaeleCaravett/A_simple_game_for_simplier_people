@@ -22,6 +22,10 @@ export class GamefieldService {
     return this.http.post(environment.API_URL + this.partita, partita)
   }
 
+  putPartita(partitaId: number, partita: {}) {
+    return this.http.put(environment.API_URL + this.partita + '/' + partitaId, partita)
+  }
+
   getPartitaByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
     return this.http.get(environment.API_URL + this.partita + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`)
   }
@@ -51,7 +55,7 @@ export class GamefieldService {
   getGiochiByUser(userId: number) {
     return this.http.get(environment.API_URL + this.byGioco + this.byUser + `Id`)
   }
-  getGiocoById(giocoId:number){
-    return this.http.get(environment.API_URL+this.byGioco+'/'+giocoId)
+  getGiocoById(giocoId: number) {
+    return this.http.get(environment.API_URL + this.byGioco + '/' + giocoId)
   }
 }

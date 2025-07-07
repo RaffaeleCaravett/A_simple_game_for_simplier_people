@@ -92,6 +92,8 @@
                 <div class="col-md-12 text-start">
                     <button class="btn btn-warning" (click)="indietro()">Indietro</button>
                 </div>
+                <div class="col-md-12 text-start">Hai giocato {{ partiteGiocate + ' ' + (partiteGiocate==1?' partita ':'
+                    partite '+ ' a questo gioco.' )}} </div>
                 <div class="col-md-12 pt-5 position-relative" *ngIf="startCount">
                     <h1 class="one">1</h1>
                     <h1 class="two">2</h1>
@@ -124,17 +126,23 @@
                     <div *ngIf="victory else lose">
                         <h2 class="text-success">Complimenti!</h2>
                         <p>Hai terminato la partita. Ecco un po ' le tue statistiche :</p>
-                        <ol>
+                        <ol class="w-75 -mauto">
                             <li>Tentativi di mix rimasti : {{maximumTry}} su {{initialMaximumTry}}. </li>
-                            <li>Tempo rimsto : {{timeLeftMinutes!=0? (timeLeftMinutes+ ":"+timeLeftSeconds + ' minuti')
+                            <li>Tempo rimasto : {{timeLeftMinutes!=0? (timeLeftMinutes+ ":"+timeLeftSeconds + ' minuti')
                                 : timeLeftSeconds + ' secondi'}} su {{initialTimeLeft}} minuti</li>
                             <li>Hai totalizzato : {{calculatePoints() + punti == 1? 'punto' : 'punti'}} </li>
                         </ol>
                     </div>
                     <ng-template #lose>
                         <h2 class="text-danger">Oh no!</h2>
-                        <p>La partita è finita! Hai perso ...</p>
-                        <button class="btn btn-outline-secondary" (click)="letsPlay()">Gioca di nuovo!</button>
+                        <p>La partita è finita! Hai perso .... Ecco un po ' le tue statistiche :</p>
+                        <ol class="w-75 -mauto">
+                            <li>Tentativi di mix rimasti : {{maximumTry}} su {{initialMaximumTry}}. </li>
+                            <li>Tempo rimasto : {{timeLeftMinutes!=0? (timeLeftMinutes+ ":"+timeLeftSeconds + ' minuti')
+                                : timeLeftSeconds + ' secondi'}} su {{initialTimeLeft}} minuti</li>
+                            <li>Hai totalizzato : 0 punti. </li>
+                        </ol>
+                        <button class="btn btn-outline-secondary mb-2" (click)="letsPlay()">Gioca di nuovo!</button>
                         <hr class="w-50 m-auto">
                         <p>oppure</p>
                         <button class="btn btn-outline-secondary" (click)="indietro()">Cambia difficoltà!</button>
