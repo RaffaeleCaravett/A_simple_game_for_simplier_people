@@ -1,5 +1,5 @@
 <div class="py-5 w-100 m-auto" [ngClass]="mode=='light'?'bg-white':'bg-personal'">
-    <div class="container p-5 text-center">
+    <div class="container py-5 text-center">
         <div class="row">
             <div class="col-md-12">
                 <h1 class="mt-5"><span class="text-danger">W</span>elcome {{user?.nome}} 👋</h1>
@@ -48,7 +48,8 @@
             </div>
             <div class="col-md-12 pt-5 mt-5 px-3 text-start">
                 <div class="row">
-                    <div class="col-md-12 scrollable-container d-flex" [ngClass]="mode=='light'?'bg-light':'bg-secondary'">
+                    <div class="col-md-12 scrollable-container d-flex" *ngIf="innerWidth>575.20 else shortMenu"
+                        [ngClass]="mode=='light'?'bg-light':'bg-secondary'">
                         <div class="p-2 lobby-nav-button text-center" [ngClass]="location=='giochi'? 'bg-warning':''">
                             <button class="btn" (click)="changeLocation('giochi')">
                                 Giochi disponibili
@@ -60,7 +61,7 @@
                             <button class="btn" (click)="changeLocation('classifiche')">
                                 Classifiche
                             </button>
-                        </div>                    
+                        </div>
                         <img src="assets/lobby/green-dots.png" alt="green_dot" class="green-dots">
                         <div class="p-2 lobby-nav-button text-center"
                             [ngClass]="location=='statistiche'? 'bg-warning':''">
@@ -82,9 +83,34 @@
                             </button>
                         </div>
                     </div>
+                    <ng-template #shortMenu class="text-start">
+                        <button class="btn btn-success m-1 w-25" [matMenuTriggerFor]="appMenu" #p>Open menù</button>
+                        <mat-menu #appMenu="matMenu" class="overflow-hidden">
+                            <ng-template matMenuContent>
+                                <button class="btn" mat-menu-item (click)="changeLocation('giochi')">
+                                    Giochi disponibili
+                                </button>
+                                <button class="btn" mat-menu-item (click)="changeLocation('classifiche')">
+                                    Classifiche
+                                </button>
+                                <button class="btn" mat-menu-item (click)="changeLocation('statistiche')">
+                                    Statistiche
+                                </button>
+                                <button class="btn" mat-menu-item (click)="changeLocation('about-us')">
+                                    About us
+                                </button>
+                                <button class="btn" mat-menu-item (click)="changeLocation('assistenza')">
+                                    Assistenza
+                                </button>
+                            </ng-template>
+                        </mat-menu>
+                    </ng-template>
                     <div class="col-md-12 p-2">
-                        <div class="w-100 border shadow-sm p-3 overflow-auto" [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'" *ngIf="!isLoading">
-                            <app-giochi *ngIf="location=='giochi'" [user]="user" (canSwitchLocation)="onReceiveSwitchLocation($event)" [mode]="mode"></app-giochi>
+                        <div class="w-100 border shadow-sm overflow-auto"
+                            [ngClass]="[mode=='light'?'bg-light':'bg-secondary text-light', innerWidth>575.20?'p-3' : 'p-1']"
+                            *ngIf="!isLoading">
+                            <app-giochi *ngIf="location=='giochi'" [user]="user" [innerWidth]="innerWidth"
+                                (canSwitchLocation)="onReceiveSwitchLocation($event)" [mode]="mode"></app-giochi>
                             <app-classifiche *ngIf="location=='classifiche'" [mode]="mode"
                                 [classificaId]="classificaId"></app-classifiche>
                             <app-statistiche *ngIf="location=='statistiche'" [mode]="mode"></app-statistiche>

@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './giochi.component.scss'
 })
 export class GiochiComponent implements OnInit, OnDestroy {
+  @Input() innerWidth: number = 0;
   giochi: any[] = [];
   circles: number[] = [1, 2, 3, 4, 5];
   searchGiocoForm: FormGroup = new FormGroup({});

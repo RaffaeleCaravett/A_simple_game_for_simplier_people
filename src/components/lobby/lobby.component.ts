@@ -19,6 +19,7 @@ export class LobbyComponent implements OnInit, OnChanges {
   classificaId: number = 0;
   isLoading: boolean = false;
   canSwitchLocation: boolean = true;
+  innerWidth: number = 0;
   constructor(private authService: AuthService, private modeService: ModeService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.user = this.authService.getUser()
     this.modeService.mode.subscribe((data: string) => {
@@ -29,6 +30,7 @@ export class LobbyComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     localStorage.setItem('location', 'lobby')
     this.isLoading = true;
     setTimeout(() => {
@@ -48,7 +50,7 @@ export class LobbyComponent implements OnInit, OnChanges {
   }
   changeLocation(location: string) {
     if (location != this.location) {
-      if (!this.isLoading&&this.canSwitchLocation) {
+      if (!this.isLoading && this.canSwitchLocation) {
         this.isLoading = true;
         setTimeout(() => {
           this.isLoading = false;
@@ -62,7 +64,11 @@ export class LobbyComponent implements OnInit, OnChanges {
     this.isLoading = false;
   }
 
-  onReceiveSwitchLocation(boolean: any){
+  onReceiveSwitchLocation(boolean: any) {
     this.canSwitchLocation = boolean
+  }
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.innerWidth = window.innerWidth;
   }
 }

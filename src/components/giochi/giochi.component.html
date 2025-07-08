@@ -92,8 +92,9 @@
                     <h2 class="text-dark">{{g.nomeGioco}}</h2>
                 </div>
                 <div class="border overflow-auto text-dark">
-                    <p class="bg-light border-bottom p-1 fs-4">Recensioni ({{g?.totalRecensioniNumber}}) : </p>
-                    <div *ngFor="let r of g?.recensione, index as i" class="p-2">
+                    <p class="bg-light border-bottom p-1 fs-4" *ngIf="innerWidth>575.20">Recensioni ({{g?.totalRecensioniNumber}}) : </p>
+                    <div *ngIf="innerWidth>575.20">
+<div *ngFor="let r of g?.recensione, index as i" class="p-2">
                         <div *ngIf="i<=1" [ngClass]="i==1||g?.recensione?.length==1?'':'border-bottom'">
                             <div class="d-flex">
                                 <i class="bi bi-star-fill text-warning" *ngFor="let vp of validationPoints, index as i"
@@ -111,6 +112,7 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                     <div *ngIf="g?.recensione==null || g?.recensione?.length==0" class="p-4">
                         Non ci sono recensioni
                     </div>
@@ -120,7 +122,7 @@
                     </div>
                 </div>
                 <div class="border my-2 text-dark">
-                    <p class="bg-light border-bottom p-2 fs-4">Livello di difficoltà : {{g.difficolta
+                    <p class="bg-light border-bottom p-2 fs-4" *ngIf="innerWidth>575.20">Livello di difficoltà : {{g.difficolta
                         <=2?'FACILE':g.difficolta>2&&g.difficolta
                             <=4?'MEDIO':'DIFFICILE'}} </p>
                                 <div class="d-flex justify-content-around">

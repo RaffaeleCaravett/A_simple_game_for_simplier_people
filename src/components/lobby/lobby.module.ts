@@ -16,6 +16,7 @@ import { MatDialogModule } from "@angular/material/dialog"
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from "@angular/router";
 import { SharedModule } from "../../shared/modules/shared.module";
+import { MatMenuModule } from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { SharedModule } from "../../shared/modules/shared.module";
     MatDialogModule,
     MatIconModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    MatMenuModule
   ],
   exports: [
     GiochiComponent,
