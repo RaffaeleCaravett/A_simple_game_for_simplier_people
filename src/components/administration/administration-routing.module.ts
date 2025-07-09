@@ -6,9 +6,8 @@ import { AdministrationComponent } from "./administration.component";
 export const routes: Routes = [
     {
         path: '',
-        component: AdministrationComponent,
-        canActivate: [AuthGuard]
-    }
+        component: AdministrationComponent
+        }
 ];
 @NgModule({
     imports: [RouterModule.forChild(routes)],

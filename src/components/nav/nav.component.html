@@ -24,7 +24,7 @@
             <ng-template #logOut>
                 <div class="col-md-4" *ngIf="isAuthenticatedUser">
                     <div class="d-flex flex-column justify-content-center align-items-center"
-                        *ngIf="(null&&undefined)!=user">
+                        *ngIf="null!=user&&undefined!=user">
                         <div class="w-auto d-flex flex-column justify-content-center align-items-center"
                             *ngIf="!isLoadingLogoutOrRoute else isLoading">
                             <div class="rounded-circle shadow to-point profile-pic m-auto mat-trigger"
@@ -43,6 +43,8 @@
                                 (click)="goToRoute('lobby/profile')">🪪 Profile</button>
                             <button mat-menu-item class="btn fs-4 text-dark"
                                 (click)="goToRoute('lobby/preferiti')">💌 Preferiti</button>
+                                <button mat-menu-item class="btn fs-4 text-dark"
+                                (click)="goToRoute('amministrazione')" *ngIf="user?.email=='raffaelecaravetta13@gmail.com'">💌 Amministrazione</button>
                             <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
                                 [routerLink]="'/home'">➡️ Logout</button>
                         </div>

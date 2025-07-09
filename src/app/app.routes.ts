@@ -26,6 +26,11 @@ export const routes: Routes = [
          canActivate:[AuthGuard]
     },
     {
+        path:'amministrazione',
+        loadChildren: () => import('../components/administration/administration.module').then(m => m.AdministrationModule),
+         canActivate:[AuthGuard]
+    },
+    {
         path:'game-field',
         component:GameFieldComponent, canActivate:[AuthGuard]
     },
