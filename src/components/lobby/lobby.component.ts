@@ -2,7 +2,7 @@ import { Component, HostListener, OnChanges, OnInit, SimpleChanges } from '@angu
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../interfaces/interfaces';
 import { ModeService } from '../../services/mode.service';
-import { ActivatedRoute, NavigationExtras, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-lobby',
