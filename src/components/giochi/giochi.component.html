@@ -1,5 +1,6 @@
 <div class="row">
-    <div class="col-md-4 text-center overflow-auto" [ngClass]="windowWidth<768?'d-none':'d-block'">
+    <div class="col-md-4 text-center overflow-auto" *ngIf="innerWidth>767.20 else upperFiltersForms"
+        [ngClass]="windowWidth<768?'d-none':'d-block'">
         <h2>Ricerca fra i giochi <span class="fs-4">🎲</span></h2>
         <form [formGroup]="searchGiocoForm" class="text-center">
             <label for="nomeGioco" class="py-1">Nome completo o in parte</label>
@@ -79,39 +80,137 @@
             <button type="button" class="btn btn-success mt-3" (click)="searchGiochi('fromForm')">Ricerca</button>
         </form>
     </div>
-    <div class="col-md-8 border border-top-0 border-end-0 border-bottom-0 border-dark p-1 overflow-auto" 
-        id="scroller-pagination" (scroll)="onScroll($event)">
+    <ng-template #upperFiltersForms>
+        <div class="col-md-12">
+            <h2>Ricerca fra i giochi <span class="fs-4">🎲</span></h2>
+            <form [formGroup]="searchGiocoForm" class="text-center row">
+                <div class="col-6">
+                    <label for="nomeGioco" class="py-1">Nome</label>
+                    <input type="text" class="form-control" name="nomeGioco" formControlName="nomeGioco">
+                </div>
+                <div class="col-6">
+                    <label for="size" class="py-1">Giochi da caricare</label>
+                    <select class="form-select" name="size" formControlName="size">
+                        <option value=""></option>
+                        <option value="{{s}}" *ngFor="let s of sizes">{{s}}</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="difficolta" class="py-1">Difficoltà da</label>
+                    <select class="form-select" name="difficolta" formControlName="difficolta">
+                        <option value=""></option>
+                        <option value="{{d}}" *ngFor="let d of difficulties">{{d}}</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="punteggio" class="py-1">Punteggio da</label>
+                    <select class="form-select" name="punteggio" formControlName="punteggioRecensioniDa">
+                        <option [value]=""></option>
+                        <option value="{{p}}" *ngFor="let p of points">{{p}}</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-md-12 p-1">
+                            <label for="sortOrder">Direzione </label>
+                        </div>
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="sortOrder" formControlName="sortOrder"
+                                value="ASC" checked id="crescente">
+                            <label class="form-check-label" for="crescente">
+                                Crescente
+                            </label>
+                        </div>
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="sortOrder" formControlName="sortOrder"
+                                value="DESC" id="decrescente">
+                            <label class="form-check-label" for="decrescente">
+                                Decrescente
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label class="py-1">Ordina per </label>
+                    <div class="row text-start">
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="orderBy" formControlName="orderBy"
+                                id="id" value="id" checked>
+                            <label class="form-check-label" for="id">
+                                Id
+                            </label>
+                        </div>
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="orderBy" formControlName="orderBy"
+                                value="nomeGioco" id="nomeGioco">
+                            <label class="form-check-label" for="nomeGioco">
+                                Nome gioco
+                            </label>
+                        </div>
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="orderBy" formControlName="orderBy"
+                                value="difficolta" id="difficolta">
+                            <label class="form-check-label" for="difficolta">
+                                Difficoltà
+                            </label>
+                        </div>
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="orderBy" formControlName="orderBy"
+                                value="createdAt" id="dataCreazione">
+                            <label class="form-check-label" for="dataCreazione">
+                                Data creazione
+                            </label>
+                        </div>
+                        <div class="col-md-6 p-1">
+                            <input class="form-check-input" type="radio" name="orderBy" formControlName="orderBy"
+                                value="recensione" id="recensioni">
+                            <label class="form-check-label" for="recensioni">
+                                Recensioni
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success mt-3 w-75 m-auto" (click)="searchGiochi('fromForm')">Ricerca</button>
+            </form>
+        </div>
+    </ng-template>
+    <div class="col-md-8 border border-top-0 border-end-0 border-bottom-0 border-dark p-1 overflow-auto"
+        [ngClass]="innerWidth>767.20?'':'border-start-0'" id="scroller-pagination" (scroll)="onScroll($event)">
         <div class="m-auto p-3" [ngClass]="windowWidth<500?'w-100':'w-75'" *ngFor="let g of giochi, index as i">
             <div class="p-3 game-card bg-white" *ngIf="!isLoading">
                 <div class="w-100 text-center position-relative">
-                    <i class="bi bi-heart position-absolute end-0 top-0 m-1 h4" *ngIf="!isPreferred(g)" (click)="addToFavourites(g)"></i>
-                    <i class="bi bi-heart-fill position-absolute end-0 top-0 m-1 h4 text-danger" *ngIf="isPreferred(g)" (click)="removeFromFavourites(g)"></i>
+                    <i class="bi bi-heart position-absolute end-0 top-0 m-1 h4" *ngIf="!isPreferred(g)"
+                        (click)="addToFavourites(g)"></i>
+                    <i class="bi bi-heart-fill position-absolute end-0 top-0 m-1 h4 text-danger" *ngIf="isPreferred(g)"
+                        (click)="removeFromFavourites(g)"></i>
                     <img src="{{g?.image}}" class="w-50 m-auto" alt="gioco_image">
                 </div>
                 <div class="text-center py-2 mb-2">
                     <h2 class="text-dark">{{g.nomeGioco}}</h2>
                 </div>
                 <div class="border overflow-auto text-dark">
-                    <p class="bg-light border-bottom p-1 fs-4" *ngIf="innerWidth>575.20">Recensioni ({{g?.totalRecensioniNumber}}) : </p>
+                    <p class="bg-light border-bottom p-1 fs-4" *ngIf="innerWidth>575.20">Recensioni
+                        ({{g?.totalRecensioniNumber}}) : </p>
                     <div *ngIf="innerWidth>575.20">
-<div *ngFor="let r of g?.recensione, index as i" class="p-2">
-                        <div *ngIf="i<=1" [ngClass]="i==1||g?.recensione?.length==1?'':'border-bottom'">
-                            <div class="d-flex">
-                                <i class="bi bi-star-fill text-warning" *ngFor="let vp of validationPoints, index as i"
-                                    [ngClass]="i+1<=r?.punteggio?'textg-warning':'d-none'"></i>
-                            </div>
-                            <div>
-                                <p>
-                                    <button class="btn" (click)="goToProfile(r?.user)">
-                                        {{r?.user?.fullName}} - {{r?.createdAt}}
-                                    </button>
-                                </p>
-                                <p>
-                                    {{r?.commentoPreview}}
-                                </p>
+                        <div *ngFor="let r of g?.recensione, index as i" class="p-2">
+                            <div *ngIf="i<=1" [ngClass]="i==1||g?.recensione?.length==1?'':'border-bottom'">
+                                <div class="d-flex">
+                                    <i class="bi bi-star-fill text-warning"
+                                        *ngFor="let vp of validationPoints, index as i"
+                                        [ngClass]="i+1<=r?.punteggio?'textg-warning':'d-none'"></i>
+                                </div>
+                                <div>
+                                    <p>
+                                        <button class="btn" (click)="goToProfile(r?.user)">
+                                            {{r?.user?.fullName}} - {{r?.createdAt}}
+                                        </button>
+                                    </p>
+                                    <p>
+                                        {{r?.commentoPreview}}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                     <div *ngIf="g?.recensione==null || g?.recensione?.length==0" class="p-4">
                         Non ci sono recensioni
@@ -122,7 +221,8 @@
                     </div>
                 </div>
                 <div class="border my-2 text-dark">
-                    <p class="bg-light border-bottom p-2 fs-4" *ngIf="innerWidth>575.20">Livello di difficoltà : {{g.difficolta
+                    <p class="bg-light border-bottom p-2 fs-4" *ngIf="innerWidth>575.20">Livello di difficoltà :
+                        {{g.difficolta
                         <=2?'FACILE':g.difficolta>2&&g.difficolta
                             <=4?'MEDIO':'DIFFICILE'}} </p>
                                 <div class="d-flex justify-content-around">

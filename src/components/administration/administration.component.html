@@ -1,1 +1,11 @@
-<p>administration works!</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 *ngIf="innerWidth>767.20">Benvenuto {{user?.fullName}}</h1>
+            <h2 *ngIf="innerWidth<767.20">Benvenuto {{user?.fullName}}</h2>
+        </div>
+        <div class="col-md-12 text-start">
+            <form [formGroup]="actionForm"></form>
+        </div>
+    </div>
+</div>

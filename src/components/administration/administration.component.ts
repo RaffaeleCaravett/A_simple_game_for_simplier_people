@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../interfaces/interfaces';
 import { AuthService } from '../../services/auth.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-administration',
@@ -10,9 +12,12 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AdministrationComponent implements OnInit {
   user: User | null = null;
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthService) { }
+  actionForm: FormGroup = new FormGroup({});
+  innerWidth: number = 0;
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     let userId: any = null;
     if (this.activatedRoute?.snapshot?.queryParams['user']) {
       userId = JSON.parse(this.activatedRoute?.snapshot?.queryParams['user']);
@@ -30,5 +35,25 @@ export class AdministrationComponent implements OnInit {
     } else {
       this.router.navigate([`/${localStorage.getItem('location') ? localStorage.getItem('location') : 'home'}`])
     }
+    this.initializeForms();
+  }
+
+  initializeForms() {
+    this.actionForm = new FormGroup({
+      action: new FormControl('', Validators.required)
+    })
+  }
+
+  takeAction() {
+    if (this.actionForm.valid) {
+
+    } else {
+      this.toastr.error("Seleziona una voce.");
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.innerWidth = window.innerWidth;
   }
 }
