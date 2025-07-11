@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
@@ -15,7 +15,8 @@ import { SharedModule } from '../../shared/modules/shared.module';
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss'
 })
-export class NavComponent{
+export class NavComponent implements OnInit {
+  innerWidth: number = 0;
   isAuthenticatedUser: boolean = false;
   mode: string = 'light';
   user: User | null = null;
@@ -50,5 +51,12 @@ export class NavComponent{
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
     }, 1000)
   }
-  
+  ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
+  }
+
+  @HostListener('window:resize',['$event'])
+  onResize(event:any){
+    this.innerWidth = window.innerWidth;
+  }
 }

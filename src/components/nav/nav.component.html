@@ -1,6 +1,6 @@
 <nav class="pt-3 text-center" [ngClass]="mode=='light'?'bg-personal':'bg-personal-opposite'">
     <div class="container">
-        <div class="row">
+        <div class="row" *ngIf="innerWidth >767.20 else shortMenu">
             <div class="col-md-12 text-end mode">
                 <button class="btn text-light light fs-4" (click)="updateMode('light')" *ngIf="mode=='dark'">
                     LIGHT MODE ☀️
@@ -44,7 +44,7 @@
                             <button mat-menu-item class="btn fs-4 text-dark"
                                 (click)="goToRoute('lobby/preferiti')">💌 Preferiti</button>
                                 <button mat-menu-item class="btn fs-4 text-dark"
-                                (click)="goToRoute('amministrazione')" *ngIf="user?.email=='raffaelecaravetta13@gmail.com'">💌 Amministrazione</button>
+                                (click)="goToRoute('amministrazione')" *ngIf="user?.email=='raffaelecaravetta13@gmail.com'">🏢 Amministrazione</button>
                             <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
                                 [routerLink]="'/home'">➡️ Logout</button>
                         </div>
@@ -52,5 +52,59 @@
                 </mat-menu>
             </ng-template>
         </div>
+        <ng-template #shortMenu>
+           <div class="row">
+            <div class="col-md-12 text-end mode">
+                <button class="btn text-light light fs-4" (click)="updateMode('light')" *ngIf="mode=='dark'">
+                    LIGHT MODE ☀️
+                </button>
+                <button class="btn text-dark dark fs-4" (click)="updateMode('dark')" *ngIf="mode=='light'">
+                    DARK MODE 🌙
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'"
+                    [routerLink]="'/home'" title="Home">🏠</button>
+            </div>
+            <div class="col-4">
+                <button class="btn fs-4" *ngIf="isAuthenticatedUser" [ngClass]="mode!='light'?'text-light':'text-dark'"
+                    [routerLink]="'/lobby'" title="Lobby">🎮</button>
+            </div>
+            <div class="col-4" *ngIf="!isAuthenticatedUser;else logOut">
+                <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'"
+                    [routerLink]="'/forms'" title="Login">🚪</button>
+            </div>
+            <ng-template #logOut>
+                <div class="col-4" *ngIf="isAuthenticatedUser">
+                    <div class="d-flex flex-column justify-content-center align-items-center"
+                        *ngIf="null!=user&&undefined!=user">
+                        <div class="w-auto d-flex flex-column justify-content-center align-items-center"
+                            *ngIf="!isLoadingLogoutOrRoute else isLoading">
+                            <div class="rounded-circle shadow to-point profile-pic m-auto mat-trigger"
+                                (click)="p.click()" style.backgroundImage="url('{{user!.immagineProfilo}}')"></div>
+                            <button class="btn" [matMenuTriggerFor]="appMenu" #p></button>
+                        </div>
+                        <ng-template #isLoading>
+                            <app-spinner [width]="100" [height]="100" [baseColor]="'blue'"></app-spinner>
+                        </ng-template>
+                    </div>
+                </div>
+                <mat-menu #appMenu="matMenu" class="overflow-hidden">
+                    <ng-template matMenuContent>
+                        <div>
+                            <button mat-menu-item class="btn fs-4 text-dark"
+                                (click)="goToRoute('lobby/profile')">🪪 Profile</button>
+                            <button mat-menu-item class="btn fs-4 text-dark"
+                                (click)="goToRoute('lobby/preferiti')">💌 Preferiti</button>
+                                <button mat-menu-item class="btn fs-4 text-dark"
+                                (click)="goToRoute('amministrazione')" *ngIf="user?.email=='raffaelecaravetta13@gmail.com'">🏢 Amministrazione</button>
+                            <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
+                                [routerLink]="'/home'">➡️ Logout</button>
+                        </div>
+                    </ng-template>
+                </mat-menu>
+            </ng-template>
+        </div> 
+        </ng-template>
     </div>
 </nav>
