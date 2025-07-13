@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-sm-4" *ngIf="innerWidth>575.20 else smallMenu">
+        <ol>
+            <li *ngFor="let item of items">
+                <button class="btn fs-4" (click)="action=item; handleAction(action)">
+                    {{item}}
+                </button>
+            </li>
+        </ol>
+    </div>
+    <ng-template #smallMenu>
+        <div class="col-12 text-start">
+            <button class="btn m-1 w-25" [matMenuTriggerFor]="appMenu" #p>☰</button>
+            <mat-menu #appMenu="matMenu" class="overflow-hidden">
+                <ng-template matMenuContent>
+                    <button class="btn menu-item" *ngFor="let item of items" mat-menu-item (click)="action=item">
+                        {{item}}
+                    </button>
+                </ng-template>
+            </mat-menu>
+        </div>
+    </ng-template>
+    <div class="col-sm-8">
+        <div *ngIf="action == 'Supervisiona giochi'" class="text-center">
+            <h2>Tutti i giochi</h2>
+        </div>
+    </div>
+</div>

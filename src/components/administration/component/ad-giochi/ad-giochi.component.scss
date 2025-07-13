@@ -1,0 +1,24 @@
+@import url('../../../../shared/style/style.scss');
+
+ol {
+    li {
+        button {
+            transition: 1s;
+
+            &:hover {
+                color: green;
+                transition: 1s;
+                scale: 1.1;
+            }
+        }
+    }
+}
+
+.menu-item {
+        transition: 1s !important;
+
+        &:hover {
+            color: green !important;
+            transition: 1s !important;
+        }
+    }

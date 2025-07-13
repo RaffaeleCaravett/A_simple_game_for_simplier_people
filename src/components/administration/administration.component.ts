@@ -14,6 +14,7 @@ export class AdministrationComponent implements OnInit {
   user: User | null = null;
   actionForm: FormGroup = new FormGroup({});
   innerWidth: number = 0;
+  actions: string[] = ['giochi', 'categorie', 'tornei', 'utenti', 'messaggi']
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
@@ -55,5 +56,14 @@ export class AdministrationComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.innerWidth = window.innerWidth;
+  }
+
+  switchLocation(action:string){
+    this.router.navigate(['/amministrazione/'+action]);
+  }
+  resetFormAndLocation(){
+    this.actionForm.controls['action'].setValue("");
+    this.actionForm.updateValueAndValidity();
+    this.router.navigate(['/amministrazione']);
   }
 }

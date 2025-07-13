@@ -1,11 +1,22 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 text-center py-5">
             <h1 *ngIf="innerWidth>767.20">Benvenuto {{user?.fullName}}</h1>
             <h2 *ngIf="innerWidth<767.20">Benvenuto {{user?.fullName}}</h2>
         </div>
-        <div class="col-md-12 text-start">
-            <form [formGroup]="actionForm"></form>
+        <div class="col-sm-5 col-7 text-start p-3">
+            <form [formGroup]="actionForm" class="row">
+                <label class="pb-1" for="action">Scegli la sezione</label>
+                <div class="d-flex">
+                    <select name="action" id="action" formControlName="action" class="form-select" #action
+                        (change)="switchLocation(action.value)" placeholder="Seleziona un valore...">
+                        <option value="" disabled selected>Select your option</option>
+                        <option value="{{action}}" *ngFor="let action of actions">{{action}}</option>
+                    </select>
+                    <button class="btn" title="Torna all'inizio" (click)="resetFormAndLocation()" *ngIf="action.value">❌</button>
+                </div>
+            </form>
         </div>
     </div>
+    <router-outlet></router-outlet>
 </div>
