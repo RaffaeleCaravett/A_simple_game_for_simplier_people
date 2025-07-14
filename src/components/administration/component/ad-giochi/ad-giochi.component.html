@@ -1,27 +1,75 @@
-<div class="row">
-    <div class="col-sm-4" *ngIf="innerWidth>575.20 else smallMenu">
-        <ol>
-            <li *ngFor="let item of items">
-                <button class="btn fs-4" (click)="action=item; handleAction(action)">
-                    {{item}}
-                </button>
-            </li>
-        </ol>
+<div class="row text-center">
+    <div class="col-md-12">
+        <h2>Cerca un gioco</h2>
+        <form [formGroup]="filterForms" class="row">
+            <div class="col-sm-3"><label for="nome">
+                    Nome gioco
+                </label>
+                <input class="form-control" placeholder="Inserisci il nome ..." formControlName="nome" name="nome"
+                    id="nome">
+            </div>
+            <div class="col-sm-3"><label for="punteggio">
+                    Punteggio recensioni
+                </label>
+                <input class="form-control" placeholder="Inserisci il punteggio ..." formControlName="punteggio"
+                    name="punteggio" id="punteggio">
+            </div>
+            <div class="col-sm-3"><label for="difficolta">
+                    Difficolta gioco
+                </label>
+                <input class="form-control" placeholder="Inserisci la difficolta..." formControlName="difficolta"
+                    name="difficolta" id="difficolta">
+            </div>
+            <div class="col-sm-3">
+                <label for="categoria">
+                    Categoria gioco
+                </label>
+                <input class="form-control" placeholder="Inserisci la categoria..." formControlName="categoria"
+                    name="categoria" id="categoria">
+            </div>
+            <div class="col-sm-3">
+                <label for="orderBy">
+                    Ordinati per
+                </label>
+                <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select" (change)="orderBy=filterForms.get('orderBy')?.value">
+                    <option value=""></option>
+                    <option value="{{i.value}}" *ngFor="let i of orders">{{i.label}}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label for="">Direzione ordine</label>
+                <div class="row pt-1">
+                    <div class="col-sm-6" *ngFor=" let s of sorts index as i">
+                        <input type="radio" name="sortOrder" id="sortOrder{{i}}" formControlName="sortOrder" value="{{s.value}}" (change)="sortOrder=s.value">
+                        <label for="sortOrder{{i}}">{{s.label}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label for="items">
+                    Elementi per pagina
+                </label>
+                <select name="items" id="items" formControlName="items" class="form-select" (change)="size=filterForms.get('items')?.value">
+                    <option value=""></option>
+                    <option value="{{i.value}}" *ngFor="let i of sizes">{{i.label}}</option>
+                </select>
+            </div>
+            <div class="col-sm-3" *ngIf="giochi">
+                <label for="page">
+                    Pagina
+                </label>
+                <select name="page" id="page" formControlName="page" class="form-select" (change)="page=filterForms.get('page')?.value">
+                    <option value=""></option>
+                    <option value="{{i-1}}" *ngFor="let i of pages">{{i}}</option>
+                </select>
+            </div>
+            <div class="col-12 p-2">
+                <button class="btn" (click)="this.searchGiochi();">Cerca 🔎</button>
+            </div>
+        </form>
     </div>
-    <ng-template #smallMenu>
-        <div class="col-12 text-start">
-            <button class="btn m-1 w-25" [matMenuTriggerFor]="appMenu" #p>☰</button>
-            <mat-menu #appMenu="matMenu" class="overflow-hidden">
-                <ng-template matMenuContent>
-                    <button class="btn menu-item" *ngFor="let item of items" mat-menu-item (click)="action=item">
-                        {{item}}
-                    </button>
-                </ng-template>
-            </mat-menu>
-        </div>
-    </ng-template>
-    <div class="col-sm-8">
-        <div *ngIf="action == 'Supervisiona giochi'" class="text-center">
+    <div class="col-sm-12">
+        <div *ngIf="action == 'Supervisiona giochi'">
             <h2>Tutti i giochi</h2>
         </div>
     </div>
