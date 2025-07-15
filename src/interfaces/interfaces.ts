@@ -49,3 +49,7 @@ export interface User {
         innerHTML: string
     }
 }
+export interface Categoria {
+    id: number,
+    nome: string
+}

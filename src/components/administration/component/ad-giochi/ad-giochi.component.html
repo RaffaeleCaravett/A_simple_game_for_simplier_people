@@ -9,7 +9,7 @@
                     id="nome">
             </div>
             <div class="col-sm-3"><label for="punteggio">
-                    Punteggio recensioni
+                    Media recensioni da
                 </label>
                 <input class="form-control" placeholder="Inserisci il punteggio ..." formControlName="punteggio"
                     name="punteggio" id="punteggio">
@@ -24,14 +24,24 @@
                 <label for="categoria">
                     Categoria gioco
                 </label>
-                <input class="form-control" placeholder="Inserisci la categoria..." formControlName="categoria"
-                    name="categoria" id="categoria">
+                <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select"
+                    (change)="orderBy=filterForms.get('orderBy')?.value" *ngIf="categorie.length == 0 else categories">
+                    <option value="" disabled>Non ci sono categorie disponibili</option>
+                </select>
+                <ng-template #categories>
+                    <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select"
+                        (change)="orderBy=filterForms.get('orderBy')?.value">
+                        <option value=""></option>
+                        <option value="{{i.value}}" *ngFor="let i of orders">{{i.label}}</option>
+                    </select>
+                </ng-template>
             </div>
             <div class="col-sm-3">
                 <label for="orderBy">
                     Ordinati per
                 </label>
-                <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select" (change)="orderBy=filterForms.get('orderBy')?.value">
+                <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select"
+                    (change)="orderBy=filterForms.get('orderBy')?.value">
                     <option value=""></option>
                     <option value="{{i.value}}" *ngFor="let i of orders">{{i.label}}</option>
                 </select>
@@ -40,7 +50,8 @@
                 <label for="">Direzione ordine</label>
                 <div class="row pt-1">
                     <div class="col-sm-6" *ngFor=" let s of sorts index as i">
-                        <input type="radio" name="sortOrder" id="sortOrder{{i}}" formControlName="sortOrder" value="{{s.value}}" (change)="sortOrder=s.value">
+                        <input type="radio" name="sortOrder" id="sortOrder{{i}}" formControlName="sortOrder"
+                            value="{{s.value}}" (change)="sortOrder=s.value">
                         <label for="sortOrder{{i}}">{{s.label}}</label>
                     </div>
                 </div>
@@ -49,7 +60,8 @@
                 <label for="items">
                     Elementi per pagina
                 </label>
-                <select name="items" id="items" formControlName="items" class="form-select" (change)="size=filterForms.get('items')?.value">
+                <select name="items" id="items" formControlName="items" class="form-select"
+                    (change)="size=filterForms.get('items')?.value">
                     <option value=""></option>
                     <option value="{{i.value}}" *ngFor="let i of sizes">{{i.label}}</option>
                 </select>
@@ -58,7 +70,8 @@
                 <label for="page">
                     Pagina
                 </label>
-                <select name="page" id="page" formControlName="page" class="form-select" (change)="page=filterForms.get('page')?.value">
+                <select name="page" id="page" formControlName="page" class="form-select"
+                    (change)="page=filterForms.get('page')?.value">
                     <option value=""></option>
                     <option value="{{i-1}}" *ngFor="let i of pages">{{i}}</option>
                 </select>
@@ -68,9 +81,17 @@
             </div>
         </form>
     </div>
-    <div class="col-sm-12">
-        <div *ngIf="action == 'Supervisiona giochi'">
-            <h2>Tutti i giochi</h2>
+    <div class="col-sm-12" *ngIf="giochi?.content?.length>0">
+        <h2>Tutti i giochi</h2>
+        <div class="row">
+            <div class="col-md-3 p-2" *ngFor="let g of giochi?.content">
+                <div class="border shadow rounded">
+                    <h3>{{g.nomeGioco}}</h3>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="col-sm-12" *ngIf="giochi?.content?.length == 0">
+        <h2>Non ci sono giochi presenti</h2>
     </div>
 </div>

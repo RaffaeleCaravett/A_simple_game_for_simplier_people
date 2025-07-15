@@ -6,25 +6,26 @@ import { environment } from "../core/environment";
     providedIn: 'root'
 })
 export class AdministrationService {
-    private gioco: string = '/gioco';
-    private byFilters: string = '/byFilter';
-    private giochi: string = '';
+    private categoria: string = '/categoria';
 
     constructor(private http: HttpClient) { }
 
 
 
-    getAll(body: { nome: string, difficolta: number, punteggio: number }, page: number, size: number, orderBy: string, sortOrder: string, isActive?: boolean) {
 
-        let params: HttpParams = new HttpParams();
-        params = params.set('page', page);
-        params = params.set('size', size);
-        params = params.set('orderBy', orderBy);
-        params = params.set('sortOrder', sortOrder);
-        if (body.nome) params = params.set('nomeGioco', body.nome);
-        if (body.difficolta) params = params.set('difficolta', body.difficolta);
-        if (body.punteggio) params = params.set('punteggio', body.punteggio);
-        if(isActive) params = params.set('isActive',isActive);
-        return this.http.get(environment.API_URL + this.gioco + this.byFilters, { params: params })
+    getAllCategories() {
+        return this.http.get(environment.API_URL + this.categoria);
+    }
+    putCategoriaById(id: number, categoria: {}) {
+        return this.http.put(environment.API_URL + this.categoria + `/${id}`, categoria);
+    }
+    assignCatogoriaToAGame(categoriaId: number, giocoId: number) {
+        return this.http.get(environment.API_URL + this.categoria) + `/${categoriaId}/${giocoId}`;
+    }
+    getCategoriaByNameContaining(name: string) {
+        return this.http.get(environment.API_URL + this.categoria + `/${name}`);
+    }
+    saveCategoria(categoria: {}) {
+        return this.http.post(environment.API_URL + this.categoria, categoria);
     }
 }

@@ -4,6 +4,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AdministrationService } from '../../../../services/administration.service';
 import { GiochiService } from '../../../../services/giochi.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Categoria } from '../../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-ad-giochi',
@@ -18,7 +19,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   action: string = "";
   filterForms: FormGroup = new FormGroup({});
   page: number = 0;
-  size: number = 1;
+  size: number = 5;
   orderBy: string = 'id';
   sortOrder: string = 'ASC';
   giochi: any = null;
@@ -27,6 +28,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   sizes: { value: string, label: string }[] = [{ value: "1", label: "Uno (1)" }, { value: "5", label: "Cinque (5)" },
   { value: "10", label: "Dieci (10)" }, { value: "20", label: "Venti (20)" }];
   pages: number[] = [1];
+  categorie: Categoria[] = [];
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService, private changeDet: ChangeDetectorRef) { }
 
   ngAfterContentChecked(): void {
@@ -35,6 +37,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   }
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
+    this.getAllCategorie();
     this.initializeForms();
   }
 
@@ -50,13 +53,19 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
       difficolta: new FormControl(''),
       punteggio: new FormControl(''),
       categoria: new FormControl(''),
-      orderBy: new FormControl(''),
-      sortOrder: new FormControl(''),
-      items:new FormControl(''),
-      page:new FormControl('')
+      orderBy: new FormControl('id'),
+      sortOrder: new FormControl('ASC'),
+      items: new FormControl(5),
+      page: new FormControl(0)
     })
   }
-
+  getAllCategorie() {
+    this.administrationService.getAllCategories().subscribe({
+      next: (value: any) => {
+        this.categorie = value;
+      }
+    })
+  }
   searchGiochi() {
     let body = {
       nome: this.filterForms.get('nome')?.value,
