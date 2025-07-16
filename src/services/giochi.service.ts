@@ -15,7 +15,7 @@ export class GiochiService {
 
 
 
-    searchGiochi(body: { nome: string, difficolta: number, punteggio: number }, page: number, size: number, orderBy: string, sortOrder: string, isActive?: boolean) {
+    searchGiochi(body: { nome: string, difficolta: number, punteggio: number, categoria: number }, page: number, size: number, orderBy: string, sortOrder: string, isActive?: boolean) {
 
         let params: HttpParams = new HttpParams();
         params = params.set('page', page);
@@ -25,8 +25,9 @@ export class GiochiService {
         if (body.nome) params = params.set('nomeGioco', body.nome);
         if (body.difficolta) params = params.set('difficolta', body.difficolta);
         if (body.punteggio) params = params.set('avg', body.punteggio);
-        if(isActive) params = params.set('isActive',isActive);
-        return this.http.get(environment.API_URL + this.gioco + this.byFilters,{ params: params });
+        if (body.categoria) params = params.set('categorie', body.categoria);
+        if (isActive) params = params.set('isActive', isActive);
+        return this.http.get(environment.API_URL + this.gioco + this.byFilters, { params: params });
     }
 
 

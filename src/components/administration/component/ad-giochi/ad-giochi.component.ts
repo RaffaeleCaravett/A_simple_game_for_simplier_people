@@ -29,6 +29,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   { value: "10", label: "Dieci (10)" }, { value: "20", label: "Venti (20)" }];
   pages: number[] = [1];
   categorie: Categoria[] = [];
+  choosedCategories: Categoria[] = [];
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService, private changeDet: ChangeDetectorRef) { }
 
   ngAfterContentChecked(): void {
@@ -82,5 +83,24 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
         }
       }
     })
+  }
+  updateChoosedCategories(id: string) {
+    let numberId = Number(id);
+    if (this.choosedCategories.length == 0) {
+      this.categorie.forEach(c => {
+        if (c.id == numberId) {
+          this.choosedCategories.push(c);
+        }
+      });
+    } else if (this.choosedCategories.map(c => c.id).includes(numberId)) {
+      this.choosedCategories = this.choosedCategories.filter(c => c.id != numberId);
+    } else {
+      this.categorie.forEach(c => {
+        if (c.id == numberId) {
+          this.choosedCategories.push(c);
+        }
+      });
+    }
+    console.log(this.choosedCategories)
   }
 }

@@ -27,10 +27,11 @@ export class GiochiComponent implements OnInit, OnDestroy {
   size: number = 2;
   orderBy: string = "id";
   sortOrder: string = "ASC";
-  body: { nome: string, difficolta: number, punteggio: number } = {
+  body: { nome: string, difficolta: number, punteggio: number ,categoria:number} = {
     nome: this.searchGiocoForm.get('nomeGioco')?.value || null,
     difficolta: this.searchGiocoForm.get('difficolta')?.value || null,
-    punteggio: this.searchGiocoForm.get('punteggioRecensioniDa')?.value || null
+    punteggio: this.searchGiocoForm.get('punteggioRecensioniDa')?.value || null,
+    categoria : this.searchGiocoForm.get('categoria')?.value || null
   };
   isLoading: boolean = false;
   maxPages: number = 1;
@@ -53,7 +54,7 @@ export class GiochiComponent implements OnInit, OnDestroy {
     clearTimeout(this.timeout);
   }
 
-  getGiochi(origin: boolean, body: { nome: string, difficolta: number, punteggio: number }, isActive?: boolean) {
+  getGiochi(origin: boolean, body: { nome: string, difficolta: number, punteggio: number, categoria: number }, isActive?: boolean) {
     this.canSwitchLocation.emit(false);
     this.searchGiocoForm.get('size')?.value != '' &&
       this.searchGiocoForm.get('size')?.value != undefined &&
@@ -109,6 +110,7 @@ export class GiochiComponent implements OnInit, OnDestroy {
       nomeGioco: new FormControl(''),
       difficolta: new FormControl(),
       punteggioRecensioniDa: new FormControl(''),
+      categoria: new FormControl(''),
       size: new FormControl(''),
       orderBy: new FormControl('id'),
       sortOrder: new FormControl('ASC')
@@ -119,7 +121,8 @@ export class GiochiComponent implements OnInit, OnDestroy {
     this.body = {
       nome: this.searchGiocoForm.get('nomeGioco')?.value,
       difficolta: this.searchGiocoForm.get('difficolta')?.value,
-      punteggio: this.searchGiocoForm.get('punteggioRecensioniDa')?.value
+      punteggio: this.searchGiocoForm.get('punteggioRecensioniDa')?.value,
+      categoria: this.searchGiocoForm.get('categoria')?.value
     };
     let origin: boolean = false;
     if (from) { origin = true; this.page != 0 ? this.page = 0 : ''; };

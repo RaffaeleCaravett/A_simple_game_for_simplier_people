@@ -24,15 +24,14 @@
                 <label for="categoria">
                     Categoria gioco
                 </label>
-                <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select"
-                    (change)="orderBy=filterForms.get('orderBy')?.value" *ngIf="categorie.length == 0 else categories">
+                <select name="categoria" id="categoria" formControlName="categoria" class="form-select"
+                    *ngIf="categorie.length == 0 else categories">
                     <option value="" disabled>Non ci sono categorie disponibili</option>
                 </select>
                 <ng-template #categories>
-                    <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select"
-                        (change)="orderBy=filterForms.get('orderBy')?.value">
+                    <select name="categoria" id="categoria" formControlName="categoria" class="form-select">
                         <option value=""></option>
-                        <option value="{{i.value}}" *ngFor="let i of orders">{{i.label}}</option>
+                        <option value="{{i.id}}" *ngFor="let i of categorie">{{i.nome}}</option>
                     </select>
                 </ng-template>
             </div>
