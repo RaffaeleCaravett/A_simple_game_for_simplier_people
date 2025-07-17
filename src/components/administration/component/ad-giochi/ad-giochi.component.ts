@@ -149,9 +149,30 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
     }
   }
   manageGame(action: string, gioco: any) {
-    this.showModal = true;
-    this.choosedAction = action;
     this.choosedGame = gioco;
+
+    if (action != 'delete') {
+      this.showModal = true;
+      this.choosedAction = action;
+    } else {
+      let dialog = this.matDialog.open(AskConfirmComponent, { data: [this.choosedGame, null, 'Elimina'], width: '60%', height: '70%' });
+      dialog.afterClosed().subscribe((data: boolean) => {
+        if (data) {
+          this.administrationService.deleteGame(this.choosedGame!.id).subscribe({
+            next: (value: any) => {
+              if (value) {
+                this.toastr.success("Gioco eliminato con successo");
+                this.searchGiochi();
+              } else {
+                this.toastr.error("E' successo qualcosa che ha impedito l'eliminazione del gioco.");
+              }
+            }
+          })
+        } else {
+          this.toastr.warning("Non è stato eliminato nessun gioco.");
+        }
+      })
+    }
   }
   closeModal() {
     this.showModal = false;

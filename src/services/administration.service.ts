@@ -41,4 +41,7 @@ export class AdministrationService {
         }
         return this.http.put(environment.API_URL + this.gioco + `/${giocoId}`, formData, { headers: headers });
     }
+    deleteGame(gameId: number) {
+        return this.http.delete(environment.API_URL + this.gioco + `/${gameId}`)
+    }
 }

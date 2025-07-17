@@ -28,9 +28,9 @@ export class AskConfirmComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.giocoName = this.data[0].nomeGioco;
-    this.giocoImage = this.data[0].image;
-    this.giocoId = this.data[0].id;
+    this.giocoName = this.data[0]?.nomeGioco;
+    this.giocoImage = this.data[0]?.image;
+    this.giocoId = this.data[0]?.id;
     this.recensione = this.data[1];
     this.action = this.data[2]
     this.recePoints = this.recensione?.punteggio
@@ -56,6 +56,9 @@ export class AskConfirmComponent implements OnInit {
     } else {
       this.dialogRef.close(true);
     }
+  }
+  getLowerAction(action: string) {
+    return action.toLowerCase();
   }
 
   elimina() {

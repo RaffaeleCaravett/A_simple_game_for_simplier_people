@@ -28,7 +28,7 @@
         </div>
         <div *ngIf="recensione==null" [style.height]="'100px'">
             <p class="fs-2">
-                Sei sicuro di voler modificare {{giocoName}} ?
+                Sei sicuro di voler {{ getLowerAction(action)+"re" + " " + giocoName}} ?
             </p>
         </div>
     </mat-dialog-content>
