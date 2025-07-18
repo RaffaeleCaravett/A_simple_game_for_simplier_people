@@ -310,7 +310,7 @@ export class MahJongComponent implements OnInit, OnDestroy, AfterContentChecked 
     floorContainer.classList.add('position-relative');
     switch (zIndex) {
       case (5): {
-        floorContainer.classList.add('w-100');
+        floorContainer.classList.add('w-1000');
       }
         break;
       case (4): {

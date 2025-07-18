@@ -5,10 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { GiocoPreviewComponent } from '../../shared/components/gioco-preview/gioco-preview.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RecensioniComponent } from '../../shared/components/recensioni/recensioni.component';
-import { User } from '../../interfaces/interfaces';
+import { Categoria, User } from '../../interfaces/interfaces';
 import { Router } from '@angular/router';
 import { RecensioneService } from '../../services/recensione.service';
 import { ToastrService } from 'ngx-toastr';
+import { AdministrationService } from '../../services/administration.service';
 
 @Component({
   selector: 'app-giochi',
@@ -27,11 +28,11 @@ export class GiochiComponent implements OnInit, OnDestroy {
   size: number = 2;
   orderBy: string = "id";
   sortOrder: string = "ASC";
-  body: { nome: string, difficolta: number, punteggio: number ,categoria:number} = {
+  body: { nome: string, difficolta: number, punteggio: number, categoria: number } = {
     nome: this.searchGiocoForm.get('nomeGioco')?.value || null,
     difficolta: this.searchGiocoForm.get('difficolta')?.value || null,
     punteggio: this.searchGiocoForm.get('punteggioRecensioniDa')?.value || null,
-    categoria : this.searchGiocoForm.get('categoria')?.value || null
+    categoria: this.searchGiocoForm.get('categoria')?.value || null
   };
   isLoading: boolean = false;
   maxPages: number = 1;
@@ -41,12 +42,14 @@ export class GiochiComponent implements OnInit, OnDestroy {
   timeout: any = null;
   @Output() canSwitchLocation: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   @Input() mode: string = 'light';
+  categorie: Categoria[] = [];
   constructor(private giochiService: GiochiService, private matDialog: MatDialog, private router: Router,
-    private recensioniService: RecensioneService, private toastr: ToastrService) { }
+    private recensioniService: RecensioneService, private toastr: ToastrService, private administrationService: AdministrationService) { }
 
   ngOnInit(): void {
     this.initializeGiocoForm();
     this.getGiochi(false, this.body);
+    this.getAllCategories();
     this.onResize();
   }
   ngOnDestroy(): void {
@@ -194,5 +197,13 @@ export class GiochiComponent implements OnInit, OnDestroy {
     if (event && event?.code && event?.code == 'Enter') {
       this.searchGiochi('yes');
     }
+  }
+
+  getAllCategories() {
+    this.administrationService.getAllCategories().subscribe({
+      next: (data: any) => {
+        this.categorie = data;
+      }
+    })
   }
 }

@@ -53,3 +53,25 @@ export interface Categoria {
     id: number,
     nome: string
 }
+
+export interface Gioco {
+    id: number,
+    nomeGioco: string;
+    difficolta: number;
+    image: string;
+    descrizione: string;
+    recensione: Recensione[];
+    totalRecensioniNumber: number;
+    categorie: Categoria[];
+}
+
+export interface Recensione {
+    id: number,
+    commento: string,
+    commentoPreview: string,
+    punteggio: number
+    user: User,
+    createdAt: string,
+    modifiedAt: string,
+    deletedAt: string
+}

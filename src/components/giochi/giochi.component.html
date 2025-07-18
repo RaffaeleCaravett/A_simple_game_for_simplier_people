@@ -15,6 +15,11 @@
                 <option [value]=""></option>
                 <option value="{{p}}" *ngFor="let p of points">{{p}}</option>
             </select>
+            <label for="categoria" class="py-1">Categoria</label>
+            <select class="form-select" name="categoria" formControlName="categoria">
+                <option value=""></option>
+                <option value="{{c.id}}" *ngFor="let c of categorie">{{c.nome}}</option>
+            </select>
             <label for="size" class="py-1">Numero di giochi da caricare</label>
             <select class="form-select" name="size" formControlName="size">
                 <option value=""></option>
@@ -170,13 +175,14 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-success mt-3 w-75 m-auto" (click)="searchGiochi('fromForm')">Ricerca</button>
+                <button type="button" class="btn btn-success mt-3 w-75 m-auto"
+                    (click)="searchGiochi('fromForm')">Ricerca</button>
             </form>
         </div>
     </ng-template>
     <div class="col-md-8 border border-top-0 border-end-0 border-bottom-0 border-dark p-1 overflow-auto"
         [ngClass]="innerWidth>767.20?'':'border-start-0'" id="scroller-pagination" (scroll)="onScroll($event)">
-        <div class="m-auto p-3" [ngClass]="windowWidth<500?'w-100':'w-75'" *ngFor="let g of giochi, index as i">
+        <div class="m-auto p-3" [style.width]="windowWidth<500?'100%':'75%'" *ngFor="let g of giochi, index as i">
             <div class="p-3 game-card bg-white" *ngIf="!isLoading">
                 <div class="w-100 text-center position-relative">
                     <i class="bi bi-heart position-absolute end-0 top-0 m-1 h4" *ngIf="!isPreferred(g)"
@@ -240,6 +246,15 @@
                 <i class="bi bi-arrow-up-right h3 p-3 " title="Vai al gioco"></i>
             </div>
             <app-skeleton *ngIf="isLoading"></app-skeleton>
+        </div>
+        <div class="m-auto p-3 text-center" *ngIf="!giochi || giochi?.length==0">
+            <h2>
+                Non ci sono giochi che matchano con i filtri di ricerca.
+                <br>
+                <span class="text-danger">
+                    Prova a ricercare!
+                </span>
+            </h2>
         </div>
         <!-- div class="w-100 d-flex justify-content-center align-items-center">
             <app-spinner *ngIf="isLoading" class="m-auto"></app-spinner>

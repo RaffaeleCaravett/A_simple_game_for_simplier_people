@@ -60,7 +60,7 @@
                     Elementi per pagina
                 </label>
                 <select name="items" id="items" formControlName="items" class="form-select"
-                    (change)="size=filterForms.get('items')?.value">
+                    (change)="size=filterForms.get('items')?.value; filterForms.get('page')?.setValue(0);">
                     <option value=""></option>
                     <option value="{{i.value}}" *ngFor="let i of sizes">{{i.label}}</option>
                 </select>
@@ -80,12 +80,134 @@
             </div>
         </form>
     </div>
-    <div class="col-sm-12" *ngIf="giochi?.content?.length>0">
+    <div class="col-sm-12" *ngIf="giochiArray.length>0">
+        <div class="row">
+            <div class="col-md-12" *ngIf="showModal&&choosedAction=='edit'&& choosedGame">
+                <p class="fs-1">Modifica le componenti del gioco</p>
+                <form [formGroup]="editGameForm" class="row">
+                    <div class="col-md-4">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" placeholder="Modifica il nome ..."
+                            formControlName="nome" class="form-control" (input)="handleEditedGame()">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="difficolta">Difficolta</label>
+                        <input type="number" min="1" max="5" placeholder="Modifica la difficolta ..." id="difficolta"
+                            name="difficolta" formControlName="difficolta" class="form-control"
+                            (input)="handleEditedGame()">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="descrizione">Descrizione</label>
+                        <textarea name="descrizione" id="descrizione" formControlName="descrizione" rows="3"
+                            placeholder="Modifica la descrizione ..." class="form-control"
+                            (input)="handleEditedGame()"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <button class="btn">
+                            Modifica definitivamente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" *ngIf="showModal&&choosedAction!=''&& choosedGame">
+            <div class="col-md-12 text-end">
+                <button class="btn btn-outline-danger" (click)="closeModal()">Chiudi</button>
+            </div>
+        </div>
+        <div *ngIf="showModal&&choosedAction!=''&& choosedGame" class="row border">
+            <div class="col-md-12 rounded-top bg-warning p-1 shadow-sm border">
+                <p class="fs-4 pt-1">{{editedChoosedGameName || choosedGame.nomeGioco}}</p>
+            </div>
+            <div class="col-md-4 pt-2">
+                <img src="{{'data:image/png;base64,'+choosedGame.image}}" alt="gioco_image" class="w-100">
+            </div>
+            <div class="col-md-8 pt-2">
+                <p class="fs-4 w-75 m-auto">
+                    {{editedChoosedGameDescription || choosedGame.descrizione}}
+                </p>
+            </div>
+            <div class="col-md-8">
+                <div class="row p-0 m-0 mt-2">
+                    <div class="col-md-12">
+                        <p class="fs-2">Recensioni</p>
+                    </div>
+                    <div class="col-md-6 p-2" *ngFor="let r of choosedGame.recensione">
+                        <div class="w-100 border rounded shadow-sm">
+                            <p class="fs-4">{{r.commentoPreview}}</p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img src="{{r.user.immagineProfilo}}" alt="user_image" [style.width]="'60px'"
+                                        [style.height]="'60px'" class="rounded-circle m-auto border shadow m-auto">
+                                </div>
+                                <div class="col-md-8">
+                                    {{r.user.fullName}}
+                                </div>
+                                <div class="col-12">
+                                    <p class="fs-6">
+                                        {{r.createdAt}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="choosedGame?.recensione?.length==0">
+                        <p class="fs-3">
+                            Non ci sono recensioni ancora ...
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 px-2">
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <p class="fs-2">Difficolta gioco </p>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="text-center" *ngIf="!editedChoosedGameDifficult else editedDifficultNumb"
+                            [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
+                            <span class="fw-bolder">{{choosedGame.difficolta}}</span>
+                        </p>
+                        <ng-template #editedDifficultNumb>
+                            <p class="text-center fs-3"
+                                [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
+                                <span class="fw-bolder">{{toNumber(editedChoosedGameDifficult)}}</span>
+                            </p>
+                        </ng-template>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="text-center fs-3" *ngIf="!editedChoosedGameDifficult else editedDifficult"
+                            [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
+                            {{choosedGame.difficolta<=3?'FACILE':choosedGame.difficolta<=4?'MEDIO':'DIFFICILE'}} </p>
+                                <ng-template #editedDifficult>
+                                    <p class="text-center fs-3"
+                                        [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
+                                        {{toNumber(editedChoosedGameDifficult)
+                                        <=3?'FACILE':toNumber(editedChoosedGameDifficult)<=4?'MEDIO':'DIFFICILE'}} </p>
+                                </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h2>Tutti i giochi</h2>
         <div class="row">
-            <div class="col-md-3 p-2" *ngFor="let g of giochi?.content">
+            <div class="col-sm-4 p-2" *ngFor="let g of giochiArray">
                 <div class="border shadow rounded">
-                    <h3>{{g.nomeGioco}}</h3>
+                    <p class="rounded-top bg-warning fs-5 p-1 border-bottom shadow-sm">{{g.nomeGioco}}</p>
+                    <div class="col-md-12 p-2 text-center">
+                        <img src="{{'data:image/png;base64,'+g?.image}}" alt="immagine_gioco" class="w-100">
+                    </div>
+                    <hr class="py-2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4 text-center" *ngFor="let a of actions">
+                                <button class="btn my-1" title="{{a.action}}" (click)="manageGame(a.action,g)">
+                                    <i class="{{a.class}} h3"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

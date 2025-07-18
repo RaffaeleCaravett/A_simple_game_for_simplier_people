@@ -1,8 +1,8 @@
-<div class="z-4 position-relative" [style.width]="'100%'" [ngClass]="mode=='light'?'bg-white':'bg-personal'">
-    <div class="position-absolute d-flex balls-container" [style.width]="'100%'" *ngIf="window.innerWidth>700">
+<div class="z-4 position-relative w-100"  [ngClass]="mode=='light'?'bg-white':'bg-personal'">
+    <div class="position-absolute d-flex balls-container w-100" *ngIf="window.innerWidth>700">
         <div *ngFor="let n of balls" class="p-3 m-1 rounded-circle position-absolute"></div>
     </div>
-    <div class="position-absolute" [style.width]="'100%'">
+    <div class="position-absolute w-100">
             <app-forms-label></app-forms-label>
             <div class="container py-5 text-center">
                 <div class="row d-flex justify-content-around">
