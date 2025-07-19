@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../core/environment";
 
@@ -7,6 +7,7 @@ import { environment } from "../core/environment";
 })
 export class AdministrationService {
     private categoria: string = '/categoria';
+    private gioco: string = '/gioco';
 
     constructor(private http: HttpClient) { }
 
@@ -27,5 +28,17 @@ export class AdministrationService {
     }
     saveCategoria(categoria: {}) {
         return this.http.post(environment.API_URL + this.categoria, categoria);
+    }
+    putGameById(giocoId: number, gioco?: any, giocoImage?: File | null) {
+        let headers = new HttpHeaders();
+        let formData: FormData = new FormData();
+
+        formData.append('gioco', new Blob([JSON.stringify(gioco)], {
+            type: 'application/json'
+        }));
+        if (giocoImage && giocoImage != null && giocoImage != undefined) {
+            formData.append('gioco_image', giocoImage, giocoImage.name);
+        }
+        return this.http.put(environment.API_URL + this.gioco + `/${giocoId}`, formData, { headers: headers });
     }
 }

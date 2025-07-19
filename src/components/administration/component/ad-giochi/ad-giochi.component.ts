@@ -6,6 +6,8 @@ import { GiochiService } from '../../../../services/giochi.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Categoria, Gioco } from '../../../../interfaces/interfaces';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
+import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 
 @Component({
   selector: 'app-ad-giochi',
@@ -40,8 +42,10 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   editedChoosedGameName: string = '';
   editedChoosedGameDescription: string = '';
   editedChoosedGameDifficult: string = '';
+  selectedImage: File | null = null;
+  choosedImageUrl: string = '';
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService,
-    private changeDet: ChangeDetectorRef, private toastr: ToastrService) { }
+    private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog) { }
 
   ngAfterContentChecked(): void {
     this.changeDet.detectChanges();
@@ -153,5 +157,51 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
     this.showModal = false;
     this.choosedAction = '';
     this.choosedGame = null;
+  }
+  modifyGame(game: Gioco) {
+    if (this.selectedImage != null || this.editGameForm.controls['nome'].value != ''
+      || (this.editGameForm.controls['difficolta'].value != '' && this.editGameForm.controls['difficolta'].value != undefined) || this.editGameForm.controls['descrizione'].value != ''
+    ) {
+      let dialog = this.matDialog.open(AskConfirmComponent, { data: [this.choosedGame, null, 'Modifica'], width: '60%', height: '70%' })
+      let modify: boolean = false;
+      dialog.afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          modify = true;
+        }
+        if (modify) {
+          let gioco = {
+            nome: this.editGameForm.controls['nome'].value,
+            descrizione: this.editGameForm.controls['descrizione'].value,
+            difficolta: this.editGameForm.controls['difficolta'].value
+          };
+          this.administrationService.putGameById(game.id, gioco, this.selectedImage).subscribe({
+            next: (value: any) => {
+              this.toastr.success("Modifiche apportate correttamente.")
+              this.choosedGame = value;
+              this.searchGiochi();
+            }
+          });
+        } else {
+          this.toastr.warning("Nessun gioco è stato modificato.");
+        }
+      })
+    } else {
+      this.toastr.warning("Modifica qualcosa prima.");
+    }
+  }
+
+  handleImageEvent(event: any) {
+    this.selectedImage = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.readAsDataURL(event.target.files[0]);
+
+    reader.onload = (eventR: any) => {
+      this.choosedImageUrl = eventR.target.result;
+    };
+  }
+  cleanImage() {
+    (document.getElementById('uploadedImage')! as HTMLImageElement).src = "";
+    this.selectedImage = null;
   }
 }

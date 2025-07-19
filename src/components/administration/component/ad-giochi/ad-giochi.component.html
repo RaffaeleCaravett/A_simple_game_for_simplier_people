@@ -102,8 +102,38 @@
                             placeholder="Modifica la descrizione ..." class="form-control"
                             (input)="handleEditedGame()"></textarea>
                     </div>
+                    <div class="col-md-12 my-2 text-start">
+                        <p class="fs-3">Modifica l'immagine</p>
+                        <div class="d-flex justify-content-around">
+                            <div>
+                                <p class="fs-5">Immagine corrente: </p>
+                                <div style.background="url({{'data:image/png;base64,'+ choosedGame.image}})"
+                                    [style.width]="'100px'" [style.height]="'100px'"
+                                    class="rounded-circle border shadow-sm to-point">
+                                </div>
+                            </div>
+                            <div>
+                                <input type="file" #image class="d-none" (change)="handleImageEvent($event)"
+                                    accept="image/png, image/gif, image/jpeg">
+                                <button class="btn" title="Modifica immagine" *ngIf="!selectedImage"
+                                    (click)="image.click()">
+                                    <i class="bi bi-patch-plus"></i>
+                                </button>
+                                <p class="fs-5" *ngIf="selectedImage">Immagine scelta:</p>
+                                <div id="uploadedImage" *ngIf="selectedImage" [style.width]="'100px'"
+                                    [style.height]="'100px'" style.backgroundImage="url('{{choosedImageUrl}}')"
+                                    class="rounded-circle border shadow-sm to-point">
+                                </div>
+                                <button class="btn" title="Elimina immagine" *ngIf="selectedImage"
+                                    (click)="cleanImage()">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-12">
-                        <button class="btn">
+                        <button class="btn btn-warning border border-success text-success"
+                            (click)="modifyGame(choosedGame)">
                             Modifica definitivamente
                         </button>
                     </div>
@@ -112,15 +142,20 @@
         </div>
         <div class="row" *ngIf="showModal&&choosedAction!=''&& choosedGame">
             <div class="col-md-12 text-end">
-                <button class="btn btn-outline-danger" (click)="closeModal()">Chiudi</button>
+                <button class="btn btn-outline-danger" *ngIf="choosedAction=='view'"
+                    (click)="manageGame('edit',choosedGame)"><i class="bi bi-pencil text-success h3"></i></button>
+                <button class="btn btn-outline-danger" (click)="closeModal()"><i
+                        class="bi bi-x-lg text-danger h3"></i></button>
             </div>
         </div>
-        <div *ngIf="showModal&&choosedAction!=''&& choosedGame" class="row border">
+        <div *ngIf="showModal&&choosedAction!=''&& choosedGame" class="row border rounded">
             <div class="col-md-12 rounded-top bg-warning p-1 shadow-sm border">
                 <p class="fs-4 pt-1">{{editedChoosedGameName || choosedGame.nomeGioco}}</p>
             </div>
             <div class="col-md-4 pt-2">
-                <img src="{{'data:image/png;base64,'+choosedGame.image}}" alt="gioco_image" class="w-100">
+                <div style.background="url({{'data:image/png;base64,'+ choosedGame.image}})" [style.width]="'100px'"
+                    [style.height]="'100px'" class="rounded-circle border shadow-sm to-point">
+                </div>
             </div>
             <div class="col-md-8 pt-2">
                 <p class="fs-4 w-75 m-auto">
@@ -196,7 +231,9 @@
                 <div class="border shadow rounded">
                     <p class="rounded-top bg-warning fs-5 p-1 border-bottom shadow-sm">{{g.nomeGioco}}</p>
                     <div class="col-md-12 p-2 text-center">
-                        <img src="{{'data:image/png;base64,'+g?.image}}" alt="immagine_gioco" class="w-100">
+                        <div alt="immagine_gioco" class="w-100 to-point"
+                            style.background="url('{{'data:image/png;base64,'+g?.image}}')">
+                        </div>
                     </div>
                     <hr class="py-2">
                     <div class="container">

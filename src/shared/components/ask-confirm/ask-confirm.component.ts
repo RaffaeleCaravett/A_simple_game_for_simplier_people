@@ -42,16 +42,20 @@ export class AskConfirmComponent implements OnInit {
   }
 
   modifica() {
-    let recensione = {
-      punteggio: this.recePoints,
-      commento: this.recensione.commento,
-      giocoId: this.giocoId
-    }
-    this.recensioneService.putRecensione(recensione, this.recensione.id).subscribe({
-      next: (data: any) => {
-        this.dialogRef.close([true, data]);
+    if (this.recensione != null) {
+      let recensione = {
+        punteggio: this.recePoints,
+        commento: this.recensione.commento,
+        giocoId: this.giocoId
       }
-    })
+      this.recensioneService.putRecensione(recensione, this.recensione.id).subscribe({
+        next: (data: any) => {
+          this.dialogRef.close([true, data]);
+        }
+      })
+    } else {
+      this.dialogRef.close(true);
+    }
   }
 
   elimina() {

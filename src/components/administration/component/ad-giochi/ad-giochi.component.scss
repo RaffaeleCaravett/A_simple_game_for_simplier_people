@@ -15,10 +15,19 @@ ol {
 }
 
 .menu-item {
-        transition: 1s !important;
+    transition: 1s !important;
 
-        &:hover {
-            color: green !important;
-            transition: 1s !important;
-        }
+    &:hover {
+        color: green !important;
+        transition: 1s !important;
     }
+}
+
+.to-point {
+    height: 170px;
+    width: 170px;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-color: whitesmoke;
+}

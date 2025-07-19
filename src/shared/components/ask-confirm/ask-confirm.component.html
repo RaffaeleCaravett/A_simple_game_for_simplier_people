@@ -6,7 +6,7 @@
         <div class="bg-light border rounded shadow-sm" *ngIf="recensione!=null">
             <div class="w-100 text-center bg-light-personal d-flex justify-content-center pt-2 rounded-top">
                 <img src="{{giocoImage}}" class="gioco-image" alt="immagine gioco">
-                    <p class="p-2 fs-4">{{giocoName}}</p>
+                <p class="p-2 fs-4">{{giocoName}}</p>
             </div>
             <div class="py-4">
                 <div class="d-flex justify-content-center">
@@ -18,11 +18,18 @@
                         <img src="{{user.immagineProfilo}}" alt="profile image" class="rounded-circle border">
                         <span class="px-3 fs-5">{{user.fullName}}</span>
                     </p>
-                        <textarea class="p-2 fs-4" cols="40" rows="3" [disabled]="action!='Modifica'" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"
-                         #commento value=" {{recensione?.commento}}" (input)="recensione.commento=commento.value;" style="height : fit-content">
+                    <textarea class="p-2 fs-4" cols="40" rows="3" [disabled]="action!='Modifica'"
+                        oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" #commento
+                        value=" {{recensione?.commento}}" (input)="recensione.commento=commento.value;"
+                        style="height : fit-content">
                         </textarea>
                 </div>
             </div>
+        </div>
+        <div *ngIf="recensione==null" [style.height]="'100px'">
+            <p class="fs-2">
+                Sei sicuro di voler modificare {{giocoName}} ?
+            </p>
         </div>
     </mat-dialog-content>
     <mat-dialog-actions class="text-end position-absolute bottom-0 end-0">
