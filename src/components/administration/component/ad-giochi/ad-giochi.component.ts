@@ -48,6 +48,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   selectedImage: File | null = null;
   choosedImageUrl: string = '';
   isChecked: boolean = true;
+  availableChoosedGameCategories: Categoria[] = [];
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService,
     private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog) { }
 
@@ -154,7 +155,17 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   }
   manageGame(action: string, gioco: any) {
     this.choosedGame = gioco;
-
+    this.categorie.forEach((cat: Categoria) => {
+      let contains: boolean = false;
+      this.choosedGame?.categorie.forEach(c => {
+        if (c.id == cat.id) {
+          contains = true;
+        }
+      });
+      if (!contains) {
+        this.availableChoosedGameCategories.push(cat);
+      }
+    });
     if (action == 'delete' || action == 'restore') {
       let dialog = this.matDialog.open(AskConfirmComponent, { data: [this.choosedGame, null, action == 'delete' ? 'Elimina' : 'Recupera'], width: '60%', height: '70%' });
       dialog.afterClosed().subscribe((data: boolean) => {
@@ -210,7 +221,8 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
           let gioco = {
             nome: this.editGameForm.controls['nome'].value,
             descrizione: this.editGameForm.controls['descrizione'].value,
-            difficolta: this.editGameForm.controls['difficolta'].value
+            difficolta: this.editGameForm.controls['difficolta'].value,
+            categorie: this.choosedGame?.categorie.map(c => c.id)
           };
           this.administrationService.putGameById(game.id, gioco, this.selectedImage).subscribe({
             next: (value: any) => {
@@ -241,5 +253,32 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   cleanImage() {
     (document.getElementById('uploadedImage')! as HTMLImageElement).src = "";
     this.selectedImage = null;
+  }
+
+  onAddCategory(categoriaId: string) {
+    let categoria: Categoria = this.availableChoosedGameCategories.filter(c => c.id == Number(categoriaId))[0];
+    this.choosedGame?.categorie.push(categoria);
+    this.availableChoosedGameCategories = this.availableChoosedGameCategories.filter(c => c.id != categoria.id);
+    let gioco = {
+      categorie: this.choosedGame?.categorie.map(c => c.id)
+    }
+    console.log(gioco);
+    this.administrationService.putGameById(this.choosedGame!.id, gioco).subscribe({
+      next: (value: any) => {
+        this.choosedGame = value;
+        this.toastr.success("Categoria aggiornate correttamente");
+      }
+    });
+  }
+  onRemoveCategory(categoria: Categoria) {
+    this.choosedGame!.categorie = this.choosedGame!.categorie.filter(c => c.id != categoria.id);
+    this.availableChoosedGameCategories.push(categoria);
+   
+    this.administrationService.deleteCategoryFromGameById(this.choosedGame!.id, categoria.id).subscribe({
+      next: (value: any) => {
+        this.choosedGame = value;
+        this.toastr.success("Categorie aggiornate correttamente");
+      }
+    });
   }
 }

@@ -136,6 +136,27 @@
                         </div>
                     </div>
                     <div class="col-md-12">
+                        <p class="fs-2">Modifica le categorie</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="categorie pb-2">Aggiungi una categoria</label>
+                        <select name="categorie" id="categorie" class="form-select" #categorie
+                            (change)="onAddCategory(categorie.value)">
+                            <option value=""></option>
+                            <option value="{{c.id}}" *ngFor="let c of availableChoosedGameCategories">{{c.nome}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 mb-4 mt-3">
+                        <p class="text-start">Categorie del gioco </p>
+                        <div class="row">
+                            <div class="col-md-2" *ngFor="let c of choosedGame.categorie">
+                                <span class="p-2 border rounded-circle shadow-sm bg-light">{{c.nome}}</span> <button
+                                    class="btn text-danger" title="Elimina" (click)="onRemoveCategory(c)">X</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <button class="btn btn-warning border border-success text-success mb-3"
                             (click)="modifyGame(choosedGame)">
                             Modifica definitivamente
@@ -152,8 +173,7 @@
                 <div class="w-25">
                     <button class="btn btn-outline-success" *ngIf="choosedAction=='view'"
                         (click)="manageGame('edit',choosedGame)"><i class="bi bi-pencil h3"></i></button>
-                    <button class="btn btn-outline-danger" (click)="closeModal()"><i
-                            class="bi bi-x-lg h3"></i></button>
+                    <button class="btn btn-outline-danger" (click)="closeModal()"><i class="bi bi-x-lg h3"></i></button>
                 </div>
             </div>
             <div class="col-md-4 pt-2">
@@ -216,22 +236,28 @@
                         </ng-template>
                     </div>
                     <div class="col-md-12">
-                        <p class="text-center fs-3" *ngIf="!editedChoosedGameDifficult else editedDifficult"
+                        <p class="text-center fs-3 fw-bolder" *ngIf="!editedChoosedGameDifficult else editedDifficult"
                             [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
                             {{choosedGame.difficolta<=3?'FACILE':choosedGame.difficolta<=4?'MEDIO':'DIFFICILE'}} </p>
                                 <ng-template #editedDifficult>
-                                    <p class="text-center fs-3"
+                                    <p class="text-center fs-3 fw-bolder"
                                         [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
                                         {{toNumber(editedChoosedGameDifficult)
                                         <=3?'FACILE':toNumber(editedChoosedGameDifficult)<=4?'MEDIO':'DIFFICILE'}} </p>
                                 </ng-template>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="fs-2 mt-2">Stato gioco:</p>
+                        <p class="fs-3 fw-bolder text-center"
+                            [ngClass]="choosedGame.active?'text-success':'text-danger'">
+                            {{choosedGame.active?"ATTIVO":"INATTIVO"}}</p>
                     </div>
                 </div>
             </div>
         </div>
         <h2>Tutti i giochi</h2>
         <div class="row">
-            <div class="col-sm-4 p-2" *ngFor="let g of giochiArray">
+            <div class="col-sm-6 col-md-4 p-2" *ngFor="let g of giochiArray">
                 <div class="position-relative overflow-hidden">
                     <div class="position-absolute p-2" [ngClass]="g.active?['active']:['inactive']">
                         {{g.active?'Attivo':'Inattivo'}}
@@ -241,6 +267,14 @@
                         <div class="col-md-12 p-2 text-center">
                             <div alt="immagine_gioco" class="w-100 to-point"
                                 style.background="url('{{'data:image/png;base64,'+g?.image}}')">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 my-3" *ngFor="let c of g.categorie">
+                                <span class="rounded-circle p-1 shadow-sm bg-light border">{{c.nome}}</span>
+                            </div>
+                            <div class="col-sm-12 my-3" *ngIf="g.categorie.length==0">
+                                <span class="rounded-circle p-1 shadow-sm bg-light border">Nessuna categoria</span>
                             </div>
                         </div>
                         <hr class="py-2">

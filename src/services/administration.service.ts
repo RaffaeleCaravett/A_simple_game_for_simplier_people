@@ -44,7 +44,10 @@ export class AdministrationService {
     deleteGame(gameId: number) {
         return this.http.delete(environment.API_URL + this.gioco + `/${gameId}`)
     }
+    deleteCategoryFromGameById(giocoId: number, categoriaId: number) {
+        return this.http.get(environment.API_URL + this.gioco + this.categoria + `/${giocoId}/${categoriaId}`);
+    }
     restoreGame(gameId: number) {
-        return this.http.get(environment.API_URL + this.gioco + `${this.restore + '/' + gameId}`)
+        return this.http.get(environment.API_URL + this.gioco + `${this.restore + '/' + gameId}`);
     }
 }
