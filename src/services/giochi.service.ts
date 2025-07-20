@@ -26,7 +26,7 @@ export class GiochiService {
         if (body.difficolta) params = params.set('difficolta', body.difficolta);
         if (body.punteggio) params = params.set('avg', body.punteggio);
         if (body.categoria) params = params.set('categorie', body.categoria);
-        if (isActive) params = params.set('isActive', isActive);
+        if (isActive != null && isActive != undefined) params = params.set('isActive', isActive);
         return this.http.get(environment.API_URL + this.gioco + this.byFilters, { params: params });
     }
 

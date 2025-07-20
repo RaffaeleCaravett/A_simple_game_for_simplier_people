@@ -8,7 +8,7 @@ import { environment } from "../core/environment";
 export class AdministrationService {
     private categoria: string = '/categoria';
     private gioco: string = '/gioco';
-
+    private restore: string = '/restore';
     constructor(private http: HttpClient) { }
 
 
@@ -43,5 +43,8 @@ export class AdministrationService {
     }
     deleteGame(gameId: number) {
         return this.http.delete(environment.API_URL + this.gioco + `/${gameId}`)
+    }
+    restoreGame(gameId: number) {
+        return this.http.get(environment.API_URL + this.gioco + `${this.restore + '/' + gameId}`)
     }
 }

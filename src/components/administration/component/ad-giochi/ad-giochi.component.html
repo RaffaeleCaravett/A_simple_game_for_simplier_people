@@ -1,6 +1,10 @@
 <div class="row text-center">
     <div class="col-md-12">
         <h2>Cerca un gioco</h2>
+        <div class="w-100 text-start">
+            <p><mat-slide-toggle labelPosition="before" [(ngModel)]="isChecked">Cerca giochi {{isChecked? 'attivi' :
+                    'inattivi'}}</mat-slide-toggle></p>
+        </div>
         <form [formGroup]="filterForms" class="row">
             <div class="col-sm-3"><label for="nome">
                     Nome gioco
@@ -132,7 +136,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <button class="btn btn-warning border border-success text-success"
+                        <button class="btn btn-warning border border-success text-success mb-3"
                             (click)="modifyGame(choosedGame)">
                             Modifica definitivamente
                         </button>
@@ -141,16 +145,16 @@
             </div>
         </div>
         <div class="row" *ngIf="showModal&&choosedAction!=''&& choosedGame">
-            <div class="col-md-12 text-end">
-                <button class="btn btn-outline-danger" *ngIf="choosedAction=='view'"
-                    (click)="manageGame('edit',choosedGame)"><i class="bi bi-pencil text-success h3"></i></button>
-                <button class="btn btn-outline-danger" (click)="closeModal()"><i
-                        class="bi bi-x-lg text-danger h3"></i></button>
-            </div>
         </div>
         <div *ngIf="showModal&&choosedAction!=''&& choosedGame" class="row border rounded">
-            <div class="col-md-12 rounded-top bg-warning p-1 shadow-sm border">
-                <p class="fs-4 pt-1">{{editedChoosedGameName || choosedGame.nomeGioco}}</p>
+            <div class="col-md-12 rounded-top bg-warning p-1 shadow-sm border d-flex justify-content-between">
+                <p class="fs-4 pt-1 w-75 text-center">{{editedChoosedGameName || choosedGame.nomeGioco}}</p>
+                <div class="w-25">
+                    <button class="btn btn-outline-success" *ngIf="choosedAction=='view'"
+                        (click)="manageGame('edit',choosedGame)"><i class="bi bi-pencil h3"></i></button>
+                    <button class="btn btn-outline-danger" (click)="closeModal()"><i
+                            class="bi bi-x-lg h3"></i></button>
+                </div>
             </div>
             <div class="col-md-4 pt-2">
                 <div style.background="url({{'data:image/png;base64,'+ choosedGame.image}})" [style.width]="'100px'"
@@ -228,20 +232,26 @@
         <h2>Tutti i giochi</h2>
         <div class="row">
             <div class="col-sm-4 p-2" *ngFor="let g of giochiArray">
-                <div class="border shadow rounded">
-                    <p class="rounded-top bg-warning fs-5 p-1 border-bottom shadow-sm">{{g.nomeGioco}}</p>
-                    <div class="col-md-12 p-2 text-center">
-                        <div alt="immagine_gioco" class="w-100 to-point"
-                            style.background="url('{{'data:image/png;base64,'+g?.image}}')">
-                        </div>
+                <div class="position-relative overflow-hidden">
+                    <div class="position-absolute p-2" [ngClass]="g.active?['active']:['inactive']">
+                        {{g.active?'Attivo':'Inattivo'}}
                     </div>
-                    <hr class="py-2">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-4 text-center" *ngFor="let a of actions">
-                                <button class="btn my-1" title="{{a.action}}" (click)="manageGame(a.action,g)">
-                                    <i class="{{a.class}} h3"></i>
-                                </button>
+                    <div class="border shadow rounded">
+                        <p class="rounded-top bg-warning fs-5 p-1 border-bottom shadow-sm">{{g.nomeGioco}}</p>
+                        <div class="col-md-12 p-2 text-center">
+                            <div alt="immagine_gioco" class="w-100 to-point"
+                                style.background="url('{{'data:image/png;base64,'+g?.image}}')">
+                            </div>
+                        </div>
+                        <hr class="py-2">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4 text-center" *ngFor="let a of actions"
+                                    [ngClass]="((a.action =='edit' || a.action == 'delete') && g.active == false) || (a.action == 'restore' && g.active== true)?'d-none':''">
+                                    <button class="btn my-1" title="{{a.action}}" (click)="manageGame(a.action,g)">
+                                        <i class="{{a.class}} h3"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -250,6 +260,6 @@
         </div>
     </div>
     <div class="col-sm-12" *ngIf="giochi?.content?.length == 0">
-        <h2>Non ci sono giochi presenti</h2>
+        <h2>Non ci sono giochi presenti.</h2>
     </div>
 </div>

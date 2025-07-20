@@ -31,3 +31,19 @@ ol {
     background-position: center !important;
     background-color: whitesmoke;
 }
+
+.active {
+    background-color: rgba($color: green, $alpha: .1);
+    top: 40%;
+    left: -30%;
+    width: 160% !important;
+    transform: rotate(-45deg);
+}
+
+.inactive {
+    background-color: rgba($color: red, $alpha: .1);
+    top: 40%;
+    left: -30%;
+    width: 160% !important;
+    transform: rotate(-45deg);
+}

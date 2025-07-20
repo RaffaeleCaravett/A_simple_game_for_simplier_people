@@ -3,16 +3,18 @@ import { AfterContentChecked, ChangeDetectorRef, Component, HostListener, OnInit
 import { MatMenuModule } from '@angular/material/menu';
 import { AdministrationService } from '../../../../services/administration.service';
 import { GiochiService } from '../../../../services/giochi.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Categoria, Gioco } from '../../../../interfaces/interfaces';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 @Component({
   selector: 'app-ad-giochi',
   standalone: true,
-  imports: [NgIf, MatMenuModule, NgFor, ReactiveFormsModule, NgClass],
+  imports: [NgIf, MatMenuModule, NgFor, ReactiveFormsModule, NgClass, MatSlideToggleModule, FormsModule],
   templateUrl: './ad-giochi.component.html',
   styleUrl: './ad-giochi.component.scss'
 })
@@ -34,7 +36,8 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   pages: number[] = [1];
   categorie: Categoria[] = [];
   choosedCategories: Categoria[] = [];
-  actions: { class: string, action: string }[] = [{ class: "bi bi-eye", action: 'view' }, { class: "bi bi-pencil", action: 'edit' }, { class: "bi bi-trash", action: 'delete' }];
+  actions: { class: string, action: string }[] = [{ class: "bi bi-eye", action: 'view' }, { class: "bi bi-pencil", action: 'edit' }, { class: "bi bi-trash", action: 'delete' }
+    , { class: "bi bi-arrow-clockwise", action: 'restore' }];
   showModal: boolean = false;
   choosedAction: string = '';
   choosedGame: Gioco | null = null;
@@ -44,6 +47,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   editedChoosedGameDifficult: string = '';
   selectedImage: File | null = null;
   choosedImageUrl: string = '';
+  isChecked: boolean = true;
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService,
     private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog) { }
 
@@ -119,7 +123,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
       difficolta: this.filterForms.get('difficolta')?.value,
       categoria: this.filterForms.get('categoria')?.value,
     }
-    this.giochiService.searchGiochi(body, this.page, this.size, this.orderBy, this.sortOrder).subscribe({
+    this.giochiService.searchGiochi(body, this.page, this.size, this.orderBy, this.sortOrder, this.isChecked).subscribe({
       next: (value: any) => {
         this.giochi = value;
         this.giochiArray = this.giochi?.content;
@@ -151,27 +155,40 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   manageGame(action: string, gioco: any) {
     this.choosedGame = gioco;
 
-    if (action != 'delete') {
-      this.showModal = true;
-      this.choosedAction = action;
-    } else {
-      let dialog = this.matDialog.open(AskConfirmComponent, { data: [this.choosedGame, null, 'Elimina'], width: '60%', height: '70%' });
+    if (action == 'delete' || action == 'restore') {
+      let dialog = this.matDialog.open(AskConfirmComponent, { data: [this.choosedGame, null, action == 'delete' ? 'Elimina' : 'Recupera'], width: '60%', height: '70%' });
       dialog.afterClosed().subscribe((data: boolean) => {
         if (data) {
-          this.administrationService.deleteGame(this.choosedGame!.id).subscribe({
-            next: (value: any) => {
-              if (value) {
-                this.toastr.success("Gioco eliminato con successo");
-                this.searchGiochi();
-              } else {
-                this.toastr.error("E' successo qualcosa che ha impedito l'eliminazione del gioco.");
+          if (action == 'delete') {
+            this.administrationService.deleteGame(this.choosedGame!.id).subscribe({
+              next: (value: any) => {
+                if (value) {
+                  this.toastr.success("Gioco eliminato con successo");
+                  this.searchGiochi();
+                } else {
+                  this.toastr.error("E' successo qualcosa che ha impedito l'eliminazione del gioco.");
+                }
               }
-            }
-          })
+            })
+          } else {
+            this.administrationService.restoreGame(this.choosedGame!.id).subscribe({
+              next: (value: any) => {
+                if (value) {
+                  this.toastr.success("Gioco recuperato con successo");
+                  this.searchGiochi();
+                } else {
+                  this.toastr.error("E' successo qualcosa che ha impedito il recuper del gioco.");
+                }
+              }
+            })
+          }
         } else {
-          this.toastr.warning("Non è stato eliminato nessun gioco.");
+          this.toastr.warning(`Non è stato ${action == 'delete' ? 'eliminato' : 'recuperato'} nessun gioco.`);
         }
       })
+    } else {
+      this.showModal = true;
+      this.choosedAction = action;
     }
   }
   closeModal() {

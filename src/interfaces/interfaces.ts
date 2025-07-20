@@ -63,6 +63,7 @@ export interface Gioco {
     recensione: Recensione[];
     totalRecensioniNumber: number;
     categorie: Categoria[];
+    active: boolean;
 }
 
 export interface Recensione {
