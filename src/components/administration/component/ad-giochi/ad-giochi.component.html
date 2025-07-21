@@ -141,7 +141,7 @@
                     <div class="col-md-3">
                         <label for="categorie pb-2">Aggiungi una categoria</label>
                         <select name="categorie" id="categorie" class="form-select" #categorie
-                            (change)="onAddCategory(categorie.value)">
+                            (change)="onAddCategory(categorie.value,categorie)">
                             <option value=""></option>
                             <option value="{{c.id}}" *ngFor="let c of availableChoosedGameCategories">{{c.nome}}
                             </option>
@@ -150,7 +150,7 @@
                     <div class="col-md-12 mb-4 mt-3">
                         <p class="text-start">Categorie del gioco </p>
                         <div class="row">
-                            <div class="col-md-2" *ngFor="let c of choosedGame.categorie">
+                            <div class="col-md-3 mt-3" *ngFor="let c of choosedGame.categorie">
                                 <span class="p-2 border rounded-circle shadow-sm bg-light">{{c.nome}}</span> <button
                                     class="btn text-danger" title="Elimina" (click)="onRemoveCategory(c)">X</button>
                             </div>
@@ -211,6 +211,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-12 text-start" *ngIf="choosedGame.recensione.length>2">
+                        <button class="btn btn-transparent my-2" (click)="seeValidations(choosedGame)">Vedi tutte le
+                            recensioni</button>
+                    </div>
                     <div class="col-md-12" *ngIf="choosedGame?.recensione?.length==0">
                         <p class="fs-3">
                             Non ci sono recensioni ancora ...
@@ -258,8 +262,8 @@
         <h2>Tutti i giochi</h2>
         <div class="row">
             <div class="col-sm-6 col-md-4 p-2" *ngFor="let g of giochiArray">
-                <div class="position-relative overflow-hidden">
-                    <div class="position-absolute p-2" [ngClass]="g.active?['active']:['inactive']">
+                <div class="overflow-hidden position-relative">
+                    <div class="position-absolute p-2 banner pe-none" [ngClass]="g.active?['active']:['inactive']">
                         {{g.active?'Attivo':'Inattivo'}}
                     </div>
                     <div class="border shadow rounded">
@@ -270,17 +274,18 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-4 my-3" *ngFor="let c of g.categorie">
-                                <span class="rounded-circle p-1 shadow-sm bg-light border">{{c.nome}}</span>
+                            <div class="col-4 my-3" *ngFor="let c of g.categorie">
+                                <span class="rounded-circle p-1 shadow-sm bg-light border categoria">{{c.nome}}</span>
                             </div>
                             <div class="col-sm-12 my-3" *ngIf="g.categorie.length==0">
-                                <span class="rounded-circle p-1 shadow-sm bg-light border">Nessuna categoria</span>
+                                <span class="rounded-circle p-1 shadow-sm bg-light border categoria">Nessuna
+                                    categoria</span>
                             </div>
                         </div>
                         <hr class="py-2">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-4 text-center" *ngFor="let a of actions"
+                                <div class="col-4 text-center" *ngFor="let a of actions"
                                     [ngClass]="((a.action =='edit' || a.action == 'delete') && g.active == false) || (a.action == 'restore' && g.active== true)?'d-none':''">
                                     <button class="btn my-1" title="{{a.action}}" (click)="manageGame(a.action,g)">
                                         <i class="{{a.class}} h3"></i>

@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { RecensioniComponent } from '../../../../shared/components/recensioni/recensioni.component';
 
 
 @Component({
@@ -255,30 +256,46 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
     this.selectedImage = null;
   }
 
-  onAddCategory(categoriaId: string) {
+  onAddCategory(categoriaId: string, select: HTMLSelectElement) {
     let categoria: Categoria = this.availableChoosedGameCategories.filter(c => c.id == Number(categoriaId))[0];
-    this.choosedGame?.categorie.push(categoria);
-    this.availableChoosedGameCategories = this.availableChoosedGameCategories.filter(c => c.id != categoria.id);
-    let gioco = {
-      categorie: this.choosedGame?.categorie.map(c => c.id)
-    }
-    console.log(gioco);
-    this.administrationService.putGameById(this.choosedGame!.id, gioco).subscribe({
-      next: (value: any) => {
-        this.choosedGame = value;
-        this.toastr.success("Categoria aggiornate correttamente");
+    if (this.choosedGame!.categorie.length < 3) {
+      this.choosedGame?.categorie.push(categoria);
+      this.availableChoosedGameCategories = this.availableChoosedGameCategories.filter(c => c.id != categoria.id);
+      let gioco = {
+        categorie: this.choosedGame?.categorie.map(c => c.id)
       }
-    });
+      this.administrationService.putGameById(this.choosedGame!.id, gioco).subscribe({
+        next: (value: any) => {
+          this.choosedGame = value;
+          this.toastr.success("Categoria aggiornate correttamente");
+          this.searchGiochi();
+        }
+      });
+    } else {
+      this.toastr.warning("Attenzione, " + this.choosedGame?.nomeGioco + " ha già tre categorie associate.");
+      select.value = "";
+    }
   }
   onRemoveCategory(categoria: Categoria) {
     this.choosedGame!.categorie = this.choosedGame!.categorie.filter(c => c.id != categoria.id);
     this.availableChoosedGameCategories.push(categoria);
-   
+
     this.administrationService.deleteCategoryFromGameById(this.choosedGame!.id, categoria.id).subscribe({
       next: (value: any) => {
         this.choosedGame = value;
         this.toastr.success("Categorie aggiornate correttamente");
+        this.searchGiochi();
       }
     });
+  }
+
+  seeValidations(game: Gioco) {
+    const dialogRef = this.matDialog.open(RecensioniComponent, { data: game, width: '90%', height: '90%' });
+    dialogRef.afterClosed().subscribe((gioco: Gioco) => {
+      if (gioco) {
+        this.choosedGame = gioco;
+        this.searchGiochi();
+      }
+    })
   }
 }
