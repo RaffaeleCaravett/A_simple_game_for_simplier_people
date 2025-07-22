@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RecensioniComponent } from '../../../../shared/components/recensioni/recensioni.component';
+import { SocketService } from '../../../../socket/socket.service';
 
 
 @Component({
@@ -50,8 +51,10 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   choosedImageUrl: string = '';
   isChecked: boolean = true;
   availableChoosedGameCategories: Categoria[] = [];
+
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService,
-    private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog) { }
+    private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog,
+    private socketService: SocketService) { }
 
   ngAfterContentChecked(): void {
     this.changeDet.detectChanges();

@@ -76,3 +76,8 @@ export interface Recensione {
     modifiedAt: string,
     deletedAt: string
 }
+
+export interface Message {
+    message: string,
+    userId:number
+}
