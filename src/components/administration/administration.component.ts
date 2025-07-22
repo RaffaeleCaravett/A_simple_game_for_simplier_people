@@ -58,10 +58,10 @@ export class AdministrationComponent implements OnInit {
     this.innerWidth = window.innerWidth;
   }
 
-  switchLocation(action:string){
-    this.router.navigate(['/amministrazione/'+action]);
+  switchLocation(action: string) {
+    this.router.navigate(['/amministrazione/' + action], { queryParams: { user: JSON.stringify(this.user) } });
   }
-  resetFormAndLocation(){
+  resetFormAndLocation() {
     this.actionForm.controls['action'].setValue("");
     this.actionForm.updateValueAndValidity();
     this.router.navigate(['/amministrazione']);

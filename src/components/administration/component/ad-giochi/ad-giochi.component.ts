@@ -1,16 +1,17 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { AfterContentChecked, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { AdministrationService } from '../../../../services/administration.service';
 import { GiochiService } from '../../../../services/giochi.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Categoria, Gioco } from '../../../../interfaces/interfaces';
+import { Categoria, Gioco, User } from '../../../../interfaces/interfaces';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RecensioniComponent } from '../../../../shared/components/recensioni/recensioni.component';
-import { SocketService } from '../../../../socket/socket.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../../services/auth.service';
 
 
 @Component({
@@ -51,16 +52,23 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   choosedImageUrl: string = '';
   isChecked: boolean = true;
   availableChoosedGameCategories: Categoria[] = [];
+  user!: User | null;
 
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService,
     private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog,
-    private socketService: SocketService) { }
+     private activatedRoute: ActivatedRoute, private authService: AuthService) { }
 
   ngAfterContentChecked(): void {
     this.changeDet.detectChanges();
     this.changeDet.markForCheck();
   }
   ngOnInit(): void {
+    if (this.activatedRoute?.snapshot?.queryParams['user']) {
+      this.user = JSON.parse(this.activatedRoute.snapshot.queryParams['user']);
+    } else {
+      this.user = this.authService.getUser();
+    }
+    
     this.innerWidth = window.innerWidth;
     this.getAllCategorie();
     this.initializeForms();

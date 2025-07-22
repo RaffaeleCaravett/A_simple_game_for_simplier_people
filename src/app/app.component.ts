@@ -6,7 +6,6 @@ import { NgClass, NgIf } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { ModeService } from '../services/mode.service';
 import { Subscription } from 'rxjs';
-import { SocketService } from '../socket/socket.service';
 export let browserRefresh = false;
 
 @Component({
@@ -22,9 +21,7 @@ export class AppComponent implements OnInit {
   mode: string = 'light';
   subscription: Subscription;
 
-  constructor(private modeService: ModeService, private authService: AuthService, private router: Router,
-    private socketService: SocketService
-  ) {
+  constructor(private modeService: ModeService, private authService: AuthService, private router: Router) {
     this.subscription = router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         browserRefresh = !router.navigated;
@@ -55,10 +52,6 @@ export class AppComponent implements OnInit {
             this.authService.setUser(user);
             this.authService.authenticateUser(true);
             this.authService.setToken(accessToken);
-            this.socketService.connect();
-            setTimeout(()=>{
-            this.socketService.sendMessage("Primo messaggio con socket");
-            },3000);
             if (location && location == 'game-field') this.router.navigate([`/${location}`], { queryParams: { gioco: gioco } });
             else this.router.navigate([`/${location || 'home'}`]);
           }
