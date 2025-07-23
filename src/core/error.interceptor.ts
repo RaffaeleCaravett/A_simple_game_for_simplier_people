@@ -24,81 +24,85 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((err: any) => {
         setTimeout(() => {
           if (err instanceof HttpErrorResponse) {
-              if (
-                ((err.error &&
-                  err.error.message &&
-                  err.error.message ==
-                  'Il token non è valido! Per favore effettua nuovamente il login o refresha la pagina!') ||
+            if (
+              ((err.error &&
+                err.error.message &&
+                err.error.message ==
+                'Il token non è valido! Per favore effettua nuovamente il login o refresha la pagina!') ||
                 (err.error &&
                   err.error.message &&
                   err.error.message ==
                   'Il token non è valido.') ||
-                  (err.status === 401 || err.status === 403))
-                  &&!(err?.error?.message =="Il refresh token non è valido. Accedi nuovamente." ||
-                    err?.message == "Il refresh token non è valido. Accedi nuovamente."
-                  )
-              ) {
-                this.formsService.requestLoginCode.next("");
-                let refreshToken = localStorage.getItem('refreshToken');
-                let location = localStorage.getItem('location');
-                if (refreshToken) {
-                  this.authService
-                    .verifyRefreshToken(refreshToken!)
-                    .subscribe({
-                      next: (tokens: any) => {
-                        localStorage.setItem('accessToken', tokens.accessToken);
-                        localStorage.setItem('refreshToken', tokens.refreshToken);
-                        this.authService.setToken(tokens.accessToken);
-                        this.authService
-                          .verifyAccessToken(tokens.accessToken)
-                          .subscribe({
-                            next: (user: any) => {
-                              if (user) {
-                                localStorage.setItem(
-                                  'user',
-                                  JSON.stringify(user)
-                                );
-                                this.authService.setUser(user);
-                                this.authService.authenticateUser(true);
-                                this.router.navigate([`/${location || 'home'}`]);
-                              }
-                            },
-                          });
-                      }
-                    });
-                } else {
-                  localStorage.clear();
-                  this.authService.authenticateUser(false);
-                  this.authService.setUser(null);
-                  this.authService.setToken('');
-                  if(err?.error?.message != "La password è errata.") this.router.navigate(['/home']);
-                }
-              } else if (
-                err.error &&
-                err.error.message &&
-                err.error.message ==
-                'Il refresh token non è valido. Accedi nuovamente.') {
-                this.formsService.requestLoginCode.next("");
-                localStorage.clear()
-              } else if (err.error &&
-                err.error.message &&
-                err.error.message ==
-                "Abbiamo inviato un codice alla mail da te indicata. Inseriscilo qui sotto.") {
-                this.formsService.requestLoginCode.next(err.error.message);
-                this.toastr.show("Abbiamo inviato un codice alla mail da te indicata. Inseriscilo qui sotto.");
+                (err.status === 401 || err.status === 403))
+              && !(err?.error?.message == "Il refresh token non è valido. Accedi nuovamente." ||
+                err?.message == "Il refresh token non è valido. Accedi nuovamente."
+              )
+            ) {
+              this.formsService.requestLoginCode.next("");
+              let refreshToken = localStorage.getItem('refreshToken');
+              let location = localStorage.getItem('location');
+              if (refreshToken) {
+                this.authService
+                  .verifyRefreshToken(refreshToken!)
+                  .subscribe({
+                    next: (tokens: any) => {
+                      localStorage.setItem('accessToken', tokens.accessToken);
+                      localStorage.setItem('refreshToken', tokens.refreshToken);
+                      this.authService.setToken(tokens.accessToken);
+                      this.authService
+                        .verifyAccessToken(tokens.accessToken)
+                        .subscribe({
+                          next: (user: any) => {
+                            if (user) {
+                              localStorage.setItem(
+                                'user',
+                                JSON.stringify(user)
+                              );
+                              this.authService.connectUser(true).subscribe({
+                                next: (value: any) => {
+                                  this.authService.setUser(value);
+                                  this.authService.authenticateUser(true);
+                                }
+                              });
+                              this.router.navigate([`/${location || 'home'}`]);
+                            }
+                          },
+                        });
+                    }
+                  });
               } else {
-                this.formsService.requestLoginCode.next("");
-                let error = null;
-                if (null != err?.error?.messageList && err?.error?.messageList.length > 0) {
-                  error = err?.error?.messageList[0];
-                }
-                this.toastr.show(
-                  err?.error?.message ||
-                  error ||
-                  err?.message ||
-                  "E' successo qualcosa nell'elaborazione della richiesta"
-                );
+                localStorage.clear();
+                this.authService.authenticateUser(false);
+                this.authService.setUser(null);
+                this.authService.setToken('');
+                if (err?.error?.message != "La password è errata.") this.router.navigate(['/home']);
               }
+            } else if (
+              err.error &&
+              err.error.message &&
+              err.error.message ==
+              'Il refresh token non è valido. Accedi nuovamente.') {
+              this.formsService.requestLoginCode.next("");
+              localStorage.clear()
+            } else if (err.error &&
+              err.error.message &&
+              err.error.message ==
+              "Abbiamo inviato un codice alla mail da te indicata. Inseriscilo qui sotto.") {
+              this.formsService.requestLoginCode.next(err.error.message);
+              this.toastr.show("Abbiamo inviato un codice alla mail da te indicata. Inseriscilo qui sotto.");
+            } else {
+              this.formsService.requestLoginCode.next("");
+              let error = null;
+              if (null != err?.error?.messageList && err?.error?.messageList.length > 0) {
+                error = err?.error?.messageList[0];
+              }
+              this.toastr.show(
+                err?.error?.message ||
+                error ||
+                err?.message ||
+                "E' successo qualcosa nell'elaborazione della richiesta"
+              );
+            }
           }
 
           this.showError.emitShowSpinner(false);

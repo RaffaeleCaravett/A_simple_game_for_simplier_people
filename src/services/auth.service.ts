@@ -13,11 +13,12 @@ export class AuthService {
   public isAuthenticatedUser: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private token: string = '';
   private user!: User | null;
-  private userUrl:string = '/user'
+  private userUrl: string = '/user'
   private auth: string = '/auth'
   private accessToken: string = '/verifyToken'
   private refreshToken: string = '/verifyRefreshToken'
-
+  private connected: string = '/connected'
+  private allConnected: string = '/allConnected'
   constructor(private authGuard: AuthGuard, private http: HttpClient) { }
 
   authenticateUser(bool: boolean) {
@@ -42,7 +43,13 @@ export class AuthService {
   verifyRefreshToken(refreshToken: string) {
     return this.http.get(environment.API_URL + this.auth + this.refreshToken + `?refreshToken=${refreshToken}`)
   }
-  getUserById(id:number){
-    return this.http.get(environment.API_URL+this.auth+this.userUrl+`/${id}`)
+  getUserById(id: number) {
+    return this.http.get(environment.API_URL + this.auth + this.userUrl + `/${id}`)
+  }
+  connectUser(connection: boolean) {
+    return this.http.get(environment.API_URL + this.userUrl + this.connected + `/${connection}`);
+  }
+  getAllActiveUsers() {
+    return this.http.get(environment.API_URL + this.userUrl + this.allConnected);
   }
 }

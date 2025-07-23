@@ -24,8 +24,8 @@ export class NavComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
-      this.user = this.authService.getUser()
-    })
+      this.user = this.authService.getUser();
+    });
     this.modeService.mode.subscribe((mood: string) => {
       this.mode = mood;
     });
@@ -33,11 +33,15 @@ export class NavComponent implements OnInit {
   logout() {
     this.isLoadingLogoutOrRoute = true;
     setTimeout(() => {
-      this.authService.setUser(null);
-      this.authService.authenticateUser(false);
-      localStorage.clear();
-      this.isLoadingLogoutOrRoute = false;
-      this.router.navigate([''])
+      this.authService.connectUser(false).subscribe({
+        next: (value: any) => {
+          this.authService.setUser(null);
+          this.authService.authenticateUser(false);
+          localStorage.clear();
+          this.isLoadingLogoutOrRoute = false;
+          this.router.navigate(['']);
+        }
+      });
     }, 1000)
   }
   updateMode(value: string) {
@@ -55,8 +59,8 @@ export class NavComponent implements OnInit {
     this.innerWidth = window.innerWidth;
   }
 
-  @HostListener('window:resize',['$event'])
-  onResize(event:any){
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
     this.innerWidth = window.innerWidth;
   }
 }

@@ -47,7 +47,8 @@ export interface User {
         id: number,
         textAlignment: string,
         innerHTML: string
-    }
+    },
+    isConnected: boolean
 }
 export interface Categoria {
     id: number,
@@ -79,5 +80,7 @@ export interface Recensione {
 
 export interface Message {
     message: string,
-    userId:number
+    riceventi:number[],
+    mittente:number,
+    chat:number
 }
