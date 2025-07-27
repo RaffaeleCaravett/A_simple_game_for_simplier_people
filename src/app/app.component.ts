@@ -10,7 +10,8 @@ export let browserRefresh = false;
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { ChatService } from '../services/chat.service';
 import { Md5 } from 'ts-md5';
-import { Message } from '@stomp/stompjs';
+import { Chat, Message } from '../interfaces/interfaces';
+import { INPUT_MODALITY_DETECTOR_DEFAULT_OPTIONS } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,10 @@ export class AppComponent implements OnInit {
   showGoTop: boolean = false;
   mode: string = 'light';
   subscription: Subscription;
-
+  channels: Message[] = [];
+  selectedChat: Chat | null = null;
+  chats: Chat[] = [];
+  socketMap: Map<number, RxStompService> = new Map<number, RxStompService>();
   constructor(private modeService: ModeService, private authService: AuthService, private router: Router,
     private stompService: RxStompService, private chatService: ChatService
   ) {
@@ -62,22 +66,24 @@ export class AppComponent implements OnInit {
                 this.authService.authenticateUser(true);
                 this.chatService.getAllChatsByUserId(value.id).subscribe({
                   next: (value: any) => {
+                    console.log(value)
+                    this.chats = value;
                     value.forEach((c: any) => {
-                      const channelId = this.createChannel(c.id, c.createdAt);
-
-                      this.stompService.watch(`/channel/chat/${channelId}`).subscribe(res => {
-                        const data: Message = JSON.parse(res.body);
-
-                        /*TO IMPLEMENT LOGIC
-                           if (data.channel !== this.channel) {
-                             this.showNotification(data);
-                           } else {
-                             // send read receipt for the channel
-                             this.messageService.sendReadReceipt(this.channel, otherUser.username);
-                           }
-                             */
-                      });
+                      this.socketMap.set(c.id, new RxStompService);
                     });
+                    console.log(this.socketMap);
+                    for (let c of this.chats) {
+                      const channelId = this.createChannel(c.id.toString(), c.createdAt);
+                      this.socketMap.get(c.id)!.watch(`/channel/chat/${channelId}`).subscribe(res => {
+                        console.log(res);
+                        // const socketMessage: any = JSON.parse(res.body);
+                        // this.selectedChat == this.chatService.getSelectedChat();
+                        // if (socketMessage.chat == this.selectedChat?.id) {
+                        //   this.chatService.readMessages(socketMessage.chat, this.authService.getUser()!.id).subscribe((data: any) => {
+                        //   })
+                        // }
+                      });
+                    }
                   }
                 })
 

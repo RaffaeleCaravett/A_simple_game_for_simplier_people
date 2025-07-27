@@ -80,7 +80,13 @@ export interface Recensione {
 
 export interface Message {
     message: string,
-    riceventi:number[],
-    mittente:number,
-    chat:number
+    riceventi: number[],
+    mittente: number,
+    chat: number
+}
+export interface Chat {
+    id: number,
+    utenti: User[],
+    messaggi: Message[],
+    createdAt: string
 }

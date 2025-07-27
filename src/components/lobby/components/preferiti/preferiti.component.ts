@@ -1,13 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { User } from '../../interfaces/interfaces';
-import { AuthService } from '../../services/auth.service';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { PreferitiServive } from '../../services/preferiti.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ModeService } from '../../services/mode.service';
+import { User } from '../../../../interfaces/interfaces';
+import { AuthService } from '../../../../services/auth.service';
+import { ModeService } from '../../../../services/mode.service';
+import { PreferitiServive } from '../../../../services/preferiti.service';
 
 @Component({
   selector: 'app-preferiti',

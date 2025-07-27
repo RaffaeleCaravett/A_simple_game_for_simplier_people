@@ -10,9 +10,12 @@ import { ErrorInterceptor } from '../core/error.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { RxStompService } from '@stomp/ng2-stompjs';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimations(),
+  providers: [
+    RxStompService,
+    provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimations(),
   provideToastr(), provideHttpClient(
     withInterceptorsFromDi()
   ), provideNativeDateAdapter(),

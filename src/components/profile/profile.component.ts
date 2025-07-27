@@ -8,7 +8,6 @@ import { GiocoPreviewComponent } from '../../shared/components/gioco-preview/gio
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth.service';
 import { ImpostazioniComponent } from './components/impostazioni/impostazioni.component';
-import { PreferitiComponent } from '../preferiti/preferiti.component';
 import { ModeService } from '../../services/mode.service';
 import { LeafletComponent } from '../../shared/components/leaflet/leaflet.component';
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +15,7 @@ import { GoogleMap, MapAdvancedMarker, MapMarker } from '@angular/google-maps';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DescrizioneComponent } from './components/descrizione/descrizione.component';
+import { PreferitiComponent } from '../lobby/components/preferiti/preferiti.component';
 
 @Component({
   selector: 'app-profile',

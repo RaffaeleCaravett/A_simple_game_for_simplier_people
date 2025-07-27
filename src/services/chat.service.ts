@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { Message } from "../interfaces/interfaces";
-import { StompService } from "@stomp/ng2-stompjs";
+import { Chat, Message } from "../interfaces/interfaces";
+import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
 
 @Injectable({
@@ -13,8 +13,8 @@ export class ChatService {
     private messaggio: string = '/messaggi';
     private chatSubject = new Subject<string>();
     private messages: string = '/messages';
-
-    constructor(private http: HttpClient, private stompService: StompService) { }
+    public selectedChat: Chat | null = null;
+    constructor(private http: HttpClient, private stompService: RxStompService) { }
     //to call when user send message
     sendMessage(message: Message) {
         if (message) {
@@ -27,7 +27,7 @@ export class ChatService {
         }
         return this.http.post(environment.API_URL + this.messaggio, message);
     }
-    //to call on focus on chat
+    //to call on focus on chat or on input
     readMessages(chatId: number, viewer: number) {
         return this.http.post(environment.API_URL + this.messaggio + this.messages, { chatId: chatId, senderId: viewer });
     }
@@ -56,4 +56,10 @@ export class ChatService {
       }
   */
 
+    getSelectedChat() {
+        return this.selectedChat;
+    }
+    setSelectedChat(chat: Chat) {
+        this.selectedChat = chat;
+    }
 };

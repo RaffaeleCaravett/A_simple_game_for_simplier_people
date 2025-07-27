@@ -32,8 +32,10 @@
                             <div class="d-flex">
                                 <button class="btn" [matMenuTriggerFor]="appMenu"
                                     [ngClass]="mode!='light'?'text-light':'text-dark'" #p>{{user.fullName}} </button>
-                                <span title="Online" *ngIf="user.isConnected" class="login-span border rounded-circle mx-1 mt-2"></span>
-                                <span title="Online" *ngIf="!user.isConnected" class="login-span border bg-danger rounded-circle mx-1 mt-2"></span>
+                                <span title="Online" *ngIf="user.isConnected"
+                                    class="login-span border rounded-circle mx-1 mt-2"></span>
+                                <span title="Online" *ngIf="!user.isConnected"
+                                    class="login-span border bg-danger rounded-circle mx-1 mt-2"></span>
                             </div>
                         </div>
                         <ng-template #isLoading>
@@ -48,6 +50,8 @@
                                 Profile</button>
                             <button mat-menu-item class="btn fs-4 text-dark" (click)="goToRoute('lobby/preferiti')">💌
                                 Preferiti</button>
+                            <button mat-menu-item class="btn fs-4 text-dark" (click)="goToRoute('lobby/chat')">💬
+                                Chat</button>
                             <button mat-menu-item class="btn fs-4 text-dark" (click)="goToRoute('amministrazione')"
                                 *ngIf="user?.email=='raffaelecaravetta13@gmail.com'">🏢 Amministrazione</button>
                             <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
@@ -102,6 +106,8 @@
                                     Profile</button>
                                 <button mat-menu-item class="btn fs-4 text-dark"
                                     (click)="goToRoute('lobby/preferiti')">💌 Preferiti</button>
+                                <button mat-menu-item class="btn fs-4 text-dark" (click)="goToRoute('lobby/chat')">💬
+                                    Chat</button>
                                 <button mat-menu-item class="btn fs-4 text-dark" (click)="goToRoute('amministrazione')"
                                     *ngIf="user?.email=='raffaelecaravetta13@gmail.com'">🏢 Amministrazione</button>
                                 <button mat-menu-item class="btn fs-4 text-dark" (click)="logout()"
