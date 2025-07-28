@@ -88,5 +88,6 @@ export interface Chat {
     id: number,
     utenti: User[],
     messaggi: Message[],
-    createdAt: string
+    createdAt: string,
+    title: string
 }

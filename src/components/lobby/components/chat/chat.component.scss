@@ -1,4 +1,3 @@
-
 .to-point {
   height: 150px;
   width: 150px;
@@ -6,4 +5,60 @@
   background-repeat: no-repeat !important;
   background-position: center !important;
   background-color: whitesmoke;
+}
+
+.to-point-sm {
+  height: 40px !important;
+  width: 40px !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-color: whitesmoke;
+}
+
+.chat-list {
+  list-style-type: none;
+
+  li {
+    cursor: pointer;
+    padding-top: 3%;
+    transition: 1s;
+
+    &:hover {
+      background-color: rgb(235, 235, 235);
+      transition: 1s;
+    }
+  }
+}
+
+i {
+  cursor: pointer;
+}
+
+.mat-menu {
+  max-height: 150px;
+  width: auto;
+}
+
+.chat-container {
+  height: 500px;
+}
+
+.chat-col {
+  height: 500px;
+}
+
+.message-form {
+  position: absolute;
+  bottom: 5px;
+  left: auto;
+}
+
+.message-container {
+  height: 200px !important;
+  overflow: auto;
+}
+
+.header-col {
+  max-height: 113px !important;
 }

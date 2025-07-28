@@ -10,6 +10,7 @@ import { environment } from "../core/environment";
 })
 export class ChatService {
     private chat: string = '/chat';
+    private params: string = '/params'
     private messaggio: string = '/messaggi';
     private chatSubject = new Subject<string>();
     private messages: string = '/messages';
@@ -33,7 +34,7 @@ export class ChatService {
     }
 
     getAllChatsByUserId(userId: number) {
-        return this.http.get(environment.API_URL + this.chat + `?userId=${userId}`);
+        return this.http.get(environment.API_URL + this.chat + this.params + `?userId=${userId}`);
     }
     /* TO IMPLEMENT
       showNotification(message: Message) {

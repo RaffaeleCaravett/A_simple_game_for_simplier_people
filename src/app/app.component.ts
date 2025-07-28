@@ -89,8 +89,10 @@ export class AppComponent implements OnInit {
 
               }
             })
-            if (location && location == 'game-field') this.router.navigate([`/${location}`], { queryParams: { gioco: gioco } });
-            else this.router.navigate([`/${location || 'home'}`]);
+            setTimeout(() => {
+              if (location && location == 'game-field') this.router.navigate([`/${location}`], { queryParams: { gioco: gioco } });
+              else this.router.navigate([`/${location || 'home'}`]);
+            }, 1500)
           }
         }
       })
