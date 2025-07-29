@@ -20,6 +20,7 @@ export class ProfileServive {
     private resetPasswordByCode: string = '/resetPasswordByCode';
     private clear: string = '/clear';
     private profileImage: string = '/profileImage'
+    private changeVisibility: string = '/changeVisibility'
     constructor(private http: HttpClient) { }
 
     getRecensioniByUserId(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
@@ -93,7 +94,7 @@ export class ProfileServive {
         return this.http.put(environment.API_URL + this.user + this.profileImage, formData);
     }
 
-    updateDescrizione(descrizione: {textAlignment:string,innerHTML:string}) {
+    updateDescrizione(descrizione: { textAlignment: string, innerHTML: string }) {
         return this.http.put(environment.API_URL + this.user + "/descrizione", descrizione)
     }
 }

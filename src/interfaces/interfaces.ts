@@ -48,7 +48,8 @@ export interface User {
         textAlignment: string,
         innerHTML: string
     },
-    isConnected: boolean
+    isConnected: boolean,
+    isOpen: boolean
 }
 export interface Categoria {
     id: number,
