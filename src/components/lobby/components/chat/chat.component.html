@@ -26,20 +26,21 @@
                             <i class="bi bi-patch-plus pt-3" title="Aggiungi chat" (click)="addChat()"></i>
                         </div>
                     </div>
-                    <form [formGroup]="chatForm">
+                    <form [formGroup]="chatForm" class="d-flex justify-content-evenly">
                         <input type="text" placeholder="Cerca fra le chat ..." formControlName="search" id="search"
                             name="search" class="form-control w-75 m-auto my-1" (input)="this.chatForm.controls['search'].value.length == 1
                             &&
                             !isChatMenuOpen?checkIsOpenMenu(chatMenuMenu)
                             :this.chatForm.controls['search'].value.length == 0
                             &&
-                            isChatMenuOpen? checkIsOpenMenu(chatMenuMenu):''">
-                        <div class="overflow-auto mat-menu d-none" #chatMenuMenu>
-                            <button class="btn">
-                                Assistenza
-                            </button>
-                        </div>
+                            isChatMenuOpen? checkIsOpenMenu(chatMenuMenu):'';searchOpenedUsers();">
+                        <i class="bi bi-list pt-2" *ngIf="windowWidth<767.2" title="Apri il menu delle chat"></i>
                     </form>
+                    <div class="overflow-auto z-2 chat-menu py-2 d-none bg-light position-relative" #chatMenuMenu>
+                        <ul>
+                            <li *ngFor="let u of openedUsersForChat"></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-md-8 border border-top-0 border-start-0 border-bottom header-col"
                     *ngIf="windowWidth>767.20">
@@ -54,7 +55,7 @@
                 </div>
                 <div class="col-md-4 border border-top-0 border-start-0 border-bottom text-center"
                     *ngIf="windowWidth>767.20">
-                    <ul class="chat-list py-2 h-100 overflow-auto">
+                    <ul class="chat-list py-2 h-100 overflow-auto z-0">
                         <li *ngFor="let chat of chatList" (click)="openChat(chat)" class="d-flex justify-content">
                             <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
                                 style.backgroundImage="url('{{getChatImage(chat)}}')"

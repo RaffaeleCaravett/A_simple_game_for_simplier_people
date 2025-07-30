@@ -22,6 +22,7 @@ export class ChatComponent implements OnInit {
   chatForm: FormGroup = new FormGroup({});
   isChatMenuOpen: boolean = false;
   messageForm: FormGroup = new FormGroup({});
+  openedUsersForChat: User[] = [];
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService) { }
   ngOnInit(): void {
     localStorage.setItem('location', 'lobby/chat');
@@ -98,5 +99,9 @@ export class ChatComponent implements OnInit {
   messageNotValid() {
     let messageValue: string = this.messageForm?.controls['message']?.value;
     return messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0;
+  }
+
+  searchOpenedUsers() {
+
   }
 }

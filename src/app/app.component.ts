@@ -42,6 +42,15 @@ export class AppComponent implements OnInit {
     })
   }
 
+
+  /*
+
+  WEBSOCKET UTILIZED AND APPLIED FROM 
+
+  https://github.com/bnacheva/ichat/blob/master/frontend/ichat-client/src/app/layout/users-list/users-list.component.ts
+*/
+
+
   @HostListener('window:scroll', ['$event']) private onScroll(): void {
     if (window.scrollY > 500) {
       this.showGoTop = true;
