@@ -42,7 +42,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.scrollChatContainerBottom();
     });
     this.chatService.selectChat.subscribe((chat: number) => {
-      debugger
       let equalChat: Chat = this.chatList.filter((c: any) => c.id == chat)[0];
       if (equalChat && equalChat != undefined) {
         this.selectedChat = equalChat;

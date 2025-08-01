@@ -41,8 +41,7 @@ export class NavComponent implements OnInit {
         toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
         toast.chatId = value.settedChatId;
         toast.onTap.subscribe((action: any) => {
-          debugger
-          if(toast && toast?.chatId){
+          if (toast && toast?.chatId) {
             this.chatService.selectChat.next(toast.chatId);
           }
         });
