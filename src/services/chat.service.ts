@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { Chat, Message } from "../interfaces/interfaces";
 import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
@@ -16,19 +16,22 @@ export class ChatService {
     private chatSubject = new Subject<string>();
     private messages: string = '/messages';
     public selectedChat: Chat | null = null;
-
+    public selectChat: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     constructor(private http: HttpClient, private ws: WebsocketService) { }
     //to call when user send message
     sendMessage(message: Message) {
         this.ws.send(message);
+
         let messag: Message = {
             message: "PROVA SOCKET",
             riceventi: [1],
             mittente: 3,
             chat: 2
         }
-        this.ws.send(messag);
+        setTimeout(() => {
+            this.ws.send(messag);
 
+        }, 2000)
         //return this.http.post(environment.API_URL + this.messaggio, message, { headers: new HttpHeaders({ timeout: `${600000}` }) });
     }
     //to call on focus on chat or on input

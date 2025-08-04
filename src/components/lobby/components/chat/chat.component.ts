@@ -33,12 +33,23 @@ export class ChatComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService) {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
       this.chatList.forEach((chat: Chat) => {
-        if (chat.id == value?.settedChatId) {
+        if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
+          chat.messaggi.push(value);
+        } else if (chat.id == value?.settedChatId && value?.sender.id == this.user!.id) {
           chat.messaggi.push(value);
         }
       });
+      this.scrollChatContainerBottom();
     });
+    this.chatService.selectChat.subscribe((chat: number) => {
+      debugger
+      let equalChat: Chat = this.chatList.filter((c: any) => c.id == chat)[0];
+      if (equalChat && equalChat != undefined) {
+        this.selectedChat = equalChat;
+      }
+    })
   }
+
   ngOnInit(): void {
     localStorage.setItem('location', 'lobby/chat');
     this.windowWidth = window.innerWidth;
@@ -175,7 +186,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       // .subscribe((data: any) => {
       // this.selectedChat?.messaggi.push(data);
       this.messageForm.reset();
-      this.scrollChatContainerBottom();
       // })
     } else {
       this.toastr.warning("Inserisci un messaggio valido");
@@ -188,6 +198,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.chatService.setSelectedChat(null);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: any) {
+    if (event && event?.code && event?.code == 'Enter' && this.selectedChat && this.messageForm.controls['message'].value) {
+      this.sendMessage();
+    }
   }
 }
 

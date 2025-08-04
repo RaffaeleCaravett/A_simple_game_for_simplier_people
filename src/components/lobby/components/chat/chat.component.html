@@ -87,27 +87,28 @@
                     </div>
                     <div class="message-container">
                         <div *ngFor="let m of selectedChat?.messaggi">
-                            <p class="my-1 bg-light rounded shadow text-start p-1" [style.width]="'fit-content'"
-                                *ngIf="m.sender.id!=user!.id">
-                                {{m.text}}
-                            </p>
+                            <div class="d-flex justify-content-start" *ngIf="m.sender.id!=user!.id">
+                                <p class="my-1 bg-light rounded shadow text-start p-1" [style.width]="'fit-content'">
+                                    {{m.text}}
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-end" *ngIf="m.sender.id==user!.id">
+                                <p class="my-1 bg-info rounded shadow text-end p-1" [style.width]="'fit-content'"
+                                    title="{{m.createdAt}}">
+                                    {{m.text}}
+                                </p>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-end" *ngFor="let m of selectedChat?.messaggi">
-                            <p class="my-1 bg-info rounded shadow text-end p-1" [style.width]="'fit-content'"
-                                *ngIf="m.sender.id==user!.id" title="{{m.createdAt}}">
-                                {{m.text}}
-                            </p>
-                        </div>
+                        <form [formGroup]="messageForm" *ngIf="selectedChat"
+                            class="d-flex justify-content-evenly m-auto w-100 mt-2 mx-1 message-form">
+                            <textarea name="message" id="message" formControlName="message"
+                                class="form-control -75 mx-1" rows="2"></textarea>
+                            <button class="mx-1 btn" [disabled]="messageNotValid()"
+                                (click)="sendMessage()">Invia</button>
+                        </form>
                     </div>
-                    <form [formGroup]="messageForm" *ngIf="selectedChat"
-                        class="d-flex justify-content-evenly m-auto w-100 mx-1 message-form">
-                        <textarea name="message" id="message" formControlName="message" class="form-control -75 mx-1"
-                            rows="2"></textarea>
-                        <button class="mx-1 btn" [disabled]="messageNotValid()" (click)="sendMessage()">Invia</button>
-                    </form>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-</div>

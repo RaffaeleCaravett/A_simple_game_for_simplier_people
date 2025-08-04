@@ -37,7 +37,15 @@ export class NavComponent implements OnInit {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
       if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
         && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
-        this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome)
+        let toast: any = new Object();
+        toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
+        toast.chatId = value.settedChatId;
+        toast.onTap.subscribe((action: any) => {
+          debugger
+          if(toast && toast?.chatId){
+            this.chatService.selectChat.next(toast.chatId);
+          }
+        });
       }
     });
   }
