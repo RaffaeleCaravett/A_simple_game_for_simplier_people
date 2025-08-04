@@ -1,11 +1,14 @@
-import { ChangeDetectorRef, Component, HostListener, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, OnChanges, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
 import { ModeService } from '../../services/mode.service';
-import { User } from '../../interfaces/interfaces';
+import { Message, Messaggio, User } from '../../interfaces/interfaces';
 import { MatMenuModule } from '@angular/material/menu';
 import { SharedModule } from '../../shared/modules/shared.module';
+import { WebsocketService } from '../../services/websocket.service';
+import { ChatService } from '../../services/chat.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -21,13 +24,21 @@ export class NavComponent implements OnInit {
   mode: string = 'light';
   user: User | null = null;
   isLoadingLogoutOrRoute: boolean = false;
-  constructor(private authService: AuthService, private router: Router, private modeService: ModeService) {
+  constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
+    private toastr: ToastrService
+  ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
       this.user = this.authService.getUser();
     });
     this.modeService.mode.subscribe((mood: string) => {
       this.mode = mood;
+    });
+    this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
+      if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
+        && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
+        this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome)
+      }
     });
   }
   logout() {

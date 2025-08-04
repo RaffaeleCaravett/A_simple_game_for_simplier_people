@@ -44,10 +44,10 @@ export class DescrizioneComponent implements OnInit, AfterContentChecked {
       setTimeout(() => {
         var descr = this.visitedUser?.descrizione?.innerHTML;
         this.descrizione.nativeElement.innerHTML = descr == undefined || descr == null ? '' : descr;
-        if (!this.descrizione?.nativeElement?.classList.contains(this.visitedUser?.descrizione.textAlignment)) {
-          this.descrizione?.nativeElement?.classList.add(this.visitedUser?.descrizione.textAlignment);
+        if (!this.descrizione?.nativeElement?.classList?.contains(this.visitedUser?.descrizione?.textAlignment)) {
+          this.descrizione?.nativeElement?.classList?.add(this.visitedUser?.descrizione?.textAlignment);
         }
-        this.calculateRemainingCharacters(this.descrizione.nativeElement);
+        this.calculateRemainingCharacters(this.descrizione?.nativeElement);
       }, 500)
     }, 2000)
   }

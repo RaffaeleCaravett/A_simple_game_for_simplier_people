@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { NavComponent } from '../components/nav/nav.component';
 import { FootComponent } from '../components/foot/foot.component';
@@ -9,9 +9,11 @@ import { Subscription } from 'rxjs';
 export let browserRefresh = false;
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { ChatService } from '../services/chat.service';
-import { Md5 } from 'ts-md5';
 import { Chat, Message } from '../interfaces/interfaces';
-import { INPUT_MODALITY_DETECTOR_DEFAULT_OPTIONS } from '@angular/cdk/a11y';
+import { myRxStompConfig } from '../core/stomp';
+import SockJS from 'sockjs-client';
+import { environment } from '../core/environment';
+import { WebsocketService } from '../services/websocket.service';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +32,7 @@ export class AppComponent implements OnInit {
   chats: Chat[] = [];
   socketMap: Map<number, RxStompService> = new Map<number, RxStompService>();
   constructor(private modeService: ModeService, private authService: AuthService, private router: Router,
-    private stompService: RxStompService, private chatService: ChatService
+    private chatService: ChatService, private webSocketService: WebsocketService
   ) {
     this.subscription = router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -73,31 +75,17 @@ export class AppComponent implements OnInit {
               next: (value: any) => {
                 this.authService.setUser(value);
                 this.authService.authenticateUser(true);
-                this.chatService.getAllChatsByUserId(value.id).subscribe({
-                  next: (value: any) => {
-                    console.log(value)
-                    this.chats = value;
-                    value.forEach((c: any) => {
-                      this.socketMap.set(c.id, new RxStompService);
-                    });
-                    console.log(this.socketMap);
-                    for (let c of this.chats) {
-                      const channelId = this.createChannel(c.id.toString(), c.createdAt);
-                      this.socketMap.get(c.id)!.watch(`/channel/chat/${channelId}`).subscribe(res => {
-                        console.log(res);
-                        // const socketMessage: any = JSON.parse(res.body);
-                        // this.selectedChat == this.chatService.getSelectedChat();
-                        // if (socketMessage.chat == this.selectedChat?.id) {
-                        //   this.chatService.readMessages(socketMessage.chat, this.authService.getUser()!.id).subscribe((data: any) => {
-                        //   })
-                        // }
-                      });
-                    }
-                  }
-                })
+                // this.chatService.getAllChatsByUserId(value.id).subscribe({
+                //   next: (value: any) => {
+                //     this.chats = value;
+                //     value.forEach((c: any) => {
+                //this.socketMap.set(c.id, new RxStompService);
+                //     });
+                //   }
+                // })
 
               }
-            })
+            });
             setTimeout(() => {
               if (location && location == 'game-field') this.router.navigate([`/${location}`], { queryParams: { gioco: gioco } });
               else this.router.navigate([`/${location || 'home'}`]);
@@ -112,12 +100,12 @@ export class AppComponent implements OnInit {
     if (mode) {
       this.modeService.updateMode(mode);
     }
+    setTimeout(() => {
+      this.webSocketService.listen((message: any) => {
+      });
+    }, 5000)
   }
-  createChannel(date: string, id: string): string {
-    let combined: string = '';
 
-    return Md5.hashStr(combined).toString();
-  }
   goUp() {
     window.scroll({
       top: 0,
@@ -125,28 +113,5 @@ export class AppComponent implements OnInit {
       behavior: 'smooth'
     });
   }
-
-  @HostListener('window:unload', ['$event'])
-  unloadHandler(event: any) {
-    this.disconnect();
-  }
-  @HostListener('window:beforeunload', ['$event'])
-  beforeUnloadHandler(event: any) {
-    this.disconnect();
-  }
-  @HostListener('window:reload', ['$event'])
-  beforeReload(event: any) {
-    this.disconnect();
-  }
-
-  disconnect() {
-    this.authService.connectUser(false).subscribe({
-      next: (value: any) => {
-        this.stompService.deactivate();
-        console.log("Disconnected.");
-      }
-    });
-  }
-
 
 }

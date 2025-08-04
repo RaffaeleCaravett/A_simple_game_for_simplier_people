@@ -1,9 +1,10 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { Chat, Message } from "../interfaces/interfaces";
 import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
+import { WebsocketService } from "./websocket.service";
 
 @Injectable({
     providedIn: 'root'
@@ -15,18 +16,20 @@ export class ChatService {
     private chatSubject = new Subject<string>();
     private messages: string = '/messages';
     public selectedChat: Chat | null = null;
-    constructor(private http: HttpClient, private stompService: RxStompService) { }
+
+    constructor(private http: HttpClient, private ws: WebsocketService) { }
     //to call when user send message
     sendMessage(message: Message) {
-        if (message) {
-            this.stompService.publish({
-                destination: '/app/messages', body:
-                    JSON.stringify({
-                        message
-                    })
-            });
+        this.ws.send(message);
+        let messag: Message = {
+            message: "PROVA SOCKET",
+            riceventi: [1],
+            mittente: 3,
+            chat: 2
         }
-        return this.http.post(environment.API_URL + this.messaggio, message);
+        this.ws.send(messag);
+
+        //return this.http.post(environment.API_URL + this.messaggio, message, { headers: new HttpHeaders({ timeout: `${600000}` }) });
     }
     //to call on focus on chat or on input
     readMessages(chatId: number, viewer: number) {
@@ -60,7 +63,7 @@ export class ChatService {
     getSelectedChat() {
         return this.selectedChat;
     }
-    setSelectedChat(chat: Chat) {
+    setSelectedChat(chat: Chat | null) {
         this.selectedChat = chat;
     }
 };

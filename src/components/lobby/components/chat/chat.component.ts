@@ -1,11 +1,15 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import { Chat, User } from '../../../../interfaces/interfaces';
+import { Chat, Message, Messaggio, User } from '../../../../interfaces/interfaces';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { ChatService } from '../../../../services/chat.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { CreateChatComponent } from '../../../../shared/components/create-chat/create-chat.component';
+import { WebsocketService } from '../../../../services/websocket.service';
 
 @Component({
   selector: 'app-chat',
@@ -14,16 +18,27 @@ import { ChatService } from '../../../../services/chat.service';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   user: User | null = null;
   windowWidth: number = 0;
-  selectedChat: Chat | null = null;
+  public selectedChat: Chat | null = null;
   chatList: Chat[] = [];
   chatForm: FormGroup = new FormGroup({});
   isChatMenuOpen: boolean = false;
   messageForm: FormGroup = new FormGroup({});
   openedUsersForChat: User[] = [];
-  constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService) { }
+  filteredChatList: Chat[] = [];
+
+  constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
+    private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService) {
+    this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
+      this.chatList.forEach((chat: Chat) => {
+        if (chat.id == value?.settedChatId) {
+          chat.messaggi.push(value);
+        }
+      });
+    });
+  }
   ngOnInit(): void {
     localStorage.setItem('location', 'lobby/chat');
     this.windowWidth = window.innerWidth;
@@ -51,12 +66,15 @@ export class ChatComponent implements OnInit {
     return this.selectedChat?.utenti?.filter((u: User) => u.id != this.user?.id)[0].fullName;
   }
 
-  openChat(chat: Chat) {
-    this.selectedChat = chat;
-  }
-
   addChat() {
-
+    const dialogRef = this.matDialog.open(CreateChatComponent, { data: this.user });
+    dialogRef.afterClosed().subscribe((data: any) => {
+      if (data) {
+        this.getChats();
+      } else {
+        this.toastr.show("Non è stata creata nessuna chat.");
+      }
+    });
   }
 
   initializeForms() {
@@ -102,6 +120,74 @@ export class ChatComponent implements OnInit {
   }
 
   searchOpenedUsers() {
+    this.filteredChatList = [];
 
+    if (this.chatForm.controls['search'].value.length > 0) {
+      this.chatList.forEach((c: Chat) => {
+
+        if (c.title.toLowerCase().includes(this.chatForm.controls['search'].value.toLowerCase())) {
+          this.filteredChatList.push(c);
+        }
+        c.utenti.forEach((u: User) => {
+          if (!this.filteredChatList.includes(c)) {
+            if (u.id != this.user?.id && u.fullName.toLowerCase().includes(this.chatForm.controls['search'].value.toLowerCase())) {
+              this.filteredChatList.push(c);
+            }
+          }
+        });
+        c.messaggi.forEach((m: Messaggio) => {
+          if (!this.filteredChatList.includes(c)) {
+            if (m.text.toLowerCase().includes(this.chatForm.controls['search'].value.toLowerCase())) {
+              this.filteredChatList.push(c);
+            }
+          }
+        });
+      });
+    }
+  }
+
+  selectChat(chat: Chat, menu: HTMLDivElement) {
+    this.selectedChat = chat;
+    this.chatService.setSelectedChat(this.selectedChat);
+    this.chatForm.reset();
+    this.isChatMenuOpen = false;
+    menu.classList.add('d-none');
+    menu.classList.remove('d-block');
+    this.scrollChatContainerBottom();
+  }
+
+  scrollChatContainerBottom() {
+    setTimeout(() => {
+      let chatContainer = document.getElementsByClassName('message-container')[0] as HTMLDivElement;
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 200);
+  }
+  sendMessage() {
+    if (!this.messageNotValid()) {
+      let message: Message = {
+        message: this.messageForm.controls['message'].value,
+        riceventi: this.selectedChat?.utenti.filter((u: User) => u.id != this.user!.id).map((u: User) => u.id) as number[],
+        mittente: this.user!.id,
+        chat: this.selectedChat!.id
+      }
+
+      this.chatService.sendMessage(message)
+      // .subscribe((data: any) => {
+      // this.selectedChat?.messaggi.push(data);
+      this.messageForm.reset();
+      this.scrollChatContainerBottom();
+      // })
+    } else {
+      this.toastr.warning("Inserisci un messaggio valido");
+    }
+  }
+  deleteSelectedChat(value: null) {
+    this.selectedChat = value;
+    this.chatService.setSelectedChat(null);
+  }
+
+  ngOnDestroy(): void {
+    this.chatService.setSelectedChat(null);
   }
 }
+

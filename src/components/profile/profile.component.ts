@@ -13,14 +13,17 @@ import { LeafletComponent } from '../../shared/components/leaflet/leaflet.compon
 import { HttpClient } from '@angular/common/http';
 import { GoogleMap, MapAdvancedMarker, MapMarker } from '@angular/google-maps';
 import { ToastrService } from 'ngx-toastr';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DescrizioneComponent } from './components/descrizione/descrizione.component';
 import { PreferitiComponent } from '../lobby/components/preferiti/preferiti.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, ImpostazioniComponent, NgStyle, PreferitiComponent, LeafletComponent, GoogleMap, MapMarker, MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent],
+  imports: [NgFor, NgIf, NgClass, ImpostazioniComponent, NgStyle, PreferitiComponent, LeafletComponent, GoogleMap, MapMarker, MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent,
+    MatSlideToggleModule, FormsModule
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -98,6 +101,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   ];
   descrizioneForm: FormGroup = new FormGroup({});
   showMenu: boolean = false;
+  isProfileOpen: boolean = false;
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
@@ -105,6 +109,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       this.getAllDatas();
       if (this.visitedUser?.id == this.user?.id) {
         this.visitedUser = this.authService.getUser()!;
+        this.isProfileOpen = this.visitedUser?.open;
         this.getCoordinates();
         let yesImpostazioni: boolean = false;
         this.menuVoices.forEach((d) => {
@@ -132,6 +137,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
           this.authService.getUserById(params['user']).subscribe({
             next: (data: any) => {
               this.visitedUser = data;
+              this.isProfileOpen = this.visitedUser?.open || false;
+
               this.getCoordinates();
               if (this.user?.id == this.visitedUser?.id) {
                 let yesImpostazioni: boolean = false;
@@ -152,6 +159,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
           if (!localStorage.getItem('visitedUser')) this.router.navigate(['/lobby']);
           else {
             this.visitedUser = JSON.parse(localStorage.getItem('visitedUser')!);
+            this.isProfileOpen = this.visitedUser?.open || false;
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
               let yesImpostazioni: boolean = false;
@@ -172,11 +180,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
 
   getAllDatas() {
-    this.getGiochi();
-    this.getPartite();
-    this.getClassifiche();
-    this.getTrofei();
-    this.getRecensioni();
+    if (this.visitedUser) {
+      this.getGiochi();
+      this.getPartite();
+      this.getClassifiche();
+      this.getTrofei();
+      this.getRecensioni();
+    }
     this.onResize();
   }
 
@@ -236,6 +246,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
 
   switchSection(value: string) {
     this.section = value;
+    this.user = this.authService.getUser()!;
     if (this.section != 'Profilo') {
       this.returnDescrizione = 0;
     }
@@ -270,7 +281,6 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
 
   setImpostazioniSection(s: string) {
     this.impostazioniSection = s.substring(3);
-    console.log(this.impostazioniSection)
   }
   getCoordinates() {
     if (this.visitedUser?.completed) {
@@ -319,8 +329,15 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
-  formatDate(date: string) {
-    let newDate = new Date(date);
-    return newDate.getDate() + '/' + newDate.getMonth() + 1 + '/' + newDate.getFullYear();
+  formatDate(date: string | undefined) {
+    if (date) {
+      let newDate = new Date(date);
+      return newDate.getDate() + '/' + newDate.getMonth() + 1 + '/' + newDate.getFullYear();
+    } else {
+      return "";
+    }
+  }
+  sendRequest() {
+    this.toastr.show("E' stata mandata la richiesta verso " + this.visitedUser?.fullName + ". ");
   }
 }

@@ -77,6 +77,12 @@
     </div>
     <div class="col-md-12" *ngIf="section=='Cambia altre informazioni'">
         <h2>Cambia altre informazioni</h2>
+        <div class="col-md-12 py-2 text-end">
+            <mat-slide-toggle labelPosition="before" [(ngModel)]="isUserOpen"
+                (ngModelChange)="changeVisibility()">Profilo : {{isUserOpen?
+                'pubblico' :
+                'privato'}}</mat-slide-toggle>
+        </div>
         <form [formGroup]="altreImpostazioniForm" class="m-auto my-4 p-4 w-75">
             <label for="nome" class="p-2 fs-3">Nome</label>
             <input type="text" class="form-control text-center w-75 m-auto" placeholder="Scrivi il tuo nome" id="nome"
@@ -89,12 +95,14 @@
                 placeholder="Scegli la città" onfocus="this.size=7" onblur="this.size=1" onchange="this.blur()">
                 <option value="{{c.id}}" *ngFor="let c of citta">{{c.nome}}</option>
             </select>
-            <button class="btn my-3 btn-outline-primary fw-bold" [disabled]="
+            <button class="btn my-3 btn-outline-primary fw-bold"
+                [disabled]="
             !altreImpostazioniForm.touched
             ||
             altreImpostazioniForm.invalid
             ||
-            (user!.nome == altreImpostazioniForm.get('nome')?.value && user!.cognome == altreImpostazioniForm.get('cognome')?.value && user!.citta!.id == altreImpostazioniForm.get('citta')?.value)" (click)="updateProfile()" type="button">Modifica profilo
+            (user!.nome == altreImpostazioniForm.get('nome')?.value && user!.cognome == altreImpostazioniForm.get('cognome')?.value && user!.citta!.id == altreImpostazioniForm.get('citta')?.value)"
+                (click)="updateProfile()" type="button">Modifica profilo
             </button>
         </form>
     </div>

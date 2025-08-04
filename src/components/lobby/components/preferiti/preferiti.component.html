@@ -1,87 +1,86 @@
 <div class="w-100 text-center" [ngClass]="mode=='light'?'bg-light':'bg-personal text-light'">
-    <div class="container">
-        <div class="row p-5">
-            <div class="col-md-12 py-5">
-                <h1 *ngIf="user?.id == visitedUser?.id">Benvenuto nei tuoi preferiti!</h1>
-                <h1 *ngIf="(user?.id != visitedUser?.id) && visitedUser && userInput==null">I preferiti di
-                    {{visitedUser!.fullName}}!</h1>
-                <h2 *ngIf="(user?.id != visitedUser?.id) && visitedUser && userInput!=null">Cerca fra i preferiti</h2>
-            </div>
-            <div class="col-md-12 p-5">
-                <form [formGroup]="searchPreferitiForm" [ngClass]="mode=='light'?'bg-white':'bg-personal text-light'" class="w-75 row m-auto border p-3">
+    <div class="row p-5">
+        <div class="col-md-12 py-5">
+            <h1 *ngIf="user?.id == visitedUser?.id">Benvenuto nei tuoi preferiti!</h1>
+            <h1 *ngIf="(user?.id != visitedUser?.id) && visitedUser && userInput==null">I preferiti di
+                {{visitedUser!.fullName}}!</h1>
+            <h2 *ngIf="(user?.id != visitedUser?.id) && visitedUser && userInput!=null">Cerca fra i preferiti</h2>
+        </div>
+        <div class="col-md-12 px-5">
+            <form [formGroup]="searchPreferitiForm" [ngClass]="mode=='light'?'bg-white':'bg-personal text-light'"
+                class="w-100 row m-auto border p-3">
                 <h2 [ngClass]="mode=='light'?'text-dark':'text-light'">🔍 Cerca qui fra i tuoi preferiti</h2>
-                    <div class="col-md-4">
-                        <label for="size" class="p-2">Elementi per pagina</label>
-                        <select name="size" id="size" formControlName="size" class="form-select">
-                            <option value="{{s}}" *ngFor="let s of sizes">{{s}}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="orderBy" class="p-2">Ordina per</label>
-                        <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select">
-                            <option value="{{o}}" *ngFor="let o of orderBys">{{o}}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="sortOrder" class="p-2">Ordine</label>
-                        <select name="sortOrder" id="sortOrder" formControlName="sortOrder" class="form-select">
-                            <option value="{{o}}" *ngFor="let o of sortOrders">{{o}}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="nomeGioco" class="p-2">Filtra per nome del gioco preferito</label>
-                        <input name="nomeGioco" id="nomeGioco" formControlName="nomeGioco" class="form-control" />
-                    </div>
-                    <div class="col-md-6">
-                        <label for="difficoltaGioco" class="p-2">Filtra per difficoltà del gioco preferito</label>
-                        <select name="difficoltaGioco" id="difficoltaGioco" formControlName="difficoltaGioco"
-                            class="form-select">
-                            <option value="{{d}}" *ngFor="let d of difficulties">{{d}}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-12 py-4">
-                        <button class="btn btn-primary fw-bold" (click)="getPreferiti()">Cerca</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6 col-lg-4 p-3" *ngFor="let p of preferiti?.content">
-                <p class="text-end p-2 m-0 border border-bottom-0" [ngClass]="mode=='light'?'bg-primary':'bg-dark'" *ngIf="user?.id == visitedUser?.id">
-                        <button class="btn" matTooltip="Elimina dai preferiti" matTooltipPosition="above"
-                            (click)="deletePreferito(p?.id)">
-                            <i class="bi bi-trash3 h4 text-danger"></i>
-                        </button>
-                    </p>
-                <div class="border border-top-0 shadow p-4">
-                    <h2>
-                        {{p?.gioco?.nomeGioco}}
-                    </h2>
-                    <p>
-                        {{p?.gioco?.descrizione}}
-                    </p>
-                    <p>Difficoltà :</p>
-                    <p class="fs-4 fw-bold"
-                        [ngClass]="p?.gioco?.difficolta<=2?'text-success':p?.gioco?.difficolta<=4&&p?.gioco?.difficolta>2?'text-warning':'text-danger'">
-                        {{p?.gioco?.difficolta}}</p>
+                <div class="col-md-4">
+                    <label for="size" class="p-2">Elementi per pagina</label>
+                    <select name="size" id="size" formControlName="size" class="form-select">
+                        <option value="{{s}}" *ngFor="let s of sizes">{{s}}</option>
+                    </select>
                 </div>
-            </div>
-            <div class="col-md-12 p-3 d-flex justify-content-center align-items-center"
-                *ngIf="preferiti?.content?.lenght>0">
-                <button class="btn" *ngIf="!preferiti?.first" (click)="preferitiPage=preferitiPage-1;getPreferiti();">
-                    <i class="bi bi-arrow-left-circle-fill h4"></i>
+                <div class="col-md-4">
+                    <label for="orderBy" class="p-2">Ordina per</label>
+                    <select name="orderBy" id="orderBy" formControlName="orderBy" class="form-select">
+                        <option value="{{o}}" *ngFor="let o of orderBys">{{o}}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="sortOrder" class="p-2">Ordine</label>
+                    <select name="sortOrder" id="sortOrder" formControlName="sortOrder" class="form-select">
+                        <option value="{{o}}" *ngFor="let o of sortOrders">{{o}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="nomeGioco" class="p-2">Filtra per nome del gioco preferito</label>
+                    <input name="nomeGioco" id="nomeGioco" formControlName="nomeGioco" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="difficoltaGioco" class="p-2">Filtra per difficoltà del gioco preferito</label>
+                    <select name="difficoltaGioco" id="difficoltaGioco" formControlName="difficoltaGioco"
+                        class="form-select">
+                        <option value="{{d}}" *ngFor="let d of difficulties">{{d}}</option>
+                    </select>
+                </div>
+                <div class="col-md-12 py-4">
+                    <button class="btn btn-primary fw-bold" (click)="getPreferiti()">Cerca</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 col-lg-4 p-1 my-2" *ngFor="let p of preferiti?.content">
+            <p class="text-end p-2 m-0 border border-bottom-0" [ngClass]="mode=='light'?'bg-primary':'bg-dark'"
+                *ngIf="user?.id == visitedUser?.id">
+                <button class="btn" matTooltip="Elimina dai preferiti" matTooltipPosition="above"
+                    (click)="deletePreferito(p?.id)">
+                    <i class="bi bi-trash3 h4 text-danger"></i>
                 </button>
-                <button class="btn fs-5" *ngIf="!preferiti?.last"
-                    (click)="preferitiPage=preferitiPage+1;getPreferiti();">
-                    <i class="bi bi-arrow-right-circle-fill h4"></i>
-                </button>
+            </p>
+            <div class="border border-top-0 shadow p-4">
+                <h2>
+                    {{p?.gioco?.nomeGioco}}
+                </h2>
+                <p>
+                    {{p?.gioco?.descrizione}}
+                </p>
+                <p>Difficoltà :</p>
+                <p class="fs-4 fw-bold"
+                    [ngClass]="p?.gioco?.difficolta<=2?'text-success':p?.gioco?.difficolta<=4&&p?.gioco?.difficolta>2?'text-warning':'text-danger'">
+                    {{p?.gioco?.difficolta}}</p>
             </div>
-            <div class="col-md-12 p-5" *ngIf="!preferiti || preferiti?.content?.length ==0 || !preferiti?.content">
-                <h2 *ngIf="user?.id == visitedUser?.id">Non hai ancora nessun gioco nei tuoi preferiti!</h2>
-                <button class="btn m-auto my-5" *ngIf="user?.id == visitedUser?.id"> <a routerLink="/lobby"
-                        class="text-dark">Aggiungine
-                        qualcuno!</a></button>
-                <h2 *ngIf="(user?.id != visitedUser?.id) && visitedUser">{{visitedUser!.fullName}} non ha ancora nessun
-                    gioco nei preferiti.</h2>
-            </div>
+        </div>
+        <div class="col-md-12 p-3 d-flex justify-content-center align-items-center"
+            *ngIf="preferiti?.content?.lenght>0">
+            <button class="btn" *ngIf="!preferiti?.first" (click)="preferitiPage=preferitiPage-1;getPreferiti();">
+                <i class="bi bi-arrow-left-circle-fill h4"></i>
+            </button>
+            <button class="btn fs-5" *ngIf="!preferiti?.last" (click)="preferitiPage=preferitiPage+1;getPreferiti();">
+                <i class="bi bi-arrow-right-circle-fill h4"></i>
+            </button>
+        </div>
+        <div class="col-md-12 p-5" *ngIf="!preferiti || preferiti?.content?.length ==0 || !preferiti?.content">
+            <h2 *ngIf="user?.id == visitedUser?.id">Non hai ancora nessun gioco nei tuoi preferiti!</h2>
+            <button class="btn m-auto my-5" *ngIf="user?.id == visitedUser?.id"> <a routerLink="/lobby"
+                    class="text-dark">Aggiungine
+                    qualcuno!</a></button>
+            <h2 *ngIf="(user?.id != visitedUser?.id) && visitedUser">{{visitedUser!.fullName}} non ha ancora nessun
+                gioco nei preferiti.</h2>
         </div>
     </div>
 </div>

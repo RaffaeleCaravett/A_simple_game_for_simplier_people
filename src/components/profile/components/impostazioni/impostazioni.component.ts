@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { User } from '../../../../interfaces/interfaces';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProfileServive } from '../../../../services/profile.service';
@@ -10,11 +10,12 @@ import { RichiestaComponent } from '../../../../shared/components/richiesta/rich
 import { FormsService } from '../../../../services/forms.service';
 import { AuthService } from '../../../../services/auth.service';
 import { SharedModule } from '../../../../shared/modules/shared.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-impostazioni',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, MatTooltipModule, NgFor, SharedModule, NgClass],
+  imports: [NgIf, ReactiveFormsModule, MatTooltipModule, NgFor, SharedModule, NgClass, FormsModule, MatSlideToggleModule],
   templateUrl: './impostazioni.component.html',
   styleUrl: './impostazioni.component.scss'
 })
@@ -69,7 +70,8 @@ export class ImpostazioniComponent implements OnInit, OnDestroy, OnChanges {
     { value: 'fs-2', label: 'big' },
     { value: 'fs-1', label: 'bigger' }
   ]);
-  @Input('mode') mode:string = 'light';
+  @Input('mode') mode: string = 'light';
+  isUserOpen: boolean = false;
   constructor(private toastr: ToastrService, private profileService: ProfileServive, private datePipe: DatePipe, private matDialog: MatDialog,
     private formService: FormsService, private authService: AuthService) { }
 
@@ -112,6 +114,7 @@ export class ImpostazioniComponent implements OnInit, OnDestroy, OnChanges {
     })
     this.getRichieste();
     this.getCitta();
+    this.isUserOpen = this.user?.open || false;
   }
 
   inviaRichiesta() {
@@ -308,5 +311,17 @@ export class ImpostazioniComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.toastr.error("Non hai caricato nessuna nuova immagine.");
     }
+  }
+
+  changeVisibility() {
+    this.profileService.changeVisibility().subscribe({
+      next: (value: any) => {
+        this.user = value;
+        this.authService.setUser(this.user);
+        localStorage.setItem('user', JSON.stringify(this.user));
+        this.isUserOpen = this.user?.open || false;
+        this.toastr.success("Profilo aggiornato correttamente");
+      }
+    });
   }
 }

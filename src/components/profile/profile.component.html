@@ -4,7 +4,8 @@
             <div class="col-md-12 py-3">
                 <h1>{{visitedUser?.fullName}}</h1>
             </div>
-            <div class="col-md-3" *ngIf="windowWidth>699 else reducedMenu">
+            <div class="col-md-3"
+                *ngIf="((isProfileOpen&&user!=visitedUser) || (user == visitedUser)) && windowWidth>699 else reducedMenu">
                 <ul class="text-start">
                     <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
                         <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
@@ -19,20 +20,22 @@
                 </ul>
             </div>
             <ng-template #reducedMenu>
-                <div class="col-md-12 text-start">
+                <div class="col-md-12 text-start" *ngIf="(isProfileOpen&&user!=visitedUser) || (user == visitedUser)">
                     <button class="btn" (click)="showMenu=!showMenu">
                         <i class="bi bi-list h1" [ngClass]="mode=='light'?'text-dark':'text-light'"></i>
                     </button>
                 </div>
                 <div class="col-6 p-3 position-relative" *ngIf="showMenu">
-                    <div class="ml-5 mt-5 p-3 border rounded" [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
+                    <div class="ml-5 mt-5 p-3 border rounded"
+                        [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
                         <ul class="text-start">
                             <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
                                 <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
                                 <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
                                     <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
                                     <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
-                                        <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
+                                        <li *ngFor="let s of sottomenu" class="text-start"
+                                            (click)="setImpostazioniSection(s)">
                                             {{s.toUpperCase()}}</li>
                                     </ul>
                                 </div>
@@ -41,7 +44,7 @@
                     </div>
                 </div>
             </ng-template>
-            <div class="col-md-9">
+            <div class="col-md-9" *ngIf="(isProfileOpen&&user!=visitedUser) || (user == visitedUser)">
                 <div *ngIf="section=='Profilo'">
                     <div class="col-12 p-3 d-flex align-items-end justify-content-center">
                         <div class="profile-image rounded-circle shadow"
@@ -72,7 +75,7 @@
                             </div>
                             <div class="col-md-6 fs-2 p-4">
                                 <p class="fs-4 text-danger">Profilo creato in data</p>
-                                {{formatDate(visitedUser!.createdAt)}}
+                                {{formatDate(visitedUser?.createdAt)}}
                             </div>
                             <!-- <div class="col-md-12 py-5">
                                 <app-leaflet [x]="cityX" [y]="cityY" *ngIf="cityX!=0&&cityY!=0"></app-leaflet>
@@ -386,11 +389,20 @@
                     </div>
                 </div>
                 <div *ngIf="section=='Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                    <app-impostazioni [section]="impostazioniSection" [user]="visitedUser" [mode]="mode"></app-impostazioni>
+                    <app-impostazioni [section]="impostazioniSection" [user]="visitedUser"
+                        [mode]="mode"></app-impostazioni>
                 </div>
                 <div *ngIf="section== 'Preferiti'">
                     <app-preferiti [userInput]="visitedUser"></app-preferiti>
                 </div>
+            </div>
+            <div class="col-md-12" *ngIf="!isProfileOpen&&user!=visitedUser">
+                <p class="fs-4">
+                    L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
+                    profilo.
+                </p>
+                <button class="btn btn-outline-dark" title="manda una richiesta per visualizzare il profilo" (click)="sendRequest()">Richiedi
+                    permessi</button>
             </div>
         </div>
     </div>

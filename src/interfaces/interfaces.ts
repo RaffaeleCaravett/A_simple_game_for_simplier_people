@@ -49,7 +49,8 @@ export interface User {
         innerHTML: string
     },
     isConnected: boolean,
-    isOpen: boolean
+    open: boolean,
+    availableUsers: User[]
 }
 export interface Categoria {
     id: number,
@@ -88,7 +89,17 @@ export interface Message {
 export interface Chat {
     id: number,
     utenti: User[],
-    messaggi: Message[],
+    messaggi: Messaggio[],
     createdAt: string,
     title: string
+}
+
+export interface Messaggio {
+    id: number,
+    sender: User,
+    state: string,
+    text: string,
+    createdAt: string,
+    settedChatId: number,
+    receivers: number[]
 }

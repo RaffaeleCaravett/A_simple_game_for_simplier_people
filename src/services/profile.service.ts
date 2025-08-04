@@ -20,7 +20,8 @@ export class ProfileServive {
     private resetPasswordByCode: string = '/resetPasswordByCode';
     private clear: string = '/clear';
     private profileImage: string = '/profileImage'
-    private changeVisibility: string = '/changeVisibility'
+    private changeVisibilityString: string = '/changeVisibility'
+
     constructor(private http: HttpClient) { }
 
     getRecensioniByUserId(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
@@ -86,7 +87,7 @@ export class ProfileServive {
         return this.http.get(environment.API_URL + this.auth + this.resetPasswordByCode + `/${nuovaPassword}/${email}/${code}`);
     }
     clearUserCode(email: string) {
-        return this.http.get(environment.API_URL + this.auth + this.clear + `/${email}`)
+        return this.http.get(environment.API_URL + this.auth + this.clear + `/${email}`);
     }
     putImage(image: File) {
         let formData = new FormData();
@@ -95,6 +96,10 @@ export class ProfileServive {
     }
 
     updateDescrizione(descrizione: { textAlignment: string, innerHTML: string }) {
-        return this.http.put(environment.API_URL + this.user + "/descrizione", descrizione)
+        return this.http.put(environment.API_URL + this.user + "/descrizione", descrizione);
+    }
+
+    changeVisibility() {
+        return this.http.get(environment.API_URL + this.user + this.changeVisibilityString);
     }
 }

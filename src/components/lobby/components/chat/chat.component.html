@@ -37,8 +37,11 @@
                         <i class="bi bi-list pt-2" *ngIf="windowWidth<767.2" title="Apri il menu delle chat"></i>
                     </form>
                     <div class="overflow-auto z-2 chat-menu py-2 d-none bg-light position-relative" #chatMenuMenu>
-                        <ul>
-                            <li *ngFor="let u of openedUsersForChat"></li>
+                        <ul class="text-start filtered-chat overflow-auto">
+                            <li *ngFor="let u of filteredChatList" (click)="selectChat(u,chatMenuMenu)"
+                                class="chat-element py-1">
+                                {{u.title}}
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -49,14 +52,16 @@
                         'La tua chat con ' +
                         getUserByExclusion(selectedChat!)}}
                         <button class="btn" [ngClass]="selectedChat?'':'d-none'" title="Chiudi chat">
-                            <i class="bi bi-x-square text-danger" (click)="selectedChat=null" title="Chiudi chat"></i>
+                            <i class="bi bi-x-square text-danger" (click)="deleteSelectedChat(null)"
+                                title="Chiudi chat"></i>
                         </button>
                     </p>
                 </div>
                 <div class="col-md-4 border border-top-0 border-start-0 border-bottom text-center"
                     *ngIf="windowWidth>767.20">
                     <ul class="chat-list py-2 h-100 overflow-auto z-0">
-                        <li *ngFor="let chat of chatList" (click)="openChat(chat)" class="d-flex justify-content">
+                        <li *ngFor="let chat of chatList" (click)="selectChat(chat,chatMenuMenu)"
+                            class="d-flex justify-content">
                             <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
                                 style.backgroundImage="url('{{getChatImage(chat)}}')"
                                 class="rounded-circle border shadow-sm to-point-sm mx-2">
@@ -80,12 +85,25 @@
                     <div class="m-auto text-center py-5 overflow-auto" *ngIf="!selectedChat">
                         <h1>💬 ...</h1>
                     </div>
-                    <div class="message-container"></div>
+                    <div class="message-container">
+                        <div *ngFor="let m of selectedChat?.messaggi">
+                            <p class="my-1 bg-light rounded shadow text-start p-1" [style.width]="'fit-content'"
+                                *ngIf="m.sender.id!=user!.id">
+                                {{m.text}}
+                            </p>
+                        </div>
+                        <div class="d-flex justify-content-end" *ngFor="let m of selectedChat?.messaggi">
+                            <p class="my-1 bg-info rounded shadow text-end p-1" [style.width]="'fit-content'"
+                                *ngIf="m.sender.id==user!.id" title="{{m.createdAt}}">
+                                {{m.text}}
+                            </p>
+                        </div>
+                    </div>
                     <form [formGroup]="messageForm" *ngIf="selectedChat"
                         class="d-flex justify-content-evenly m-auto w-100 mx-1 message-form">
                         <textarea name="message" id="message" formControlName="message" class="form-control -75 mx-1"
                             rows="2"></textarea>
-                        <button class="mx-1 btn" [disabled]="messageNotValid()">Invia</button>
+                        <button class="mx-1 btn" [disabled]="messageNotValid()" (click)="sendMessage()">Invia</button>
                     </form>
                 </div>
             </div>
