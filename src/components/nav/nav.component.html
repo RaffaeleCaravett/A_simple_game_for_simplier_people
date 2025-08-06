@@ -25,7 +25,8 @@
                         </p>
                     </div>
                     <div class="row" [style.cursor]="'pointer'" [ngClass]="n.state=='SENT'?'bg-light':'bg-white'"
-                        [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications">
+                        [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications"
+                        (click)="openChat(n)">
                         <div class="col-2">
                             <img src="{{n.sender.immagineProfilo}}"
                                 class="rounded-circle border shadow notification-pic"
@@ -121,7 +122,8 @@
                             </p>
                         </div>
                         <div class="row" [style.cursor]="'pointer'" [ngClass]="n.state=='SENT'?'bg-light':'bg-white'"
-                            [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications">
+                            [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications"
+                            (click)="openChat(n)">
                             <div class="col-2">
                                 <img src="{{n.sender.immagineProfilo}}"
                                     class="rounded-circle border shadow notification-pic"

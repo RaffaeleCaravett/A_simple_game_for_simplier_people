@@ -111,6 +111,9 @@ export class NavComponent implements OnInit {
     }
   }
 
+  openChat(notification: Notification) {
+    //TODO
+  }
   getNotifications() {
     this.profileService.getNotificationsByReceiverId().subscribe({
       next: (values: any) => {
