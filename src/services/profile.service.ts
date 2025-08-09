@@ -19,8 +19,9 @@ export class ProfileServive {
     private verifyPasswordCode: string = '/verifyPasswordCode';
     private resetPasswordByCode: string = '/resetPasswordByCode';
     private clear: string = '/clear';
-    private profileImage: string = '/profileImage'
-    private changeVisibilityString: string = '/changeVisibility'
+    private profileImage: string = '/profileImage';
+    private changeVisibilityString: string = '/changeVisibility';
+    private notification: string = '/notification';
 
     constructor(private http: HttpClient) { }
 
@@ -101,5 +102,13 @@ export class ProfileServive {
 
     changeVisibility() {
         return this.http.get(environment.API_URL + this.user + this.changeVisibilityString);
+    }
+
+    getNotificationsByReceiverId() {
+        return this.http.get(environment.API_URL + this.notification);
+    }
+    readNotification(notificationsIds: number[]) {
+        let idsList = { ids: notificationsIds };
+        return this.http.post(environment.API_URL + this.notification + `/read`, idsList);
     }
 }

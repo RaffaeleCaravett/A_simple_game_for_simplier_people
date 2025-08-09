@@ -1,20 +1,22 @@
 import { Component, HostListener, OnChanges, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ModeService } from '../../services/mode.service';
-import { Message, Messaggio, User } from '../../interfaces/interfaces';
+import { Message, Messaggio, Notification, User } from '../../interfaces/interfaces';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { WebsocketService } from '../../services/websocket.service';
 import { ChatService } from '../../services/chat.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProfileServive } from '../../services/profile.service';
 
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [NgIf, NgClass, RouterLink, MatMenuModule, SharedModule],
+  imports: [NgIf, NgClass, RouterLink, MatMenuModule, SharedModule, NgFor, MatProgressSpinnerModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss'
 })
@@ -24,8 +26,11 @@ export class NavComponent implements OnInit {
   mode: string = 'light';
   user: User | null = null;
   isLoadingLogoutOrRoute: boolean = false;
+  notificationToRead: any = null;
+  notificationMenuOpen: boolean = false;
+  notifications: Notification[] = [];
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService
+    private toastr: ToastrService, private profileService: ProfileServive
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
@@ -75,10 +80,43 @@ export class NavComponent implements OnInit {
   }
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
+    setTimeout(() => {
+      this.getNotifications();
+    }, 3000);
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.innerWidth = window.innerWidth;
+  }
+  openNotificationMenu() {
+    this.notificationMenuOpen = !this.notificationMenuOpen;
+    if (this.notificationMenuOpen) {
+      let toRead: number[] = []
+      toRead = this.notifications.filter((n: Notification) => n.state == 'SENT').map((n: Notification) => n.id);
+      if (toRead.length > 0) {
+        this.profileService.readNotification(toRead).subscribe({
+          next: (data: any) => {
+            if (data) {
+              this.notifications.forEach((n: Notification) => {
+                if (toRead.includes(n.id)) {
+                  n.state = 'READ';
+                  this.notificationToRead--;
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+  }
+
+  getNotifications() {
+    this.profileService.getNotificationsByReceiverId().subscribe({
+      next: (values: any) => {
+        this.notifications = values;
+        this.notificationToRead = this.notifications.filter((n: Notification) => n.state == 'SENT').length;
+      }
+    })
   }
 }

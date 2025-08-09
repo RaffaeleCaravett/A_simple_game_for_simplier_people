@@ -1,13 +1,46 @@
 <nav class="pt-3 text-center" [ngClass]="mode=='light'?'bg-personal':'bg-personal-opposite'">
     <div class="container">
         <div class="row" *ngIf="innerWidth >767.20 else shortMenu">
-            <div class="col-md-12 text-end mode">
+            <div class="col-md-12 text-end mode" *ngIf="notificationToRead!=null">
                 <button class="btn text-light light fs-4" (click)="updateMode('light')" *ngIf="mode=='dark'">
                     LIGHT MODE ☀️
                 </button>
                 <button class="btn text-dark dark fs-4" (click)="updateMode('dark')" *ngIf="mode=='light'">
                     DARK MODE 🌙
                 </button>
+                <span><i class="bi bi-bell h2 text-danger" *ngIf="notificationToRead==0" title="0 notifiche da leggere!"
+                        (click)="openNotificationMenu()"></i></span>
+                <span><i class="bi bi-bell-fill h2 text-danger" *ngIf="notificationToRead>0"
+                        title="{{notificationToRead}} {{notificationToRead ==1?'notifica':'notifiche'}} da leggere!"
+                        (click)="openNotificationMenu()"></i></span>
+            </div>
+            <div class="col-md-12 d-flex justify-content-end" *ngIf="notificationToRead == null">
+                <mat-spinner diameter="50" color="warn" strokeWidth="4"></mat-spinner>
+            </div>
+            <div class="col-md-12 d-flex justify-content-end position-relative" *ngIf="notificationMenuOpen">
+                <div class="w-25bg-light border rounded shadow position-absolute notification-menu">
+                    <div class="py-5 text-center" *ngIf="notifications.length==0">
+                        <p class="fs-4">
+                            Non ci sono notifiche da leggere.
+                        </p>
+                    </div>
+                    <div class="row" [style.cursor]="'pointer'" [ngClass]="n.state=='SENT'?'bg-light':'bg-white'"
+                        [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications">
+                        <div class="col-2">
+                            <img src="{{n.sender.immagineProfilo}}"
+                                class="rounded-circle border shadow notification-pic"
+                                alt="immagine_profilo_notificatore">
+                        </div>
+                        <div class="col-8">
+                            <p>{{n.testo}}</p>
+                            <p>{{n.createdAt}}</p>
+                        </div>
+                        <div class="col-1">
+                            <i class="bi bi-envelope" *ngIf="n.state=='READ'"></i>
+                            <i class="bi bi-envelope-fill" *ngIf="n.state=='SENT'"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
                 <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'" [routerLink]="'/home'">🏠
@@ -63,13 +96,47 @@
         </div>
         <ng-template #shortMenu>
             <div class="row">
-                <div class="col-md-12 text-end mode">
+                <div class="col-md-12 text-end mode" *ngIf="notificationToRead!=null">
                     <button class="btn text-light light fs-4" (click)="updateMode('light')" *ngIf="mode=='dark'">
                         LIGHT MODE ☀️
                     </button>
                     <button class="btn text-dark dark fs-4" (click)="updateMode('dark')" *ngIf="mode=='light'">
                         DARK MODE 🌙
                     </button>
+
+                    <span><i class="bi bi-bell h2 text-danger" *ngIf="notificationToRead==0"
+                            title="0 notifiche da leggere!" (click)="openNotificationMenu()"></i></span>
+                    <span><i class="bi bi-bell-fill h2 text-danger" *ngIf="notificationToRead>0"
+                            title="{{notificationToRead}} {{notificationToRead ==1?'notifica':'notifiche'}} da leggere!"
+                            (click)="openNotificationMenu()"></i></span>
+                </div>
+                <div class="col-md-12 d-flex justify-content-end" *ngIf="notificationToRead == null">
+                    <mat-spinner diameter="50" color="warn" strokeWidth="4"></mat-spinner>
+                </div>
+                <div class="col-md-12 d-flex justify-content-end position-relative" *ngIf="notificationMenuOpen">
+                    <div class="w-75 bg-light shadow border rounded position-absolute notification-menu">
+                        <div class="py-5 text-center" *ngIf="notifications.length==0">
+                            <p class="fs-4">
+                                Non ci sono notifiche da leggere.
+                            </p>
+                        </div>
+                        <div class="row" [style.cursor]="'pointer'" [ngClass]="n.state=='SENT'?'bg-light':'bg-white'"
+                            [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications">
+                            <div class="col-2">
+                                <img src="{{n.sender.immagineProfilo}}"
+                                    class="rounded-circle border shadow notification-pic"
+                                    alt="immagine_profilo_notificatore">
+                            </div>
+                            <div class="col-8">
+                                <p>{{n.testo}}</p>
+                                <p>{{n.createdAt}}</p>
+                            </div>
+                            <div class="col-1">
+                                <i class="bi bi-envelope" *ngIf="n.state=='READ'"></i>
+                                <i class="bi bi-envelope-fill" *ngIf="n.state=='SENT'"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-4">
                     <button class="btn fs-4" [ngClass]="mode!='light'?'text-light':'text-dark'" [routerLink]="'/home'"

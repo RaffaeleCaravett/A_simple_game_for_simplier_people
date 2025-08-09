@@ -20,7 +20,8 @@ export class WebsocketService implements OnDestroy {
 
     constructor() {
         this.connection = Stomp.client(`${environment.SOCKET_URL}/websocket`);
-        this.connection.connect({}, (event: any) => { console.log('event : ' + event); });
+        this.connection.connect({}, (event: any) => { 
+        });
         this.connection.onWebSocketClose = (event: any) => {
             this.interval = setInterval(() => {
                 if (!this.connection?.connected) {

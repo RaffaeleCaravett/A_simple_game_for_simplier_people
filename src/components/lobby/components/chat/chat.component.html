@@ -69,6 +69,7 @@
                             <p class="pt-2">
                                 {{chat.title}}
                             </p>
+                            <span class="bg-secondary new rounded mx-1 px-1" *ngIf="checkNewMessages(chat)">new</span>
                         </li>
                         <li *ngIf="chatList?.length == 0"> Non ci sono chat disponibili ancora!</li>
                     </ul>

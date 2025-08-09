@@ -9,9 +9,11 @@
         font-weight: bold !important;
     }
 }
+
 .mode {
     .light {
         transition: .5s;
+
         &:hover {
             color: white !important;
             transition: .5s !important;
@@ -22,6 +24,7 @@
 
     .dark {
         transition: .5s;
+
         &:hover {
             color: black !important;
             transition: .5s !important;
@@ -30,32 +33,54 @@
         }
     }
 }
+
 .h1,
 h2,
 * {
-  font-family: "Just Me Again Down Here", cursive;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Just Me Again Down Here", cursive;
+    font-weight: 400;
+    font-style: normal;
 }
-.bg-personal{
+
+.bg-personal {
     background-image: linear-gradient(black, white);
 }
-.bg-personal-opposite{
+
+.bg-personal-opposite {
     background-image: linear-gradient(black, gray);
 }
+
 .profile-pic {
     width: 50px;
-    min-height: 50px!important;
+    min-height: 50px !important;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     background-color: linear-gradient(black, gray);
 }
-.mat-trigger{
+
+.notification-pic {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.mat-trigger {
     cursor: pointer;
 }
-.login-span{
-    width: 10px!important;
-    height: 10px!important;
+
+.login-span {
+    width: 10px !important;
+    height: 10px !important;
     background-color: green;
+}
+
+i {
+    cursor: pointer;
+}
+
+.notification-menu {
+    bottom: -250px;
+    height: auto !important;
+    max-height: 250px !important;
+    overflow: auto;
 }

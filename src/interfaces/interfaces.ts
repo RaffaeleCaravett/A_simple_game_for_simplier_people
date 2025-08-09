@@ -101,5 +101,15 @@ export interface Messaggio {
     text: string,
     createdAt: string,
     settedChatId: number,
-    receivers: number[]
+    receivers: number[],
+    readers: number[]
+}
+
+export interface Notification {
+    id: number,
+    testo: string,
+    chat: Chat,
+    sender: User,
+    state: string,
+    createdAt: string
 }
