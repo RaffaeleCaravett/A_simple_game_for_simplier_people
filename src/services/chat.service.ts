@@ -17,6 +17,7 @@ export class ChatService {
     private messages: string = '/messages';
     public selectedChat: Chat | null = null;
     public selectChat: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    private read: string = '/read'
     constructor(private http: HttpClient, private ws: WebsocketService) { }
     //to call when user send message
     sendMessage(message: Message) {
@@ -35,8 +36,8 @@ export class ChatService {
         //return this.http.post(environment.API_URL + this.messaggio, message, { headers: new HttpHeaders({ timeout: `${600000}` }) });
     }
     //to call on focus on chat or on input
-    readMessages(chatId: number, viewer: number) {
-        return this.http.post(environment.API_URL + this.messaggio + this.messages, { chatId: chatId, senderId: viewer });
+    readMessages(chatId: number) {
+        return this.http.get(environment.API_URL + this.messaggio + this.read + `?chatId=${chatId}`);
     }
 
     getAllChatsByUserId(userId: number) {

@@ -1,10 +1,10 @@
-import { Component, HostListener, OnChanges, OnInit } from '@angular/core';
+import { Component, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ModeService } from '../../services/mode.service';
 import { Message, Messaggio, Notification, User } from '../../interfaces/interfaces';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { WebsocketService } from '../../services/websocket.service';
@@ -29,6 +29,8 @@ export class NavComponent implements OnInit {
   notificationToRead: any = null;
   notificationMenuOpen: boolean = false;
   notifications: Notification[] = [];
+  @ViewChild('pTrigger') pTrigger: any;
+  @ViewChild('p1Trigger') p1Trigger: any;
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
     private toastr: ToastrService, private profileService: ProfileServive
   ) {
@@ -53,6 +55,8 @@ export class NavComponent implements OnInit {
       }
     });
   }
+
+
   logout() {
     this.isLoadingLogoutOrRoute = true;
     setTimeout(() => {
@@ -62,6 +66,7 @@ export class NavComponent implements OnInit {
           this.authService.authenticateUser(false);
           localStorage.clear();
           this.isLoadingLogoutOrRoute = false;
+          this.notificationMenuOpen = false;
           this.router.navigate(['']);
         }
       });
@@ -75,6 +80,7 @@ export class NavComponent implements OnInit {
     this.isLoadingLogoutOrRoute = true;
     setTimeout(() => {
       this.isLoadingLogoutOrRoute = false;
+      this.notificationMenuOpen = false;
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
     }, 1000)
   }
@@ -92,6 +98,7 @@ export class NavComponent implements OnInit {
   openNotificationMenu() {
     this.notificationMenuOpen = !this.notificationMenuOpen;
     if (this.notificationMenuOpen) {
+      this.closeMenu();
       let toRead: number[] = []
       toRead = this.notifications.filter((n: Notification) => n.state == 'SENT').map((n: Notification) => n.id);
       if (toRead.length > 0) {
@@ -112,7 +119,8 @@ export class NavComponent implements OnInit {
   }
 
   openChat(notification: Notification) {
-    //TODO
+    this.notificationMenuOpen = false;
+    this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
   }
   getNotifications() {
     this.profileService.getNotificationsByReceiverId().subscribe({
@@ -122,4 +130,14 @@ export class NavComponent implements OnInit {
       }
     })
   }
+
+  closeMenu(element?: any) {
+    element?.closeMenu();
+    if (this.p1Trigger) {
+      this.p1Trigger.closeMenu();
+    } else {
+      this.pTrigger.closeMenu();
+    }
+  }
+
 }

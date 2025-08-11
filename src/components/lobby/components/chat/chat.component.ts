@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { Chat, Message, Messaggio, User } from '../../../../interfaces/interfaces';
@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { CreateChatComponent } from '../../../../shared/components/create-chat/create-chat.component';
 import { WebsocketService } from '../../../../services/websocket.service';
+import { ModeService } from '../../../../services/mode.service';
 
 @Component({
   selector: 'app-chat',
@@ -28,9 +29,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageForm: FormGroup = new FormGroup({});
   openedUsersForChat: User[] = [];
   filteredChatList: Chat[] = [];
+  mode: string = 'light';
 
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
-    private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService) {
+    private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
+    private modeService: ModeService) {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
       this.chatList.forEach((chat: Chat) => {
         if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
@@ -46,7 +49,10 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (equalChat && equalChat != undefined) {
         this.selectedChat = equalChat;
       }
-    })
+    });
+    this.modeService.mode.subscribe((value: string) => {
+      this.mode = value;
+    });
   }
 
   ngOnInit(): void {
@@ -113,6 +119,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.getAllChatsByUserId(this.user!.id).subscribe({
       next: (values: any) => {
         this.chatList = values;
+        if (this.activatedRoute.snapshot.queryParams['chat'] != null) {
+          this.selectedChat = JSON.parse(this.activatedRoute.snapshot.queryParams['chat']);
+          setTimeout(() => {
+            this.scrollChatContainerBottom();
+          }, 300)
+        }
       }
     })
   }
@@ -170,7 +182,24 @@ export class ChatComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       let chatContainer = document.getElementsByClassName('message-container')[0] as HTMLDivElement;
       chatContainer.scrollTop = chatContainer.scrollHeight;
+      this.readAllMessages();
     }, 200);
+  }
+
+  readAllMessages() {
+    if (this.selectedChat == null) return;
+    this.chatService.readMessages(this.selectedChat!.id).subscribe({
+      next: (read: any) => {
+        if (read) {
+          this.selectedChat?.messaggi.forEach((messaggio: Messaggio) => {
+            if (messaggio.receivers.includes(this.user!.id)) {
+              if (!messaggio?.readers) messaggio.readers = [];
+              messaggio.readers.push(this.user!.id);
+            }
+          });
+        }
+      }
+    })
   }
   sendMessage() {
     if (!this.messageNotValid()) {
@@ -209,7 +238,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   checkNewMessages(chat: Chat): boolean {
     let hasNewMessages: boolean = false;
     chat.messaggi.forEach(m => {
-      if (m.receivers.includes(this.user!.id) && !m.readers.includes(this.user!.id)) {
+      if (m?.receivers?.includes(this.user!.id) && !m?.readers?.includes(this.user!.id)) {
         hasNewMessages = true;
       }
     });
