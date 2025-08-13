@@ -32,7 +32,7 @@ export class NavComponent implements OnInit {
   @ViewChild('pTrigger') pTrigger: any;
   @ViewChild('p1Trigger') p1Trigger: any;
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService, private profileService: ProfileServive
+    private toastr: ToastrService, private profileService: ProfileServive, private webSocketService: WebsocketService
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
@@ -62,6 +62,7 @@ export class NavComponent implements OnInit {
     setTimeout(() => {
       this.authService.connectUser(false).subscribe({
         next: (value: any) => {
+          this.webSocketService.sendStatus({ id: value.id, connected: value.isConnected });
           this.authService.setUser(null);
           this.authService.authenticateUser(false);
           localStorage.clear();

@@ -17,7 +17,8 @@
                 </div>
             </div>
             <div class="col-12 py-5">
-                <div class="row border shadow text-center chat-container" [ngClass]="mode=='light'?['bg-light','text-dark']:['bg-dark','text-white']">
+                <div class="row border shadow text-center chat-container"
+                    [ngClass]="mode=='light'?['bg-light','text-dark']:['bg-dark','text-white']">
                     <div class="col-md-4 border border-top-0 border-start-0 border-bottom header-col">
                         <div class="row">
                             <div class="col-10">
@@ -70,6 +71,8 @@
                                 <p class="pt-2">
                                     {{chat.title}}
                                 </p>
+                                <span class="p-1 rounded-circle span-circle"
+                                    [ngClass]="checkChat(chat)?'bg-success':'bg-danger'"></span>
                                 <span class="bg-secondary new rounded mx-1 px-1"
                                     *ngIf="checkNewMessages(chat)">new</span>
                             </li>
@@ -91,13 +94,13 @@
                         <div class="message-container">
                             <div *ngFor="let m of selectedChat?.messaggi">
                                 <div class="d-flex justify-content-start" *ngIf="m.sender.id!=user!.id">
-                                    <p class="my-1 bg-light rounded shadow text-start p-1"
+                                    <p class="my-1 bg-light rounded shadow text-start p-2"
                                         [style.width]="'fit-content'">
                                         {{m.text}}
                                     </p>
                                 </div>
                                 <div class="d-flex justify-content-end" *ngIf="m.sender.id==user!.id">
-                                    <p class="my-1 bg-info rounded shadow text-end p-1" [style.width]="'fit-content'"
+                                    <p class="my-1 bg-info rounded shadow text-end p-2" [style.width]="'fit-content'"
                                         title="{{m.createdAt}}">
                                         {{m.text}}
                                     </p>
@@ -107,8 +110,8 @@
                                 class="d-flex justify-content-evenly m-auto w-100 mt-2 mx-1 message-form">
                                 <textarea name="message" id="message" formControlName="message"
                                     class="form-control -75 mx-1" rows="2"></textarea>
-                                <button class="mx-1 btn" [disabled]="messageNotValid()"
-                                    (click)="sendMessage()">Invia</button>
+                                <button class="mx-1 btn" [disabled]="messageNotValid()" (click)="sendMessage()"
+                                    [ngClass]="mode=='light'?'text-dark':'text-white'">Invia</button>
                             </form>
                         </div>
                     </div>

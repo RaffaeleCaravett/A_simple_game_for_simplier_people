@@ -42,6 +42,9 @@ export class AppComponent implements OnInit {
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
     })
+    this.webSocketService.connectionBehaviorSubject.subscribe((data: any) => {
+      console.log("DATA _ " + data);
+    })
   }
 
 
@@ -75,15 +78,9 @@ export class AppComponent implements OnInit {
               next: (value: any) => {
                 this.authService.setUser(value);
                 this.authService.authenticateUser(true);
-                // this.chatService.getAllChatsByUserId(value.id).subscribe({
-                //   next: (value: any) => {
-                //     this.chats = value;
-                //     value.forEach((c: any) => {
-                //this.socketMap.set(c.id, new RxStompService);
-                //     });
-                //   }
-                // })
-
+                setTimeout(() => {
+                  this.webSocketService.sendStatus({ id: value.id, connected: value.isConnected });
+                }, 6000)
               }
             });
             setTimeout(() => {
@@ -101,8 +98,10 @@ export class AppComponent implements OnInit {
       this.modeService.updateMode(mode);
     }
     setTimeout(() => {
-      this.webSocketService.listen((message: any) => {
-      });
+      this.webSocketService.listen((message: any) => { });
+      this.webSocketService.listenStatus((user: any) => {
+        console.log(user)
+      })
     }, 5000)
   }
 

@@ -6,6 +6,7 @@ import { catchError, Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { ShowErrorService } from '../services/show-error.service';
 import { FormsService } from '../services/forms.service';
+import { WebsocketService } from '../services/websocket.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -14,7 +15,8 @@ export class ErrorInterceptor implements HttpInterceptor {
     private authService: AuthService,
     private router: Router,
     private showError: ShowErrorService,
-    private formsService: FormsService
+    private formsService: FormsService,
+    private webSocketService: WebsocketService
   ) { }
   intercept(
     request: HttpRequest<any>,
@@ -60,6 +62,9 @@ export class ErrorInterceptor implements HttpInterceptor {
                               );
                               this.authService.connectUser(true).subscribe({
                                 next: (value: any) => {
+                                  setTimeout(() => {
+                                    this.webSocketService.sendStatus({ id: value.id, connected: value.isConnected });
+                                  }, 6000);
                                   this.authService.setUser(value);
                                   this.authService.authenticateUser(true);
                                 }

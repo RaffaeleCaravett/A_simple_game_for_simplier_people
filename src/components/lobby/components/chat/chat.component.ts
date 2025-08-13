@@ -44,6 +44,13 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
       this.scrollChatContainerBottom();
     });
+    this.ws.connectionBehaviorSubject.subscribe((user: User | null) => {
+      this.chatList.forEach((chat: Chat) => {
+        if (chat.utenti.map((u: User) => u.id).includes(user!.id)) {
+          chat.utenti.filter((u: User) => u.id == user!.id)[0].isConnected = user!.isConnected;
+        }
+      });
+    });
     this.chatService.selectChat.subscribe((chat: number) => {
       let equalChat: Chat = this.chatList.filter((c: any) => c.id == chat)[0];
       if (equalChat && equalChat != undefined) {
@@ -91,6 +98,11 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.toastr.show("Non è stata creata nessuna chat.");
       }
     });
+  }
+
+  checkChat(chat: Chat): boolean {
+    if (chat.utenti.length > 2) return false;
+    return chat.utenti.filter((u: User) => u.id != this.user!.id)[0].isConnected;
   }
 
   initializeForms() {

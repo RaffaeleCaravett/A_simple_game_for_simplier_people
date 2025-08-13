@@ -113,3 +113,8 @@ export interface Notification {
     state: string,
     createdAt: string
 }
+
+export interface UserConnection {
+    id: number,
+    connected: boolean
+}
