@@ -116,7 +116,6 @@ export class TrisComponent implements OnInit, OnDestroy {
         this.isEnemyMoving = false;
         this.enemysMoves.push(Number(div[userTris].id));
         if (this.checkIfTris(this.enemysMoves)) {
-          debugger
           this.enemyWins = true;
           this.enemysMatchesWon += 1;
         }

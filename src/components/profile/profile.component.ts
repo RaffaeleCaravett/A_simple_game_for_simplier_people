@@ -1,6 +1,6 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '../../interfaces/interfaces';
+import { ConnectionRequestDTO, User } from '../../interfaces/interfaces';
 import { ProfileServive } from '../../services/profile.service';
 import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { GamefieldService } from '../../services/gamefield.service';
@@ -17,11 +17,14 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DescrizioneComponent } from './components/descrizione/descrizione.component';
 import { PreferitiComponent } from '../lobby/components/preferiti/preferiti.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { EsitoRichiesta } from '../../enums/enums';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, ImpostazioniComponent, NgStyle, PreferitiComponent, LeafletComponent, GoogleMap, MapMarker, MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent,
+  imports: [NgFor, NgIf, NgClass, ImpostazioniComponent, NgStyle, PreferitiComponent, LeafletComponent, GoogleMap, MapMarker,
+    MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent, MatProgressSpinnerModule,
     MatSlideToggleModule, FormsModule
   ],
   templateUrl: './profile.component.html',
@@ -70,7 +73,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
 
   sizes: number[] = [2, 5, 10];
   windowWidth: number = 0;
-  menuVoices: Set<{ label: string, emoji: string }> = new Set([{ label: 'Profilo', emoji: '🪪' }, { label: 'Recensioni', emoji: '✅' }, { label: 'Giochi', emoji: '🕹️' }, { label: 'Trofei', emoji: '🏅' }, { label: 'Classifiche', emoji: '📋' }, { label: 'Partite', emoji: '🥅' }, { label: 'Preferiti', emoji: '❤️' }]);
+  menuVoices: Set<{ label: string, emoji: string, title: string }> = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+  { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' }
+  ]);
   section: string = 'Profilo';
   circles: number[] = [1, 2, 3, 4, 5];
   partitePage: number = 0;
@@ -102,6 +107,10 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   descrizioneForm: FormGroup = new FormGroup({});
   showMenu: boolean = false;
   isProfileOpen: boolean = false;
+  isConnectionRequestLoading: boolean = false;
+  isThisAFriend: boolean = false;
+  connectionRequestPage: number = 0;
+  actualRequests: any = null;
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
@@ -117,14 +126,22 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             yesImpostazioni = true;
           }
         });
-        if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
-        this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
+        if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
+        this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
         localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
       }
     });
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
-    })
+    });
+    this.profiloService.showRichiestaSpinner.subscribe((data: boolean) => {
+      this.isConnectionRequestLoading = data;
+    });
+    if (this.user == this.visitedUser) {
+      this.profiloService.getConnectionRequest(this.connectionRequestPage, null, this.user.id, null, this.user.fullName, EsitoRichiesta.ACCETTATA).subscribe((datas: any) => {
+        this.actualRequests = datas;
+      });
+    };
   }
 
   ngOnInit(): void {
@@ -147,8 +164,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
                     yesImpostazioni = true;
                   }
                 });
-                if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
-                this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
+                if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
+                this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
               }
               this.getAllDatas();
               if (this.visitedUser != null && this.visitedUser != undefined) localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
@@ -168,8 +185,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
                   yesImpostazioni = true;
                 }
               });
-              if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️' });
-              this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️' });
+              if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
+              this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
             }
             this.getAllDatas();
           }
@@ -177,8 +194,20 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       }
     )
     localStorage.setItem('location', 'lobby/profile')
+    this.checkIfFriend();
   }
 
+  checkIfFriend() {
+    if (this.user != this.visitedUser) {
+      this.profiloService.checkIfFriend(this.user.id, this.visitedUser!.id).subscribe({
+        next: (value: any) => {
+          this.isThisAFriend = value;
+        }
+      });
+    } else {
+      this.isThisAFriend = true;
+    }
+  }
   getAllDatas() {
     if (this.visitedUser) {
       this.getGiochi();
@@ -338,6 +367,16 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     }
   }
   sendRequest() {
-    this.toastr.show("E' stata mandata la richiesta verso " + this.visitedUser?.fullName + ". ");
+    this.isConnectionRequestLoading = true;
+    let request: ConnectionRequestDTO = {
+      receiverId: this.visitedUser!.id
+    }
+
+    this.profiloService.sendConnectionRequest(request).subscribe({
+      next: (data: any) => {
+        this.toastr.show("E' stata mandata la richiesta verso " + this.visitedUser?.fullName + ". ");
+        this.isConnectionRequestLoading = false;
+      }
+    })
   }
 }

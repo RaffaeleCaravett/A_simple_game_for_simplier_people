@@ -1,6 +1,9 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../core/environment";
+import { ConnectionRequestDTO } from "../interfaces/interfaces";
+import { BehaviorSubject } from "rxjs";
+import { EsitoRichiesta } from "../enums/enums";
 
 @Injectable({
     providedIn: 'root'
@@ -22,6 +25,8 @@ export class ProfileServive {
     private profileImage: string = '/profileImage';
     private changeVisibilityString: string = '/changeVisibility';
     private notification: string = '/notification';
+    private connectionRequest: string = '/connectionRequest'
+    public showRichiestaSpinner: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(private http: HttpClient) { }
 
@@ -110,5 +115,36 @@ export class ProfileServive {
     readNotification(notificationsIds: number[]) {
         let idsList = { ids: notificationsIds };
         return this.http.post(environment.API_URL + this.notification + `/read`, idsList);
+    }
+    sendConnectionRequest(request: ConnectionRequestDTO) {
+        return this.http.post(environment.API_URL + this.connectionRequest, request);
+    }
+    getConnectionRequest(page: number, senderId: number | null, receiverId: number | null, senderFullname: string | null, receiverFullname: string | null,
+        esitoRichiesta: EsitoRichiesta | null) {
+
+        let params: HttpParams = new HttpParams();
+
+        params.set("page", page);
+        if (senderId) {
+            params.set("senderId", senderId);
+        }
+        if (receiverId) {
+            params.set("receiverId", receiverId);
+        }
+        if (senderFullname) {
+            params.set("sendereFullname", senderFullname);
+        }
+        if (receiverFullname) {
+            params.set("receiverFullname", receiverFullname);
+        }
+        if (esitoRichiesta) {
+            params.set("esitoRichiesta", esitoRichiesta);
+        }
+        return this.http.get(environment.API_URL + this.connectionRequest, { params: params })
+    }
+
+
+    checkIfFriend(userId1: number, userId2: number) {
+        return this.http.get(environment.API_URL + this.connectionRequest + '/friend?userId1=' + userId1 + '&userId2=' + userId2);
     }
 }

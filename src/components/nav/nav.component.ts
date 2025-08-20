@@ -32,11 +32,12 @@ export class NavComponent implements OnInit {
   @ViewChild('pTrigger') pTrigger: any;
   @ViewChild('p1Trigger') p1Trigger: any;
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService, private profileService: ProfileServive, private webSocketService: WebsocketService
+    private toastr: ToastrService, private profileService: ProfileServive
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
       this.user = this.authService.getUser();
+      this.getNotifications();
     });
     this.modeService.mode.subscribe((mood: string) => {
       this.mode = mood;
@@ -54,6 +55,11 @@ export class NavComponent implements OnInit {
         });
       }
     });
+    this.authService.closeMenu.subscribe((data: string) => {
+      if (data == 'close') {
+        this.notificationMenuOpen = false;
+      }
+    })
   }
 
 
@@ -62,7 +68,6 @@ export class NavComponent implements OnInit {
     setTimeout(() => {
       this.authService.connectUser(false).subscribe({
         next: (value: any) => {
-          this.webSocketService.sendStatus({ id: value.id, connected: value.isConnected });
           this.authService.setUser(null);
           this.authService.authenticateUser(false);
           localStorage.clear();
@@ -87,9 +92,13 @@ export class NavComponent implements OnInit {
   }
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
-    setTimeout(() => {
-      this.getNotifications();
-    }, 3000);
+    if (this.user) {
+      setTimeout(() => {
+        this.getNotifications();
+      }, 3000);
+    } else {
+      this.notificationToRead = 0;
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -135,9 +144,9 @@ export class NavComponent implements OnInit {
   closeMenu(element?: any) {
     element?.closeMenu();
     if (this.p1Trigger) {
-      this.p1Trigger.closeMenu();
+      this.p1Trigger?.closeMenu();
     } else {
-      this.pTrigger.closeMenu();
+      this.pTrigger?.closeMenu();
     }
   }
 

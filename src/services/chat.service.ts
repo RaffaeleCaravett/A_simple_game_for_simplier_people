@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { Chat, Message } from "../interfaces/interfaces";
+import { Chat, Message, SocketDTO } from "../interfaces/interfaces";
 import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
 import { WebsocketService } from "./websocket.service";
@@ -21,7 +21,13 @@ export class ChatService {
     constructor(private http: HttpClient, private ws: WebsocketService) { }
     //to call when user send message
     sendMessage(message: Message) {
-        this.ws.send(message);
+        let socketDTO: SocketDTO = {
+            messageDTO: message,
+            moveDTO: null,
+            gameConnectionDTO: null,
+            connectionDTO: null
+        }
+        this.ws.send(socketDTO);
 
         let messag: Message = {
             message: "PROVA SOCKET",
@@ -29,8 +35,9 @@ export class ChatService {
             mittente: 3,
             chat: 2
         }
+        socketDTO.messageDTO = messag;
         setTimeout(() => {
-            this.ws.send(messag);
+            this.ws.send(socketDTO);
 
         }, 2000)
         //return this.http.post(environment.API_URL + this.messaggio, message, { headers: new HttpHeaders({ timeout: `${600000}` }) });

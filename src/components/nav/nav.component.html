@@ -8,9 +8,9 @@
                 <button class="btn text-dark dark fs-4" (click)="updateMode('dark')" *ngIf="mode=='light'">
                     DARK MODE 🌙
                 </button>
-                <span><i class="bi bi-bell h2 text-danger" *ngIf="notificationToRead==0" title="0 notifiche da leggere!"
-                        (click)="openNotificationMenu()"></i></span>
-                <span><i class="bi bi-bell-fill h2 text-danger" *ngIf="notificationToRead>0"
+                <span *ngIf="user"><i class="bi bi-bell h2 text-danger" *ngIf="notificationToRead==0"
+                        title="0 notifiche da leggere!" (click)="openNotificationMenu()"></i></span>
+                <span *ngIf="user"><i class="bi bi-bell-fill h2 text-danger" *ngIf="notificationToRead>0"
                         title="{{notificationToRead}} {{notificationToRead ==1?'notifica':'notifiche'}} da leggere!"
                         (click)="openNotificationMenu()"></i></span>
             </div>
@@ -37,8 +37,14 @@
                             <p>{{n.createdAt}}</p>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-envelope" *ngIf="n.state=='READ'"></i>
-                            <i class="bi bi-envelope-fill" *ngIf="n.state=='SENT'"></i>
+                            <i class="bi bi-check2-all" title="letta" *ngIf="n.state=='READ'"></i>
+                            <i class="bi bi-check2" title="non letta" *ngIf="n.state=='SENT'"></i>
+                            <br>
+                            <i class="bi bi-envelope-fill" title="tipo messaggio"
+                                *ngIf="n.notificationType=='MESSAGE'"></i>
+                            <i class="bi bi-person-lines-fill" title="tipo richiesta"
+                                *ngIf="n.notificationType=='REQUEST'"></i>
+                            <i class="bi bi-envelope-at" title="tipo email" *ngIf="n.notificationType=='EMAIL'"></i>
                         </div>
                     </div>
                 </div>
@@ -111,9 +117,9 @@
                         DARK MODE 🌙
                     </button>
 
-                    <span><i class="bi bi-bell h2 text-danger" *ngIf="notificationToRead==0"
+                    <span *ngIf="user"><i class="bi bi-bell h2 text-danger" *ngIf="notificationToRead==0"
                             title="0 notifiche da leggere!" (click)="openNotificationMenu();"></i></span>
-                    <span><i class="bi bi-bell-fill h2 text-danger" *ngIf="notificationToRead>0"
+                    <span *ngIf="user"><i class="bi bi-bell-fill h2 text-danger" *ngIf="notificationToRead>0"
                             title="{{notificationToRead}} {{notificationToRead ==1?'notifica':'notifiche'}} da leggere!"
                             (click)="openNotificationMenu();"></i></span>
                 </div>

@@ -7,6 +7,8 @@ import { AuthService } from '../services/auth.service';
 import { ShowErrorService } from '../services/show-error.service';
 import { FormsService } from '../services/forms.service';
 import { WebsocketService } from '../services/websocket.service';
+import { SocketDTO } from '../interfaces/interfaces';
+import { ProfileServive } from '../services/profile.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -16,7 +18,8 @@ export class ErrorInterceptor implements HttpInterceptor {
     private router: Router,
     private showError: ShowErrorService,
     private formsService: FormsService,
-    private webSocketService: WebsocketService
+    private webSocketService: WebsocketService,
+    private profileService: ProfileServive
   ) { }
   intercept(
     request: HttpRequest<any>,
@@ -26,6 +29,9 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((err: any) => {
         setTimeout(() => {
           if (err instanceof HttpErrorResponse) {
+            if (err?.error?.message == "Hai già una richiesta attiva inviata a questo utente") {
+              this.profileService.showRichiestaSpinner.next(false);
+            }
             if (
               ((err.error &&
                 err.error.message &&
@@ -62,9 +68,15 @@ export class ErrorInterceptor implements HttpInterceptor {
                               );
                               this.authService.connectUser(true).subscribe({
                                 next: (value: any) => {
+                                  let socketDTO: SocketDTO = {
+                                    messageDTO: null,
+                                    connectionDTO: { userId: value.id },
+                                    gameConnectionDTO: null,
+                                    moveDTO: null
+                                  }
                                   setTimeout(() => {
-                                    this.webSocketService.sendStatus({ id: value.id, connected: value.isConnected });
-                                  }, 6000);
+                                    this.webSocketService.send(socketDTO);
+                                  }, 2000);
                                   this.authService.setUser(value);
                                   this.authService.authenticateUser(true);
                                 }

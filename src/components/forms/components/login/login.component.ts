@@ -10,6 +10,8 @@ import { AuthGuard } from '../../../../core/auth.guard';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { secretEnvironment } from '../../../../secret/secret';
+import { SocketDTO } from '../../../../interfaces/interfaces';
+import { WebsocketService } from '../../../../services/websocket.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   codeForm: FormGroup = new FormGroup({});
 
   constructor(private toastr: ToastrService, private router: Router, private modeService: ModeService, private formsService: FormsService,
-    private authService: AuthService, private authGuard: AuthGuard, private errorService: ShowErrorService
+    private authService: AuthService, private authGuard: AuthGuard, private errorService: ShowErrorService, private webSocketService: WebsocketService
   ) {
     this.modeService.mode.subscribe((data: string) => {
       if (data) {
@@ -106,9 +108,20 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.authService.setToken(data?.token?.accessToken);
                 localStorage.setItem('refreshToken', data?.token?.refreshToken);
                 localStorage.setItem('accessToken', data?.token?.accessToken);
-                this.authService.setUser(data.user);
-                this.authService.authenticateUser(true);
-                this.router.navigate(['lobby']);
+                this.authService.connectUser(true).subscribe((data: any) => {
+                  this.authService.setUser(data);
+                  let socketDTO: SocketDTO = {
+                    messageDTO: null,
+                    connectionDTO: { userId: data.id },
+                    gameConnectionDTO: null,
+                    moveDTO: null
+                  }
+                  setTimeout(() => {
+                    this.webSocketService.send(socketDTO);
+                  }, 2000);
+                  this.authService.authenticateUser(true);
+                  this.router.navigate(['lobby']);
+                });
               }, 1000)
             }
           }
@@ -267,23 +280,23 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   app = initializeApp(secretEnvironment);
   auth = getAuth(this.app);
   provider = new GoogleAuthProvider();
-  async signInWithGoogle() { 
+  async signInWithGoogle() {
     try {
-      const result = await signInWithPopup(this.auth, this.provider); 
+      const result = await signInWithPopup(this.auth, this.provider);
       const user = result.user;
-      if(user && user.emailVerified == true){
+      if (user && user.emailVerified == true) {
         let googleUser = {
           fullname: user.displayName,
           email: user.email,
           immagineProfilo: user.photoURL
         }
         this.formsService.signupGoogleUser(googleUser).subscribe({
-          next:(data:any)=>{
+          next: (data: any) => {
             this.toastr.show("Registrazione avvenuta  con successo!");
           }
         })
       }
-    } catch (error: any) { 
+    } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
       if (errorCode === 'auth/network-request-failed') {

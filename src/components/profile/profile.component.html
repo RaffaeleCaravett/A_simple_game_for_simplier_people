@@ -5,12 +5,13 @@
                 <h1>{{visitedUser?.fullName}}</h1>
             </div>
             <div class="col-md-3"
-                *ngIf="((isProfileOpen&&user!=visitedUser) || (user == visitedUser)) && windowWidth>699 else reducedMenu">
+                *ngIf="((isProfileOpen&&user!=visitedUser) || (user == visitedUser) || (!isProfileOpen && isThisAFriend)) && windowWidth>699 else reducedMenu">
                 <ul class="text-start">
                     <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
-                        <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                        <span *ngIf="v.label != 'Impostazioni'" title="{{v.title}}">{{v.emoji + ' ' +
+                            v.label.toUpperCase()}}</span>
                         <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                            <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                            <span title="{{v.title}}">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
                             <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
                                 <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
                                     {{s.toUpperCase()}}</li>
@@ -30,9 +31,10 @@
                         [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
                         <ul class="text-start">
                             <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
-                                <span *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                                <span title="{{v.title}}" *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' +
+                                    v.label.toUpperCase()}}</span>
                                 <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                                    <span>{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                                    <span title="{{v.title}}">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
                                     <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
                                         <li *ngFor="let s of sottomenu" class="text-start"
                                             (click)="setImpostazioniSection(s)">
@@ -395,14 +397,26 @@
                 <div *ngIf="section== 'Preferiti'">
                     <app-preferiti [userInput]="visitedUser"></app-preferiti>
                 </div>
+                <div *ngIf="section=='Richieste'">
+                    <div class="px-2">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <p class="fs-3">Monitora le tue richieste di contatto!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-12" *ngIf="!isProfileOpen&&user!=visitedUser">
+            <div class="col-md-12" *ngIf="(!isProfileOpen&&user!=visitedUser&& ! isThisAFriend)">
                 <p class="fs-4">
                     L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
                     profilo.
                 </p>
-                <button class="btn btn-outline-dark" title="manda una richiesta per visualizzare il profilo" (click)="sendRequest()">Richiedi
+                <button class="btn btn-outline-dark" title="manda una richiesta per visualizzare il profilo"
+                    (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
                     permessi</button>
+                <mat-spinner diameter="50" color="warn" strokeWidth="4" class="m-auto"
+                    *ngIf="isConnectionRequestLoading"></mat-spinner>
             </div>
         </div>
     </div>

@@ -9,10 +9,7 @@ import { Subscription } from 'rxjs';
 export let browserRefresh = false;
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { ChatService } from '../services/chat.service';
-import { Chat, Message } from '../interfaces/interfaces';
-import { myRxStompConfig } from '../core/stomp';
-import SockJS from 'sockjs-client';
-import { environment } from '../core/environment';
+import { Chat, Message, SocketDTO } from '../interfaces/interfaces';
 import { WebsocketService } from '../services/websocket.service';
 
 @Component({
@@ -76,11 +73,17 @@ export class AppComponent implements OnInit {
             this.authService.setToken(accessToken);
             this.authService.connectUser(true).subscribe({
               next: (value: any) => {
+                let socketDTO: SocketDTO = {
+                  messageDTO: null,
+                  connectionDTO: { userId: value.id },
+                  gameConnectionDTO: null,
+                  moveDTO: null
+                }
+                setTimeout(() => {
+                  this.webSocketService.send(socketDTO);
+                }, 2000);
                 this.authService.setUser(value);
                 this.authService.authenticateUser(true);
-                setTimeout(() => {
-                  this.webSocketService.sendStatus({ id: value.id, connected: value.isConnected });
-                }, 6000)
               }
             });
             setTimeout(() => {
@@ -99,9 +102,6 @@ export class AppComponent implements OnInit {
     }
     setTimeout(() => {
       this.webSocketService.listen((message: any) => { });
-      this.webSocketService.listenStatus((user: any) => {
-        console.log(user)
-      })
     }, 5000)
   }
 
@@ -112,5 +112,10 @@ export class AppComponent implements OnInit {
       behavior: 'smooth'
     });
   }
-
+  @HostListener('window:click', ['$event'])
+  onWindowClick(event: any) {
+    if (event?.srcElement?.className != 'bi bi-bell h2 text-danger') {
+      this.authService.closeMenuF("close");
+    }
+  }
 }

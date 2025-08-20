@@ -1,3 +1,5 @@
+import { MoveType, NotificationType } from "../enums/enums"
+
 export interface SignupUser {
     email: string,
     password: string,
@@ -111,10 +113,43 @@ export interface Notification {
     chat: Chat,
     sender: User,
     state: string,
-    createdAt: string
+    createdAt: string,
+    notificationType: string
 }
 
 export interface UserConnection {
     id: number,
     connected: boolean
+}
+
+export interface SocketDTO {
+    messageDTO: Message | null | {},
+    moveDTO: MoveDTO | null | {},
+    gameConnectionDTO: GameConnectionDTO | null | {},
+    connectionDTO: ConnectionDTO | null | {}
+}
+export interface ConnectionDTO {
+    userId: number
+}
+export interface GameConnectionDTO {
+    giocoId: number,
+    userId: number,
+    connected: boolean
+}
+export interface MoveDTO {
+    id: number,
+    idDiv: string | null,
+    moveType: MoveType,
+    oppositeUser: number,
+    senderUser: number,
+    invitationId: number | null,
+    partitaId: number | null,
+    senderScore: number | null,
+    oppositeScore: number | null,
+    userTimeoutId: number | null,
+    moverId: number | null
+}
+
+export interface ConnectionRequestDTO {
+    receiverId: number
 }

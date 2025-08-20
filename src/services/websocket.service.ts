@@ -1,5 +1,5 @@
 import { CompatClient, Stomp, StompSubscription } from "@stomp/stompjs";
-import { Message, Messaggio, User, UserConnection } from "../interfaces/interfaces";
+import { Message, Messaggio, SocketDTO, User } from "../interfaces/interfaces";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "../core/environment";
 import { BehaviorSubject } from "rxjs";
@@ -15,9 +15,7 @@ export class WebsocketService implements OnDestroy {
 
 
     private subscription: StompSubscription | undefined;
-    private connectionSubscription: StompSubscription | undefined;
     private interval: any = null;
-    private intervalStatus: any = null;
 
     public messageBehaviorSubject: BehaviorSubject<Messaggio | null> = new BehaviorSubject<Messaggio | null>(null);
     public connectionBehaviorSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
@@ -41,30 +39,21 @@ export class WebsocketService implements OnDestroy {
 
     }
 
-    public send(message: Message): void {
+    public send(message: SocketDTO): void {
         if (this.connection && this.connection.connected) {
-            this.connection.send('/chat/messages', {}, JSON.stringify(message));
-        }
-    }
-    public sendStatus(user: UserConnection): void {
-        if (this.connection && this.connection.connected) {
-            this.connection.send('/chat/status', {}, JSON.stringify(user));
+            this.connection.send('/ws/send', {}, JSON.stringify(message));
         }
     }
     public listen(fun: ListenerCallBack): void {
         if (this.connection) {
-            this.subscription = this.connection.subscribe('/messages/receive', (message) => {
+            this.subscription = this.connection.subscribe('/updates/receive', (message: any) => {
                 fun(JSON.parse(message.body));
-                this.messageBehaviorSubject.next(JSON.parse(message.body) as Messaggio)
-            });
-        }
-    }
-    public listenStatus(fun: ListenerCallBack): void {
-        if (this.connection) {
-            this.connectionSubscription = this.connection.subscribe('/status/receive', (user) => {
-                fun(JSON.parse(user.body));
-                debugger
-                this.connectionBehaviorSubject.next(JSON.parse(user.body) as User)
+                let response = JSON.parse(message.body);
+                if (response?.immagineProfilo) {
+                    this.connectionBehaviorSubject.next(JSON.parse(message.body) as User);
+                } else if (response?.settedChatId) {
+                    this.messageBehaviorSubject.next(JSON.parse(message.body) as Messaggio);
+                }
             });
         }
     }
@@ -72,9 +61,6 @@ export class WebsocketService implements OnDestroy {
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
-        }
-        if (this.connectionSubscription) {
-            this.connectionSubscription.unsubscribe();
         }
     }
 

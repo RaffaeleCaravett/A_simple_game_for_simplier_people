@@ -19,6 +19,8 @@ export class AuthService {
   private refreshToken: string = '/verifyRefreshToken'
   private connected: string = '/connected'
   private allConnected: string = '/allConnected'
+  public closeMenu: BehaviorSubject<string> = new BehaviorSubject<string>("");
+
   constructor(private authGuard: AuthGuard, private http: HttpClient) { }
 
   authenticateUser(bool: boolean) {
@@ -51,5 +53,10 @@ export class AuthService {
   }
   getAllActiveUsers() {
     return this.http.get(environment.API_URL + this.userUrl + this.allConnected);
+  }
+  closeMenuF(value?: string) {
+    if (value) {
+      this.closeMenu.next(value);
+    }
   }
 }
