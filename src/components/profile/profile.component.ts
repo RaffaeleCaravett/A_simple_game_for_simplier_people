@@ -112,6 +112,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   isThisAFriend: boolean = false;
   connectionRequestPage: number = 0;
   actualRequests: any = null;
+  arp: number[] = [];
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private websocketService: WebsocketService) {
@@ -266,6 +267,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     if (this.user.id == this.visitedUser!.id) {
       this.profiloService.getConnectionRequest(this.connectionRequestPage, null, this.user.id, null, this.user.fullName, EsitoRichiesta.ACCETTATA).subscribe((datas: any) => {
         this.actualRequests = datas;
+        for (let i = 1; i <= datas?.totalPages; i++) {
+          this.arp.push(i);
+        }
       });
     };
   }

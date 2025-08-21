@@ -433,6 +433,21 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12 d-flex justify-content-center pt-5"
+                                *ngIf="actualRequests?.content?.length > 0">
+                                <button class="btn" title="indietro"><i class="bi bi-chevron-left h2"></i></button>
+                                <button class="btn" title="avanti"><i class="bi bi-chevron-right h2"></i></button>
+                                <select name="page" id="page" class="form-select w-25">
+                                    <option value="" *ngFor="let p of arp">{{1}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 text-center fs-4">
+                                Pagina {{actualRequests?.pageable?.pageNumber+1}} di {{actualRequests?.totalPages}}
+                                Elementi
+                                {{(((actualRequests?.pageable?.pageNumber+1)*actualRequests?.pageable?.pageSize)-actualRequests?.pageable?.pageSize)}}
+                                -
+                                {{(actualRequests?.pageable?.pageNumber+1)*actualRequests?.pageable?.pageSize}}
+                            </div>
                         </div>
                     </div>
                 </div>
