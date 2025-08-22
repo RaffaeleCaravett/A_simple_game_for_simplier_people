@@ -13,42 +13,57 @@
 
 .profile-image {
     width: 170px;
-    min-height: 170px!important;
+    min-height: 170px !important;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     background-color: whitesmoke;
 }
-.gioco-image{
+
+.gioco-image {
     width: 50px;
     height: 50px;
 }
-ul{
+
+ul {
     list-style-type: none;
-    li{
+
+    li {
         transition: .5s;
         cursor: pointer;
-        &:hover{
-          transition:.5s;
-          background-color: beige;
-          color:red;
-          scale: 1.1;
-          font-weight: 800;
+
+        &:hover {
+            transition: .5s;
+            background-color: beige;
+            color: red;
+            scale: 1.1;
+            font-weight: 800;
         }
     }
 }
-.difficult-points-container{
+
+.difficult-points-container {
     max-height: 50px;
-    p{
+
+    p {
         max-height: 10px;
         max-width: 10px;
     }
 }
-.bi-heart , .bi-heart-fill, .button{
+
+.bi-heart,
+.bi-heart-fill,
+.button {
     cursor: pointer;
 }
-.personalized-menu{
-        li{
-            font-size: 12px;
-        }
+
+.personalized-menu {
+    li {
+        font-size: 12px;
+    }
+}
+
+.connection-request-pic {
+    height: 50px;
+    width: 50px;
 }

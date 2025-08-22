@@ -123,6 +123,7 @@ export interface UserConnection {
 }
 
 export interface SocketDTO {
+    connectionRequestDTO: ConnectionRequestDTO | null | {},
     messageDTO: Message | null | {},
     moveDTO: MoveDTO | null | {},
     gameConnectionDTO: GameConnectionDTO | null | {},

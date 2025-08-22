@@ -128,9 +128,18 @@ export class NavComponent implements OnInit {
     }
   }
 
-  openChat(notification: Notification) {
+  openNotification(notification: Notification) {
+    let route = 'lobby/profile';
     this.notificationMenuOpen = false;
-    this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
+    if (notification.notificationType == 'MESSAGE') {
+      this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
+    } else if (notification.notificationType == 'REQUEST') {
+      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
+    } else if (notification.notificationType == 'EMAIL') {
+      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, email: true } })
+    } else {
+      this.toastr.show("Impossibile stabilire il tipo di notifica");
+    }
   }
   getNotifications() {
     this.profileService.getNotificationsByReceiverId().subscribe({

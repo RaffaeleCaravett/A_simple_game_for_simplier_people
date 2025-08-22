@@ -46,7 +46,8 @@
                     </div>
                 </div>
             </ng-template>
-            <div class="col-md-9" *ngIf="(isProfileOpen&&user!=visitedUser) || (user == visitedUser)">
+            <div class="col-md-9"
+                *ngIf="((isProfileOpen&&user!=visitedUser) || (user == visitedUser) || (!isProfileOpen && isThisAFriend))">
                 <div *ngIf="section=='Profilo'">
                     <div class="col-12 p-3 d-flex align-items-end justify-content-center">
                         <div class="profile-image rounded-circle shadow"
@@ -400,8 +401,37 @@
                 <div *ngIf="section=='Richieste'">
                     <div class="px-2">
                         <div class="row text-center">
-                            <div class="col-md-12">
-                                <p class="fs-3">Monitora le tue richieste di contatto!</p>
+                            <div class="col-md-12 pb-5">
+                                <p class="fs-2">Monitora le tue richieste di contatto!</p>
+                                <p class="fs-5">Sono ordinate in base alla data di ricevimento!</p>
+                            </div>
+                            <div class="col-md-4 p-2" *ngFor="let cr of actualRequests?.content">
+                                <div class="border shadow p-2 row" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'border-info':cr.esitoRichiesta == 'ACCETTATA'? 'border-success' :
+                                cr.esitoRichiesta == 'RIFIUTATA'? 'border-danger':''">
+                                    <div class="col-2">
+                                        <img src="{{cr?.sender?.immagineProfilo}}"
+                                            class="rounded-circle border shadow connection-request-pic"
+                                            alt="immagine_profilo_notificatore">
+                                    </div>
+                                    <div class="col-8">
+                                        <p>{{cr?.sender?.fullName}}</p>
+                                        <p>{{cr?.createdAt}}</p>
+                                    </div>
+                                    <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
+                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':''">
+                                        {{cr.esitoRichiesta == 'INVIATA' ? 'RICHIESTA IN ATTESA DI \n
+                                        RISPOSTA':cr.esitoRichiesta == 'ACCETTATA'? 'RICHIESTA ACCETTATA' :
+                                        cr.esitoRichiesta == 'RIFIUTATA'? 'RICHIESTA RIFIUTATA':''}}
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button class="btn btn-light m-auto"
+                                            title="Accetta la richiesta di contatto">Accetta ✔ </button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button class="btn btn-secondary m-auto"
+                                            title="Rifiuta la richiesta di contatto"> Rifiuta ❌</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
