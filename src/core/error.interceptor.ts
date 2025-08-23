@@ -109,6 +109,7 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.formsService.requestLoginCode.next(err.error.message);
               this.toastr.show("Abbiamo inviato un codice alla mail da te indicata. Inseriscilo qui sotto.");
             } else {
+              this.profileService.showRichiestaSpinner.next(false);
               this.formsService.requestLoginCode.next("");
               let error = null;
               if (null != err?.error?.messageList && err?.error?.messageList.length > 0) {

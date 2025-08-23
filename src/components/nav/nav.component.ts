@@ -42,17 +42,21 @@ export class NavComponent implements OnInit {
     this.modeService.mode.subscribe((mood: string) => {
       this.mode = mood;
     });
-    this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
-      if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
-        && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
-        let toast: any = new Object();
-        toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
-        toast.chatId = value.settedChatId;
-        toast.onTap.subscribe((action: any) => {
-          if (toast && toast?.chatId) {
-            this.chatService.selectChat.next(toast.chatId);
-          }
-        });
+    this.ws.messageBehaviorSubject.subscribe((value: any | null) => {
+      if (value.settedChatId) {
+        if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
+          && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
+          let toast: any = new Object();
+          toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
+          toast.chatId = value.settedChatId;
+          toast.onTap.subscribe((action: any) => {
+            if (toast && toast?.chatId) {
+              this.chatService.selectChat.next(toast.chatId);
+            }
+          });
+        }
+      } else if (value.receiverId) {
+
       }
     });
     this.authService.closeMenu.subscribe((data: string) => {

@@ -405,64 +405,90 @@
                                 <p class="fs-2">Monitora le tue richieste di contatto!</p>
                                 <p class="fs-5">Sono ordinate in base alla data di ricevimento!</p>
                             </div>
-                            <div class="col-md-4 p-2" *ngFor="let cr of actualRequests?.content">
-                                <div class="border shadow p-2 row" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'border-info':cr.esitoRichiesta == 'ACCETTATA'? 'border-success' :
+                            <div class="col-md-12 text-start py-3">
+                                <button class="btn rounded-pill p-2 mx-2 border shadow"
+                                    [ngClass]="er.label.toUpperCase() == requestStatus?'btn-secondary':'btn-light'"
+                                    *ngFor="let er of requestStatusArray"
+                                    (click)="requestStatus=er.label.toUpperCase();getConnectionRequests();">
+                                    {{er?.label}}</button>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row" *ngIf="!isRequestLoading">
+                                    <div class="col-md-4 p-2" *ngFor="let cr of actualRequests?.content">
+                                        <div class="border shadow p-2 row" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'border-info':cr.esitoRichiesta == 'ACCETTATA'? 'border-success' :
                                 cr.esitoRichiesta == 'RIFIUTATA'? 'border-danger':''">
-                                    <div class="col-2">
-                                        <img src="{{cr?.sender?.immagineProfilo}}"
-                                            class="rounded-circle border shadow connection-request-pic"
-                                            alt="immagine_profilo_notificatore">
-                                    </div>
-                                    <div class="col-8">
-                                        <p>{{cr?.sender?.fullName}}</p>
-                                        <p>{{cr?.createdAt}}</p>
-                                    </div>
-                                    <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
+                                            <div class="col-2">
+                                                <img src="{{cr?.sender?.immagineProfilo}}"
+                                                    class="rounded-circle border shadow connection-request-pic"
+                                                    alt="immagine_profilo_notificatore">
+                                            </div>
+                                            <div class="col-8">
+                                                <p>{{cr?.sender?.fullName}}</p>
+                                                <p>{{cr?.createdAt}}</p>
+                                            </div>
+                                            <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
                                 cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':''">
-                                        {{cr.esitoRichiesta == 'INVIATA' ? 'RICHIESTA IN ATTESA DI \n
-                                        RISPOSTA':cr.esitoRichiesta == 'ACCETTATA'? 'RICHIESTA ACCETTATA' :
-                                        cr.esitoRichiesta == 'RIFIUTATA'? 'RICHIESTA RIFIUTATA':''}}
+                                                {{cr.esitoRichiesta == 'INVIATA' ? 'RICHIESTA IN ATTESA DI \n
+                                                RISPOSTA':cr.esitoRichiesta == 'ACCETTATA'? 'RICHIESTA ACCETTATA' :
+                                                cr.esitoRichiesta == 'RIFIUTATA'? 'RICHIESTA RIFIUTATA':''}}
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-light m-auto"
+                                                    title="Accetta la richiesta di contatto">Accetta ✔ </button>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-secondary m-auto"
+                                                    title="Rifiuta la richiesta di contatto"> Rifiuta ❌</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <button class="btn btn-light m-auto"
-                                            title="Accetta la richiesta di contatto">Accetta ✔ </button>
+                                    <div class="col-md-12 d-flex justify-content-center pt-5"
+                                        *ngIf="actualRequests?.content?.length > 0">
+                                        <button class="btn" title="indietro" *ngIf="connectionRequestPage > 0"
+                                            (click)="connectionRequestPage= connectionRequestPage -1;getConnectionRequests();"><i
+                                                class="bi bi-chevron-left h2"></i></button>
+                                        <button class="btn" title="avanti"
+                                            *ngIf="(connectionRequestPage+1) < actualRequests?.totalPages"
+                                            (click)="connectionRequestPage= connectionRequestPage +1;getConnectionRequests();"><i
+                                                class="bi bi-chevron-right h2"></i></button>
+                                        <select name="page" id="page" class="form-select w-25"
+                                            *ngIf="actualRequests.totalPages > 1">
+                                            <option value="" *ngFor="let p of arp">{{p}}</option>
+                                        </select>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <button class="btn btn-secondary m-auto"
-                                            title="Rifiuta la richiesta di contatto"> Rifiuta ❌</button>
+                                    <div class="col-md-12 text-center fs-4 pt-3"
+                                        *ngIf="actualRequests?.content?.length > 0">
+                                        Pagina {{actualRequests?.pageable?.pageNumber+1}} di
+                                        {{actualRequests?.totalPages}}
+                                        Elementi
+                                        {{(((actualRequests?.pageable?.pageNumber+1)*actualRequests?.pageable?.pageSize)-actualRequests?.pageable?.pageSize)}}
+                                        -
+                                        {{(actualRequests?.pageable?.pageNumber+1)*actualRequests?.pageable?.pageSize}}
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12 d-flex justify-content-center pt-5"
-                                *ngIf="actualRequests?.content?.length > 0">
-                                <button class="btn" title="indietro"><i class="bi bi-chevron-left h2"></i></button>
-                                <button class="btn" title="avanti"><i class="bi bi-chevron-right h2"></i></button>
-                                <select name="page" id="page" class="form-select w-25">
-                                    <option value="" *ngFor="let p of arp">{{1}}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 text-center fs-4">
-                                Pagina {{actualRequests?.pageable?.pageNumber+1}} di {{actualRequests?.totalPages}}
-                                Elementi
-                                {{(((actualRequests?.pageable?.pageNumber+1)*actualRequests?.pageable?.pageSize)-actualRequests?.pageable?.pageSize)}}
-                                -
-                                {{(actualRequests?.pageable?.pageNumber+1)*actualRequests?.pageable?.pageSize}}
+                                <div class="row" *ngIf="!isRequestLoading && actualRequests?.content?.length == 0">
+                                    <p class="fs-3 text-center">
+                                        Ci dispiace ... Non hai richieste da visualizzare al momento.
+                                    </p>
+                                </div>
+                                <div class="row d-flex justify-content-center" *ngIf="isRequestLoading">
+                                    <mat-spinner diameter="50" color="warn" strokeWidth="4"></mat-spinner>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-12" *ngIf="(!isProfileOpen&&user!=visitedUser&& ! isThisAFriend)">
-                <p class="fs-4">
-                    L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
-                    profilo.
-                </p>
-                <button class="btn btn-outline-dark" title="manda una richiesta per visualizzare il profilo"
-                    (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
-                    permessi</button>
-                <mat-spinner diameter="50" color="warn" strokeWidth="4" class="m-auto"
-                    *ngIf="isConnectionRequestLoading"></mat-spinner>
+                <div class="col-md-12" *ngIf="(!isProfileOpen&&user!=visitedUser&& ! isThisAFriend)">
+                    <p class="fs-4">
+                        L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
+                        profilo.
+                    </p>
+                    <button class="btn btn-outline-dark" title="manda una richiesta per visualizzare il profilo"
+                        (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
+                        permessi</button>
+                    <mat-spinner diameter="50" color="warn" strokeWidth="4" class="m-auto"
+                        *ngIf="isConnectionRequestLoading"></mat-spinner>
+                </div>
             </div>
         </div>
     </div>
-</div>

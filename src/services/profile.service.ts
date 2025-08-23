@@ -120,31 +120,40 @@ export class ProfileServive {
         return this.http.post(environment.API_URL + this.connectionRequest, request);
     }
     getConnectionRequest(page: number, senderId: number | null, receiverId: number | null, senderFullname: string | null, receiverFullname: string | null,
-        esitoRichiesta: EsitoRichiesta | null) {
+        esitoRichiesta: string | null) {
 
         let params: HttpParams = new HttpParams();
-
-        params.set("page", page);
         if (senderId) {
-            params.set("senderId", senderId);
+            params = params.set("senderId", senderId);
         }
         if (receiverId) {
-            params.set("receiverId", receiverId);
+            params = params.set("receiverId", receiverId);
         }
         if (senderFullname) {
-            params.set("sendereFullname", senderFullname);
+            params = params.set("sendereFullname", senderFullname);
         }
         if (receiverFullname) {
-            params.set("receiverFullname", receiverFullname);
+            params = params.set("receiverFullname", receiverFullname);
         }
         if (esitoRichiesta) {
-            params.set("esitoRichiesta", esitoRichiesta);
+            params = params.set("esitoRichiesta", esitoRichiesta);
         }
-        return this.http.get(environment.API_URL + this.connectionRequest, { params: params })
+        return this.http.get(environment.API_URL + this.connectionRequest + '?page=' + page, { params: params })
     }
 
 
     checkIfFriend(userId1: number, userId2: number) {
         return this.http.get(environment.API_URL + this.connectionRequest + '/friend?userId1=' + userId1 + '&userId2=' + userId2);
     }
+
+    acceptRequest(requestId: number) {
+        return this.http.get(environment.API_URL + this.connectionRequest + '/accept?requestId=' + requestId);
+    }
+    refuseRequest(requestId: number) {
+        return this.http.get(environment.API_URL + this.connectionRequest + '/refuse?requestId=' + requestId);
+    }
+    deleteRequest(requestId: number) {
+        return this.http.get(environment.API_URL + this.connectionRequest + '/delete?requestId=' + requestId);
+    }
 }
+

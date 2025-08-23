@@ -113,6 +113,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   connectionRequestPage: number = 0;
   actualRequests: any = null;
   arp: number[] = [];
+  requestStatus: string = "INVIATA";
+  requestStatusArray: { value: EsitoRichiesta, label: string }[] = [{ value: EsitoRichiesta.INVIATA, label: 'Inviata' }, { value: EsitoRichiesta.ACCETTATA, label: 'Accettata' }, { value: EsitoRichiesta.RIFIUTATA, label: 'Rifiutata' }];
+  isRequestLoading: boolean = false;
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private websocketService: WebsocketService) {
@@ -139,9 +142,42 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     });
     this.profiloService.showRichiestaSpinner.subscribe((data: boolean) => {
       this.isConnectionRequestLoading = data;
+      this.isRequestLoading = false;
     });
   }
-
+  acceptRequest(requestId: number) {
+    this.profiloService.acceptRequest(requestId).subscribe({
+      next: (data: any) => {
+        this.actualRequests?.content.forEach((c: any) => {
+          if (c.id == data.id) {
+            c = data;
+          }
+        });
+      }
+    });
+  }
+  refuseRequest(requestId: number) {
+    this.profiloService.refuseRequest(requestId).subscribe({
+      next: (data: any) => {
+        this.actualRequests?.content.forEach((c: any) => {
+          if (c.id == data.id) {
+            c = data;
+          }
+        });
+      }
+    });
+  }
+  deleteRequest(requestId: number) {
+    this.profiloService.deleteRequest(requestId).subscribe({
+      next: (data: any) => {
+        this.actualRequests?.content.forEach((c: any) => {
+          if (c.id == data.id) {
+            c = data;
+          }
+        });
+      }
+    });
+  }
   ngOnInit(): void {
     this.descrizioneForm = new FormGroup({
       descrizione: new FormControl('', [Validators.required, Validators.maxLength(5000)])
@@ -265,11 +301,15 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
   getConnectionRequests() {
     if (this.user.id == this.visitedUser!.id) {
-      this.profiloService.getConnectionRequest(this.connectionRequestPage, null, this.user.id, null, this.user.fullName, EsitoRichiesta.ACCETTATA).subscribe((datas: any) => {
-        this.actualRequests = datas;
-        for (let i = 1; i <= datas?.totalPages; i++) {
-          this.arp.push(i);
-        }
+      this.isRequestLoading = true;
+      this.profiloService.getConnectionRequest(this.connectionRequestPage, null, this.user.id, null, this.user.fullName, this.requestStatus).subscribe((datas: any) => {
+        setTimeout(() => {
+          this.actualRequests = datas;
+          for (let i = 1; i <= datas?.totalPages; i++) {
+            this.arp.push(i);
+          }
+          this.isRequestLoading = false;
+        }, 2000);
       });
     };
   }
