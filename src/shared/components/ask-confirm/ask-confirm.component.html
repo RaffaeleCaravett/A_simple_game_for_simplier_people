@@ -26,14 +26,20 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="recensione==null" [style.height]="'100px'">
+        <div *ngIf="giocoName!=null" [style.height]="'100px'">
             <p class="fs-2">
                 Sei sicuro di voler {{getLowerAction(action)+"re" + " " + giocoName}} ?
             </p>
         </div>
+        <div *ngIf="recensione == null && giocoName == null" [style.height]="'100px'">
+            <p class="fs-2">
+                Vuoi davvero {{action == 'Accetta' ? ' accettare ': action == 'Rifiuta'? ' rifiutare ' : ' annullare '}}
+                la richiesta?
+            </p>
+        </div>
     </mat-dialog-content>
     <mat-dialog-actions class="text-end position-absolute bottom-0 end-0">
-        <button class="btn btn-success m-1" (click)="modifica()">{{action}}</button>
-        <button class="btn btn-danger m-1" [mat-dialog-close]="false">Annulla</button>
+        <button class="btn btn-light m-1" (click)="modifica()">{{action}}</button>
+        <button class="btn btn-secondary m-1" [mat-dialog-close]="false">Annulla</button>
     </mat-dialog-actions>
 </div>

@@ -1,5 +1,5 @@
 import { CompatClient, Stomp, StompSubscription } from "@stomp/stompjs";
-import { Message, Messaggio, SocketDTO, User } from "../interfaces/interfaces";
+import { ConnectionRequestDTO, Message, Messaggio, SocketDTO, User } from "../interfaces/interfaces";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "../core/environment";
 import { BehaviorSubject } from "rxjs";
@@ -19,6 +19,7 @@ export class WebsocketService implements OnDestroy {
 
     public messageBehaviorSubject: BehaviorSubject<Messaggio | null> = new BehaviorSubject<Messaggio | null>(null);
     public connectionBehaviorSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+    public connectionRequestBehaviorSubject: BehaviorSubject<ConnectionRequestDTO | null> = new BehaviorSubject<ConnectionRequestDTO | null>(null);
 
     constructor() {
         this.connection = Stomp.client(`${environment.SOCKET_URL}/websocket`);
@@ -53,6 +54,11 @@ export class WebsocketService implements OnDestroy {
                     this.connectionBehaviorSubject.next(JSON.parse(message.body) as User);
                 } else if (response?.settedChatId) {
                     this.messageBehaviorSubject.next(JSON.parse(message.body) as Messaggio);
+                } else if (response?.inviteState && response?.inviteState == "CONNECTION_REQUEST") {
+                    let connectionRequestDTO: ConnectionRequestDTO = {
+                        receiverId: JSON.parse(message.body)?.receiverId
+                    }
+                    this.connectionRequestBehaviorSubject.next(connectionRequestDTO);
                 }
             });
         }

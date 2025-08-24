@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ModeService } from '../../services/mode.service';
-import { Message, Messaggio, Notification, User } from '../../interfaces/interfaces';
+import { ConnectionRequestDTO, Message, Messaggio, Notification, User } from '../../interfaces/interfaces';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from '../../shared/modules/shared.module';
@@ -42,23 +42,26 @@ export class NavComponent implements OnInit {
     this.modeService.mode.subscribe((mood: string) => {
       this.mode = mood;
     });
-    this.ws.messageBehaviorSubject.subscribe((value: any | null) => {
-      if (value.settedChatId) {
-        if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
-          && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
-          let toast: any = new Object();
-          toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
-          toast.chatId = value.settedChatId;
-          toast.onTap.subscribe((action: any) => {
-            if (toast && toast?.chatId) {
-              this.chatService.selectChat.next(toast.chatId);
-            }
-          });
-        }
-      } else if (value.receiverId) {
-
+    this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
+      if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
+        && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
+        let toast: any = new Object();
+        toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
+        toast.chatId = value.settedChatId;
+        toast.onTap.subscribe((action: any) => {
+          if (toast && toast?.chatId) {
+            this.chatService.selectChat.next(toast.chatId);
+          }
+        });
       }
     });
+    this.ws.connectionRequestBehaviorSubject.subscribe((data: ConnectionRequestDTO | null) => {
+      if (data && data?.receiverId && data?.receiverId == this.user?.id) {
+        this.toastr.show("Hai ricevuto una nuova richiesta di contatto!");
+        this.getNotifications();
+      }
+    });
+
     this.authService.closeMenu.subscribe((data: string) => {
       if (data == 'close') {
         this.notificationMenuOpen = false;
@@ -137,7 +140,9 @@ export class NavComponent implements OnInit {
     this.notificationMenuOpen = false;
     if (notification.notificationType == 'MESSAGE') {
       this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
-    } else if (notification.notificationType == 'REQUEST') {
+    } else if (notification.notificationType == 'CONNECTION_REQUEST') {
+      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
+    }else if (notification.notificationType == 'REQUEST') {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
     } else if (notification.notificationType == 'EMAIL') {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, email: true } })

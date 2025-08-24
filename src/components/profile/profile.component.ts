@@ -2,7 +2,7 @@ import { AfterContentChecked, ChangeDetectorRef, Component, HostListener, OnInit
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConnectionRequestDTO, SocketDTO, User } from '../../interfaces/interfaces';
 import { ProfileServive } from '../../services/profile.service';
-import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
+import { JsonPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { GamefieldService } from '../../services/gamefield.service';
 import { GiocoPreviewComponent } from '../../shared/components/gioco-preview/gioco-preview.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,6 +20,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EsitoRichiesta } from '../../enums/enums';
 import { WebsocketService } from '../../services/websocket.service';
+import { AskConfirmComponent } from '../../shared/components/ask-confirm/ask-confirm.component';
 
 @Component({
   selector: 'app-profile',
@@ -113,9 +114,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   connectionRequestPage: number = 0;
   actualRequests: any = null;
   arp: number[] = [];
+  actualRequestsSent: any = null;
+  arps: number[] = [];
   requestStatus: string = "INVIATA";
   requestStatusArray: { value: EsitoRichiesta, label: string }[] = [{ value: EsitoRichiesta.INVIATA, label: 'Inviata' }, { value: EsitoRichiesta.ACCETTATA, label: 'Accettata' }, { value: EsitoRichiesta.RIFIUTATA, label: 'Rifiutata' }];
   isRequestLoading: boolean = false;
+  requestToShow: string = 'RICEVUTE';
+  requestToShowArray: { value: string, label: string }[] = [{ value: 'RICEVUTE', label: 'Ricevute' }, { value: 'EFFETTUATE', label: 'Effettuate' }];
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private websocketService: WebsocketService) {
@@ -146,35 +151,56 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     });
   }
   acceptRequest(requestId: number) {
-    this.profiloService.acceptRequest(requestId).subscribe({
-      next: (data: any) => {
-        this.actualRequests?.content.forEach((c: any) => {
-          if (c.id == data.id) {
-            c = data;
+    let proceed: boolean = false;
+    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Accetta'], width: '60%', height: '300px' });
+
+    dialogRef.afterClosed().subscribe((data: boolean) => {
+      if (data) {
+        proceed = true;
+        this.profiloService.acceptRequest(requestId).subscribe({
+          next: (data: any) => {
+            this.getConnectionRequests();
+            this.toastr.show("Richiesta accettata!");
           }
         });
+      } else {
+        this.toastr.show("Non è stata accettata nessuna modifica!");
       }
     });
   }
   refuseRequest(requestId: number) {
-    this.profiloService.refuseRequest(requestId).subscribe({
-      next: (data: any) => {
-        this.actualRequests?.content.forEach((c: any) => {
-          if (c.id == data.id) {
-            c = data;
+    let proceed: boolean = false;
+    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Rifiuta'], width: '60%', height: '300px' });
+
+    dialogRef.afterClosed().subscribe((data: boolean) => {
+      if (data) {
+        proceed = true;
+        this.profiloService.refuseRequest(requestId).subscribe({
+          next: (data: any) => {
+            this.getConnectionRequests();
+            this.toastr.show("Richiesta rifiutata!");
           }
         });
+      } else {
+        this.toastr.show("Non è stata rifiutata nessuna modifica!");
       }
     });
   }
   deleteRequest(requestId: number) {
-    this.profiloService.deleteRequest(requestId).subscribe({
-      next: (data: any) => {
-        this.actualRequests?.content.forEach((c: any) => {
-          if (c.id == data.id) {
-            c = data;
+    let proceed: boolean = false;
+    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Annulla'], width: '60%', height: '300px' });
+
+    dialogRef.afterClosed().subscribe((data: boolean) => {
+      if (data) {
+        proceed = true;
+        this.profiloService.deleteRequest(requestId).subscribe({
+          next: (data: any) => {
+            this.getConnectionRequests();
+            this.toastr.show("Richiesta modificata!");
           }
         });
+      } else {
+        this.toastr.show("Non è stata annulata nessuna richiesta!");
       }
     });
   }
@@ -191,6 +217,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               this.isProfileOpen = this.visitedUser?.open || false;
               this.getCoordinates();
               if (this.user?.id == this.visitedUser?.id) {
+                this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+                { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+                ]);
                 let yesImpostazioni: boolean = false;
                 this.menuVoices.forEach((d) => {
                   if (d.label == 'Impostazioni') {
@@ -199,6 +228,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
                 });
                 if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
                 this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
+              } else {
+                this.cleanMenu();
               }
               if (params['request']) {
                 this.switchSection('Richieste');
@@ -220,6 +251,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.isProfileOpen = this.visitedUser?.open || false;
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
+              this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+              { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+              ]);
               let yesImpostazioni: boolean = false;
               this.menuVoices.forEach((d) => {
                 if (d.label == 'Impostazioni') {
@@ -228,6 +262,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               });
               if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
               this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
+            } else {
+              this.cleanMenu();
             }
             this.getAllDatas();
             this.checkIfFriend();
@@ -311,6 +347,15 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
           this.isRequestLoading = false;
         }, 2000);
       });
+      this.profiloService.getConnectionRequest(this.connectionRequestPage, this.user.id, null, this.user.fullName, null, this.requestStatus).subscribe((datas: any) => {
+        setTimeout(() => {
+          this.actualRequestsSent = datas;
+          for (let i = 1; i <= datas?.totalPages; i++) {
+            this.arps.push(i);
+          }
+          this.isRequestLoading = false;
+        }, 2000);
+      });
     };
   }
 
@@ -363,9 +408,19 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   goToRanking(c: any) {
     this.router.navigate(['/lobby'], { queryParams: { classificaId: c?.id, section: 'classifiche' } });
   }
+  goToProfile(user: User) {
+    localStorage.setItem('visitedUser', JSON.stringify(user));
+    this.section = 'Profilo';
+    this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
+  }
 
   setImpostazioniSection(s: string) {
     this.impostazioniSection = s.substring(3);
+  }
+  cleanMenu() {
+    if (this.user.id != this.visitedUser!.id) {
+      this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi !' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le classifiche!' }]);
+    }
   }
   getCoordinates() {
     if (this.visitedUser?.completed) {

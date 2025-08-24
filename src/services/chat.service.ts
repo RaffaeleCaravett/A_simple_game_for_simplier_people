@@ -30,17 +30,17 @@ export class ChatService {
         }
         this.ws.send(socketDTO);
 
-        let messag: Message = {
-            message: "PROVA SOCKET",
-            riceventi: [1],
-            mittente: 3,
-            chat: 2
-        }
-        socketDTO.messageDTO = messag;
-        setTimeout(() => {
-            this.ws.send(socketDTO);
+        // let messag: Message = {
+        //     message: "PROVA SOCKET",
+        //     riceventi: [1],
+        //     mittente: 3,
+        //     chat: 2
+        // }
+        // socketDTO.messageDTO = messag;
+        // setTimeout(() => {
+        //     this.ws.send(socketDTO);
 
-        }, 2000)
+        // }, 2000)
         //return this.http.post(environment.API_URL + this.messaggio, message, { headers: new HttpHeaders({ timeout: `${600000}` }) });
     }
     //to call on focus on chat or on input

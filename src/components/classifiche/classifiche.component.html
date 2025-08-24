@@ -21,9 +21,9 @@
             </div>
             <div class="col-md-12 p-3" *ngFor="let c of classifiche?.content">
                 <div class="row border shadow p-2">
-                    <div class="col-md-3">
+                    <div class="col-md-3" [style.height]="'200px'">
                         <img src="{{'data:image/png;base64,' + c?.gioco?.image}}" alt="immagine_gioco_classifica"
-                            class="w-100">
+                            [style.width]="'auto'" [style.maxWidth]="'200px'" [style.maxHeight]="'100%'">
                     </div>
                     <div class="col-md-8 text-center">
                         <h2>Classifica di {{c?.gioco?.nomeGioco}}</h2>
