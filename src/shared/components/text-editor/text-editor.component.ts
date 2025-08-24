@@ -1,18 +1,19 @@
 import { NgClass, NgFor } from '@angular/common';
-import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModeService } from '../../../services/mode.service';
 import { MatDialog } from '@angular/material/dialog';
 import { InsertTextComponent } from './components/insert-text/insert-text.component';
 import { ToastrService } from 'ngx-toastr';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-text-editor',
   standalone: true,
-  imports: [NgClass, NgFor],
+  imports: [NgClass, NgFor, ReactiveFormsModule, FormsModule],
   templateUrl: './text-editor.component.html',
   styleUrl: './text-editor.component.scss'
 })
-export class TextEditorComponent implements AfterContentChecked{
+export class TextEditorComponent implements AfterContentChecked, OnInit {
   mode: string = 'light';
   icons: Set<{ value: string, label: string }> = new Set([
     { value: 'fw-bold', label: 'bi-type-bold' },
@@ -41,28 +42,41 @@ export class TextEditorComponent implements AfterContentChecked{
   @Input() textareaInnerHTML: string = '';
   @Output() sendUpdates: EventEmitter<any> = new EventEmitter<any>();
   @Input() remainingCharacters: number = 0;
-  previousValueC:string = 'text-dark';
-  previousValueS:string = 'fs-6';
+  @Input() disabled: boolean = false;
+  previousValueC: string = 'text-dark';
+  previousValueS: string = 'fs-6';
+  textForm: FormGroup = new FormGroup({});
   constructor(private modeService: ModeService, private matDialog: MatDialog, private toastr: ToastrService, private cdr: ChangeDetectorRef) {
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
     })
   }
 
-  selectItems(item: string) {
-    
-    const dialogRef = this.matDialog.open(InsertTextComponent, {data: [item, this.icons, this.colors, this.sizes, this.remainingCharacters] });
-    dialogRef.afterClosed().subscribe((data: any) => {
-      this.previousValueC = (document.getElementById('colors') as HTMLSelectElement).value
-      this.previousValueS = (document.getElementById('sizes') as HTMLSelectElement).value
+  ngOnInit(): void {
+    this.textForm = new FormGroup({
+      color: new FormControl(),
+      size: new FormControl()
+    });
+    if (this.disabled) {
+      this.textForm.disable();
+    }
+  }
 
-      if (data) {
-        let element = data;
-        this.update(data);
-      } else {
-        this.toastr.warning("Non hai aggiunto niente");
-      }
-    })
+  selectItems(item: string) {
+    if (!this.disabled) {
+      const dialogRef = this.matDialog.open(InsertTextComponent, { data: [item, this.icons, this.colors, this.sizes, this.remainingCharacters] });
+      dialogRef.afterClosed().subscribe((data: any) => {
+        this.previousValueC = (document.getElementById('colors') as HTMLSelectElement).value
+        this.previousValueS = (document.getElementById('sizes') as HTMLSelectElement).value
+
+        if (data) {
+          let element = data;
+          this.update(data);
+        } else {
+          this.toastr.warning("Non hai aggiunto niente");
+        }
+      })
+    }
   }
 
   update(value: any) {
@@ -71,18 +85,18 @@ export class TextEditorComponent implements AfterContentChecked{
   clearSelectedItems(item: string) {
     return this.selectedItems = this.selectedItems.filter((a: string) => a != item);
   }
-  checkValue(value:string,section:string){
-    if(section=='color'){
+  checkValue(value: string, section: string) {
+    if (section == 'color') {
       let color = document.getElementById('colors') as HTMLSelectElement;
-      if(color.value==this.previousValueC){
+      if (color.value == this.previousValueC) {
         this.selectItems(value);
       }
-    }else if(section=='size'){
+    } else if (section == 'size') {
       let size = document.getElementById('sizes') as HTMLSelectElement;
-      if(size.value==this.previousValueS){
+      if (size.value == this.previousValueS) {
         this.selectItems(value);
       }
-    }else{
+    } else {
       this.toastr.warning("What did you selected?");
     }
   }

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <button class="btn fs-4" (click)="showMenu=!showMenu">
+        <button class="btn fs-4" (click)="openCloseMenu()">
             😊
         </button>
     </div>
@@ -71,13 +71,13 @@
         <ng-template #searchedEmojies>
             <div class="row">
                 <div class="col-md-12 text-start">
-                <h2>Correspondant emojies</h2>
+                    <h2>Correspondant emojies</h2>
                 </div>
                 <div *ngFor="let e of emojies index as i" class="col-2 fs-4">
-                <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(e.emoji)">
-                    {{e.emoji}}
-                </button>
-            </div>
+                    <button class="btn boder-0 fs-4 p-0 emoji-button" (click)="emitEmoji(e.emoji)">
+                        {{e.emoji}}
+                    </button>
+                </div>
             </div>
         </ng-template>
     </div>

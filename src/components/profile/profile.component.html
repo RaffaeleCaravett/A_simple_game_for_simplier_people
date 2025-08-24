@@ -84,7 +84,7 @@
                                 <app-leaflet [x]="cityX" [y]="cityY" *ngIf="cityX!=0&&cityY!=0"></app-leaflet>
                             </div> -->
                             <div>
-                                <app-descrizione [visitedUser]="visitedUser">
+                                <app-descrizione [visitedUser]="visitedUser" [disabled]="user.id!=visitedUser!.id">
                                 </app-descrizione>
                             </div>
                             <div class="map-container pt-5 mt-5" *ngIf="mapOptions">
@@ -236,9 +236,10 @@
                             <div class="col-md-6 p-3" *ngFor="let g of giochi?.content, index as i">
                                 <div class="p-3 game-card border shadow"
                                     [ngClass]="mode=='light'?'bg-light':'bg-personal text-light'">
-                                    <div class="w-100 text-center position-relative">
-                                        <img src="{{'data:image/png;base64,'+g?.image}}" class="w-50 m-auto"
-                                            alt="gioco_image">
+                                    <div class="w-100 text-center d-flex align-items-center justify-content-center"
+                                        [style.height]="'176px!important'">
+                                        <img src="{{'data:image/png;base64,'+g?.image}}" class="m-auto"
+                                            alt="gioco_image" [style.width]="'176px'" [style.maxHeight]="'100%'">
                                     </div>
                                     <div class="text-center py-2 mb-2">
                                         <h2>{{g.nomeGioco}}</h2>

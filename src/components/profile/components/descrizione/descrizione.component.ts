@@ -31,6 +31,7 @@ export class DescrizioneComponent implements OnInit, AfterContentChecked {
     { value: 'text-end', label: 'bi-text-right' }
   ];
   mode: string = 'light'
+  @Input() disabled: boolean = false;
   constructor(private profiloService: ProfileServive, private authService: AuthService, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private modeService: ModeService) {
     this.modeService.mode.subscribe((data: string) => {
@@ -49,50 +50,54 @@ export class DescrizioneComponent implements OnInit, AfterContentChecked {
         }
         this.calculateRemainingCharacters(this.descrizione?.nativeElement);
       }, 500)
-    }, 2000)
+    }, 2000);
   }
 
 
   calculateRemainingCharacters(descrizione: HTMLDivElement) {
-    let checkTrick = (descrizione?.innerHTML === "<br>" && descrizione.innerHTML.length === 4) || descrizione.innerHTML.length == 0;
-    let descrizioneLength = checkTrick ? 0 : descrizione?.innerText?.length;
-    if (descrizione?.innerText?.length <= 5000) {
-      this.remainingCharacters = 5000 - descrizioneLength;
-    } else {
-      this.remainingCharacters = 0;
-      descrizione.innerText = descrizione?.innerText?.substring(0, 5000);
-      if (descrizione?.innerText?.length < 5000) {
+    if (!this.disabled) {
+      let checkTrick = (descrizione?.innerHTML === "<br>" && descrizione.innerHTML.length === 4) || descrizione.innerHTML.length == 0;
+      let descrizioneLength = checkTrick ? 0 : descrizione?.innerText?.length;
+      if (descrizione?.innerText?.length <= 5000) {
         this.remainingCharacters = 5000 - descrizioneLength;
+      } else {
+        this.remainingCharacters = 0;
+        descrizione.innerText = descrizione?.innerText?.substring(0, 5000);
+        if (descrizione?.innerText?.length < 5000) {
+          this.remainingCharacters = 5000 - descrizioneLength;
+        }
       }
-    }
-    if (checkTrick) {
-      descrizione.innerHTML = '';
+      if (checkTrick) {
+        descrizione.innerHTML = '';
+      }
     }
   }
 
   aggiungiDescrizione(descrizione: HTMLDivElement) {
-    let checkTrick = (descrizione?.innerHTML === "<br>" && descrizione.innerHTML.length === 4);
-    if (checkTrick) descrizione.innerHTML = '';
-    if (descrizione.innerHTML.length <= 5000) {
-      this.profiloService.updateDescrizione(
-        {
-          textAlignment:
-            descrizione.classList.contains('text-center') ?
-              'text-center' : descrizione.classList.contains('text-end') ?
-                'text-end' : descrizione.classList.contains('text-start') ?
-                  'text-start' : 'text-center',
-          innerHTML: descrizione.innerHTML
-        }).subscribe({
-          next: (resp: any) => {
-            this.authService.setUser(resp);
-            this.authService.authenticateUser(true);
-            this.visitedUser = resp;
-            localStorage.setItem('visitedUser', JSON.stringify(resp));
-            this.toastr.success("Descrizione aggiornata con successo.");
-          }
-        })
-    } else {
-      this.toastr.warning("Aggiungi una descrizione valida. Ricordati : \n " + " meno di 5000 caratteri.")
+    if (!this.disabled) {
+      let checkTrick = (descrizione?.innerHTML === "<br>" && descrizione.innerHTML.length === 4);
+      if (checkTrick) descrizione.innerHTML = '';
+      if (descrizione.innerHTML.length <= 5000) {
+        this.profiloService.updateDescrizione(
+          {
+            textAlignment:
+              descrizione.classList.contains('text-center') ?
+                'text-center' : descrizione.classList.contains('text-end') ?
+                  'text-end' : descrizione.classList.contains('text-start') ?
+                    'text-start' : 'text-center',
+            innerHTML: descrizione.innerHTML
+          }).subscribe({
+            next: (resp: any) => {
+              this.authService.setUser(resp);
+              this.authService.authenticateUser(true);
+              this.visitedUser = resp;
+              localStorage.setItem('visitedUser', JSON.stringify(resp));
+              this.toastr.success("Descrizione aggiornata con successo.");
+            }
+          })
+      } else {
+        this.toastr.warning("Aggiungi una descrizione valida. Ricordati : \n " + " meno di 5000 caratteri.")
+      }
     }
   }
 
@@ -112,6 +117,12 @@ export class DescrizioneComponent implements OnInit, AfterContentChecked {
   checkTextAreaElements() {
   }
   ngAfterContentChecked(): void {
+    if (this.disabled) {
+      let document1 = (document.getElementsByClassName('descrizione-div')[0] as HTMLDivElement);
+      if (document1) {
+        document1.contentEditable = 'false';
+      }
+    }
     this.cdr.detectChanges();
   }
   updateDescrizioneClasslist(dClass: string) {

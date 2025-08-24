@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EmojiService } from '../../../services/emoji.service';
 import { NgFor, NgIf } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -26,6 +26,7 @@ export class EmojiComponent implements OnInit {
   searchEmojiesForm: FormGroup = new FormGroup({});
   emojiesSearched: boolean = false;
   @Output() sendEmoji: EventEmitter<string> = new EventEmitter<string>();
+  @Input() disabled: boolean = false;
   constructor(private emojiService: EmojiService) { }
 
   ngOnInit(): void {
@@ -45,7 +46,11 @@ export class EmojiComponent implements OnInit {
     })
     this.initializeForms();
   }
-
+  openCloseMenu() {
+    if (!this.disabled) {
+      this.showMenu = !this.showMenu;
+    }
+  }
   initializeForms() {
     this.searchEmojiesForm = new FormGroup({
       field: new FormControl('', [Validators.required, Validators.minLength(1)])
