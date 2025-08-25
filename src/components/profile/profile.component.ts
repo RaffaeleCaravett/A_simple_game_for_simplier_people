@@ -121,6 +121,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   isRequestLoading: boolean = false;
   requestToShow: string = 'RICEVUTE';
   requestToShowArray: { value: string, label: string }[] = [{ value: 'RICEVUTE', label: 'Ricevute' }, { value: 'EFFETTUATE', label: 'Effettuate' }];
+  infoFriend: boolean = false;
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private websocketService: WebsocketService) {
@@ -149,6 +150,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       this.isConnectionRequestLoading = data;
       this.isRequestLoading = false;
     });
+  }
+  openInfoFriend() {
+    this.infoFriend = !this.infoFriend;
   }
   acceptRequest(requestId: number) {
     let proceed: boolean = false;
@@ -482,20 +486,29 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     let request: ConnectionRequestDTO = {
       receiverId: this.visitedUser!.id
     }
-
-    this.profiloService.sendConnectionRequest(request).subscribe({
-      next: (data: any) => {
-        this.toastr.show("E' stata mandata la richiesta verso " + this.visitedUser?.fullName + ". ");
-        this.isConnectionRequestLoading = false;
-        let socketDTO: SocketDTO = {
-          messageDTO: null,
-          moveDTO: null,
-          connectionDTO: null,
-          gameConnectionDTO: null,
-          connectionRequestDTO: { receiverId: this.visitedUser!.id }
+    if (!this.isThisAFriend) {
+      this.profiloService.sendConnectionRequest(request).subscribe({
+        next: (data: any) => {
+          this.toastr.show("E' stata mandata la richiesta verso " + this.visitedUser?.fullName + ". ");
+          this.isConnectionRequestLoading = false;
+          let socketDTO: SocketDTO = {
+            messageDTO: null,
+            moveDTO: null,
+            connectionDTO: null,
+            gameConnectionDTO: null,
+            connectionRequestDTO: { receiverId: this.visitedUser!.id }
+          }
+          this.websocketService.send(socketDTO);
         }
-        this.websocketService.send(socketDTO);
-      }
-    });
+      });
+    } else {
+      this.profiloService.deleteRequestByIds(this.user.id, this.visitedUser!.id).subscribe({
+        next: (data: any) => {
+          this.toastr.show("E' stato annullato il collegamento con " + this.visitedUser?.fullName + ". ");
+          this.isConnectionRequestLoading = false;
+          this.getConnectionRequests();
+        }
+      });
+    }
   }
 }

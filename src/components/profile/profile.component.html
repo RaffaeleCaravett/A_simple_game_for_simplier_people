@@ -4,6 +4,23 @@
             <div class="col-md-12 py-3">
                 <h1>{{visitedUser?.fullName}}</h1>
             </div>
+            <div class="col-md-12 d-flex justify-content-end" *ngIf="user.id!=visitedUser!.id">
+                <button class="btn" (click)="openInfoFriend()">
+                    <i class="bi bi-info-square h2" title="Apri informazioni"></i>
+                </button>
+            </div>
+            <div class="col-md-12 d-flex justify-content-end" *ngIf="infoFriend && user.id!=visitedUser!.id">
+                <div class="bg-warning p-3 border shadow info-container">
+                    <p class="text-end fs-3">{{isThisAFriend?"Tu e " + this.visitedUser!.fullName +
+                        " siete già amici." : "Tu e "
+                        + this.visitedUser!.fullName + " non siete amici."}}</p>
+                    <button class="btn btn-light fs-4" *ngIf="!isThisAFriend" (click)="sendRequest()">Manda
+                        richiesta di
+                        contatto</button>
+                    <button class="btn btn-light fs-4" *ngIf="isThisAFriend" (click)="sendRequest()">Elimina
+                        contatto</button>
+                </div>
+            </div>
             <div class="col-md-3"
                 *ngIf="((isProfileOpen&&user!=visitedUser) || (user == visitedUser) || (!isProfileOpen && isThisAFriend)) && windowWidth>699 else reducedMenu">
                 <ul class="text-start">
@@ -481,7 +498,7 @@
                                         <div class="border shadow p-2 row" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'border-info':cr.esitoRichiesta == 'ACCETTATA'? 'border-success' :
                                 cr.esitoRichiesta == 'RIFIUTATA'? 'border-danger':''">
                                             <div class="col-2">
-                                                <img src="{{cr?.receiver?.immagineProfilo}}"
+                                                <img src="{{cr?.receiverImage}}"
                                                     class="rounded-circle border shadow connection-request-pic"
                                                     alt="immagine_profilo_notificatore">
                                             </div>
