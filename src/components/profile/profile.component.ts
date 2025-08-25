@@ -117,7 +117,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   actualRequestsSent: any = null;
   arps: number[] = [];
   requestStatus: string = "INVIATA";
-  requestStatusArray: { value: EsitoRichiesta, label: string }[] = [{ value: EsitoRichiesta.INVIATA, label: 'Inviata' }, { value: EsitoRichiesta.ACCETTATA, label: 'Accettata' }, { value: EsitoRichiesta.RIFIUTATA, label: 'Rifiutata' }];
+  requestStatusArray: { value: EsitoRichiesta, label: string }[] = [{ value: EsitoRichiesta.INVIATA, label: 'Inviata' }, { value: EsitoRichiesta.ACCETTATA, label: 'Accettata' }, { value: EsitoRichiesta.RIFIUTATA, label: 'Rifiutata' },
+  { value: EsitoRichiesta.ANNULLATA, label: 'Annullata' }
+  ];
   isRequestLoading: boolean = false;
   requestToShow: string = 'RICEVUTE';
   requestToShowArray: { value: string, label: string }[] = [{ value: 'RICEVUTE', label: 'Ricevute' }, { value: 'EFFETTUATE', label: 'Effettuate' }];
@@ -349,6 +351,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.arp.push(i);
           }
           this.isRequestLoading = false;
+          this.checkIfFriend();
         }, 2000);
       });
       this.profiloService.getConnectionRequest(this.connectionRequestPage, this.user.id, null, this.user.fullName, null, this.requestStatus).subscribe((datas: any) => {
@@ -358,6 +361,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.arps.push(i);
           }
           this.isRequestLoading = false;
+          this.checkIfFriend();
         }, 2000);
       });
     };
@@ -412,10 +416,15 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   goToRanking(c: any) {
     this.router.navigate(['/lobby'], { queryParams: { classificaId: c?.id, section: 'classifiche' } });
   }
-  goToProfile(user: User) {
-    localStorage.setItem('visitedUser', JSON.stringify(user));
-    this.section = 'Profilo';
-    this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
+  goToProfile(user: number) {
+    this.authService.getUserById(user).subscribe({
+      next: (data: any) => {
+        var user = data;
+        localStorage.setItem('visitedUser', JSON.stringify(user));
+        this.section = 'Profilo';
+        this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
+      }
+    });
   }
 
   setImpostazioniSection(s: string) {
@@ -502,11 +511,19 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
         }
       });
     } else {
-      this.profiloService.deleteRequestByIds(this.user.id, this.visitedUser!.id).subscribe({
-        next: (data: any) => {
-          this.toastr.show("E' stato annullato il collegamento con " + this.visitedUser?.fullName + ". ");
-          this.isConnectionRequestLoading = false;
-          this.getConnectionRequests();
+      const dialog = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Elimina'], });
+      dialog.afterClosed().subscribe((data: any) => {
+        if (data) {
+          this.profiloService.deleteRequestByIds(this.visitedUser!.id).subscribe({
+            next: (data: any) => {
+              if (data) {
+                this.toastr.show("E' stato annullato il collegamento con " + this.visitedUser?.fullName + ". ");
+                this.isConnectionRequestLoading = false;
+                this.getConnectionRequests();
+                this.openInfoFriend();
+              }
+            }
+          });
         }
       });
     }

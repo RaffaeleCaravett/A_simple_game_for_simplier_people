@@ -155,8 +155,8 @@ export class ProfileServive {
     deleteRequest(requestId: number) {
         return this.http.get(environment.API_URL + this.connectionRequest + '/delete?requestId=' + requestId);
     }
-    deleteRequestByIds(userId: number, visitedUserId: number) {
-        return this.http.get(environment.API_URL + this.connectionRequest + '/deletebyIds?userId=' + userId + '&visitedUserId=' + visitedUserId);
+    deleteRequestByIds(visitedUserId: number) {
+        return this.http.get(environment.API_URL + this.connectionRequest + '/deleteByIds?visitedUserId=' + visitedUserId);
     }
 }
 

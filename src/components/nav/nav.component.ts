@@ -115,7 +115,6 @@ export class NavComponent implements OnInit {
   openNotificationMenu() {
     this.notificationMenuOpen = !this.notificationMenuOpen;
     if (this.notificationMenuOpen) {
-      this.closeMenu();
       let toRead: number[] = []
       toRead = this.notifications.filter((n: Notification) => n.state == 'SENT').map((n: Notification) => n.id);
       if (toRead.length > 0) {
@@ -137,12 +136,13 @@ export class NavComponent implements OnInit {
 
   openNotification(notification: Notification) {
     let route = 'lobby/profile';
+    debugger
     this.notificationMenuOpen = false;
     if (notification.notificationType == 'MESSAGE') {
       this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
     } else if (notification.notificationType == 'CONNECTION_REQUEST') {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
-    }else if (notification.notificationType == 'REQUEST') {
+    } else if (notification.notificationType == 'REQUEST') {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
     } else if (notification.notificationType == 'EMAIL') {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, email: true } })
@@ -162,8 +162,10 @@ export class NavComponent implements OnInit {
   closeMenu(element?: any) {
     element?.closeMenu();
     if (this.p1Trigger) {
+      debugger
       this.p1Trigger?.closeMenu();
     } else {
+      debugger
       this.pTrigger?.closeMenu();
     }
   }

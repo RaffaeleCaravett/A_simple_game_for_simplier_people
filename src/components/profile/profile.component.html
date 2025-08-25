@@ -4,12 +4,12 @@
             <div class="col-md-12 py-3">
                 <h1>{{visitedUser?.fullName}}</h1>
             </div>
-            <div class="col-md-12 d-flex justify-content-end" *ngIf="user.id!=visitedUser!.id">
+            <div class="col-md-12 d-flex justify-content-end" *ngIf="user?.id!=visitedUser?.id">
                 <button class="btn" (click)="openInfoFriend()">
                     <i class="bi bi-info-square h2" title="Apri informazioni"></i>
                 </button>
             </div>
-            <div class="col-md-12 d-flex justify-content-end" *ngIf="infoFriend && user.id!=visitedUser!.id">
+            <div class="col-md-12 d-flex justify-content-end  pb-5" *ngIf="infoFriend && user?.id!=visitedUser?.id">
                 <div class="bg-warning p-3 border shadow info-container">
                     <p class="text-end fs-3">{{isThisAFriend?"Tu e " + this.visitedUser!.fullName +
                         " siete già amici." : "Tu e "
@@ -452,7 +452,10 @@
                                                 <p>{{cr?.createdAt}}</p>
                                             </div>
                                             <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
-                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':''">
+                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':'text-danger'">
+                                                <u *ngIf="cr.esitoRichiesta == 'ANNULLATA'">
+                                                    RICHIESTA ANNULLATA
+                                                </u>
                                                 {{cr.esitoRichiesta == 'INVIATA' ? 'RICHIESTA IN ATTESA DI \n
                                                 RISPOSTA':cr.esitoRichiesta == 'ACCETTATA'? 'RICHIESTA ACCETTATA' :
                                                 cr.esitoRichiesta == 'RIFIUTATA'? 'RICHIESTA RIFIUTATA':''}}
@@ -502,12 +505,15 @@
                                                     class="rounded-circle border shadow connection-request-pic"
                                                     alt="immagine_profilo_notificatore">
                                             </div>
-                                            <div class="col-8" (click)="goToProfile(cr?.receiver)">
-                                                <p class="clickable-name">{{cr?.receiver?.fullName}}</p>
+                                            <div class="col-8" (click)="goToProfile(cr?.takenReceiverId)">
+                                                <p class="clickable-name">{{cr?.receiverFullName}}</p>
                                                 <p>{{cr?.createdAt}}</p>
                                             </div>
                                             <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
-                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':''">
+                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':'text-danger'">
+                                                <u *ngIf="cr.esitoRichiesta == 'ANNULLATA'">
+                                                    RICHIESTA ANNULLATA
+                                                </u>
                                                 {{cr.esitoRichiesta == 'INVIATA' ? 'RICHIESTA IN ATTESA DI \n
                                                 RISPOSTA':cr.esitoRichiesta == 'ACCETTATA'? 'RICHIESTA ACCETTATA' :
                                                 cr.esitoRichiesta == 'RIFIUTATA'? 'RICHIESTA RIFIUTATA':''}}
@@ -557,17 +563,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12" *ngIf="(!isProfileOpen&&user!=visitedUser&& ! isThisAFriend)">
-                    <p class="fs-4">
-                        L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
-                        profilo.
-                    </p>
-                    <button class="btn btn-outline-dark" title="manda una richiesta per visualizzare il profilo"
-                        (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
-                        permessi</button>
-                    <mat-spinner diameter="50" color="warn" strokeWidth="4" class="m-auto"
-                        *ngIf="isConnectionRequestLoading"></mat-spinner>
-                </div>
+            </div>
+            <div class="col-md-12" *ngIf="(!isProfileOpen&&user!=visitedUser&& ! isThisAFriend)">
+                <p class="fs-4">
+                    L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
+                    profilo.
+                </p>
+                <button class="btn btn-success" title="manda una richiesta per visualizzare il profilo"
+                    (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
+                    permessi</button>
+                <mat-spinner diameter="50" color="warn" strokeWidth="4" class="m-auto"
+                    *ngIf="isConnectionRequestLoading"></mat-spinner>
             </div>
         </div>
+
     </div>
+</div>
