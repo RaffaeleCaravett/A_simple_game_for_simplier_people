@@ -416,15 +416,22 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   goToRanking(c: any) {
     this.router.navigate(['/lobby'], { queryParams: { classificaId: c?.id, section: 'classifiche' } });
   }
-  goToProfile(user: number) {
-    this.authService.getUserById(user).subscribe({
-      next: (data: any) => {
-        var user = data;
-        localStorage.setItem('visitedUser', JSON.stringify(user));
-        this.section = 'Profilo';
-        this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
-      }
-    });
+  goToProfile(user: User | any) {
+    debugger
+    if (user && user?.id) {
+      localStorage.setItem('visitedUser', JSON.stringify(user));
+      this.section = 'Profilo';
+      this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
+    } else {
+      this.authService.getUserById(user).subscribe({
+        next: (data: any) => {
+          var user = data;
+          localStorage.setItem('visitedUser', JSON.stringify(user));
+          this.section = 'Profilo';
+          this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
+        }
+      });
+    }
   }
 
   setImpostazioniSection(s: string) {

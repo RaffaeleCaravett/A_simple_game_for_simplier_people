@@ -136,7 +136,6 @@ export class NavComponent implements OnInit {
 
   openNotification(notification: Notification) {
     let route = 'lobby/profile';
-    debugger
     this.notificationMenuOpen = false;
     if (notification.notificationType == 'MESSAGE') {
       this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
