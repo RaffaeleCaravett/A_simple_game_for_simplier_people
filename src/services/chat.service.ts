@@ -78,4 +78,18 @@ export class ChatService {
     setSelectedChat(chat: Chat | null) {
         this.selectedChat = chat;
     }
+
+    createChat(chat: Chat, multipartFile: File) {
+        let formData = new FormData();
+        formData.append('body', new Blob([JSON.stringify(chat)], {
+            type: 'application/json'
+        }));
+        formData.append('file', multipartFile);
+
+        return this.http.post(environment.API_URL + this.chat, formData);
+    }
+
+    getAvailableUsersForChat() {
+        return this.http.get(environment.API_URL + this.chat + '/availableContacts');
+    }
 };

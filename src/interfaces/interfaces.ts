@@ -95,6 +95,11 @@ export interface Chat {
     createdAt: string,
     title: string
 }
+export interface ChatDTO {
+    userId: number[],
+    title: string | null,
+    chatType: string | null
+}
 
 export interface Messaggio {
     id: number,
