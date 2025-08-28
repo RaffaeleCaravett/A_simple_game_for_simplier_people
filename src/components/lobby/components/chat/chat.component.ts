@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { Chat, Message, Messaggio, User } from '../../../../interfaces/interfaces';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { ChatService } from '../../../../services/chat.service';
@@ -16,7 +16,7 @@ import { ManageOptionsComponent } from '../../../../shared/components/manage-opt
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [NgClass, NgIf, NgFor, ReactiveFormsModule, MatMenuModule],
+  imports: [NgClass, NgIf, NgFor, ReactiveFormsModule, MatMenuModule, NgStyle],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
@@ -35,7 +35,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatOptionsMenu: string[] = []
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
-    private modeService: ModeService) {
+    private modeService: ModeService, private router: Router) {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
       this.chatList.forEach((chat: Chat) => {
         if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
@@ -328,6 +328,11 @@ export class ChatComponent implements OnInit, OnDestroy {
           }
         });
       }
+    }
+  }
+  goToUser() {
+    if (this.selectedChat && this.selectedChat?.chatType == 'SINGOLA') {
+      this.router.navigate(['/lobby/profile'], { queryParams: { user: this.selectedChat.utenti.filter(u => { return u.id != this.user!.id })[0].id } });
     }
   }
 }
