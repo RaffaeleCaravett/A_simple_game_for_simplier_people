@@ -28,8 +28,7 @@ export class AppComponent implements OnInit {
   selectedChat: Chat | null = null;
   chats: Chat[] = [];
   socketMap: Map<number, RxStompService> = new Map<number, RxStompService>();
-  constructor(private modeService: ModeService, private authService: AuthService, private router: Router,
-    private chatService: ChatService, private webSocketService: WebsocketService
+  constructor(private modeService: ModeService, private authService: AuthService, private router: Router, private webSocketService: WebsocketService
   ) {
     this.subscription = router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -38,10 +37,7 @@ export class AppComponent implements OnInit {
     });
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
-    })
-    this.webSocketService.connectionBehaviorSubject.subscribe((data: any) => {
-      console.log("DATA _ " + data);
-    })
+    });
   }
 
 

@@ -1,9 +1,17 @@
-<div mat-dialog-title>
-    <h2>Crea una chat di gruppo!</h2>
+<div mat-dialog-title class="p-3 text-center">
+    <h2>Crea una chat o un gruppo!</h2>
 </div>
-<div mat-dialog-content>
-
+<div mat-dialog-content class="p-5">
+    <form [formGroup]="chatForm">
+        <label for="chatType">Seleziona il tipo di chat</label>
+        <select name="chatType" id="chatType" formControlName="chatType" class="form-select">
+            <option value="{{ct}}" *ngFor="let ct of chatTypes">{{ct.toLowerCase()}}</option>
+        </select>
+        <div *ngIf="chatForm.controls['chatType']?.value">
+            suca
+        </div>
+    </form>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="p-3">
 
 </div>

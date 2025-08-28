@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { Chat, Message, SocketDTO } from "../interfaces/interfaces";
+import { Chat, ChatDTO, Message, SocketDTO } from "../interfaces/interfaces";
 import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
 import { WebsocketService } from "./websocket.service";
@@ -79,13 +79,14 @@ export class ChatService {
         this.selectedChat = chat;
     }
 
-    createChat(chat: Chat, multipartFile: File) {
+    createChat(chat: ChatDTO, multipartFile: File | null) {
         let formData = new FormData();
         formData.append('body', new Blob([JSON.stringify(chat)], {
             type: 'application/json'
         }));
-        formData.append('file', multipartFile);
-
+        if (multipartFile) {
+            formData.append('file', multipartFile);
+        }
         return this.http.post(environment.API_URL + this.chat, formData);
     }
 
