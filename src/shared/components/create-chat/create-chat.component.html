@@ -3,15 +3,39 @@
 </div>
 <div mat-dialog-content class="p-5">
     <form [formGroup]="chatForm">
-        <label for="chatType">Seleziona il tipo di chat</label>
-        <select name="chatType" id="chatType" formControlName="chatType" class="form-select">
-            <option value="{{ct}}" *ngFor="let ct of chatTypes">{{ct.toLowerCase()}}</option>
-        </select>
-        <div *ngIf="chatForm.controls['chatType']?.value">
-            suca
+        <div class="d-flex mt-3">
+            <div *ngFor="let ct of chatTypes index as i" class="mx-1">
+                <input type="radio" name="chatType" id="chatType-{{i}}" formControlName="chatType"
+                    class="form-check-input" value="{{ct}}">
+                <label for="chatType-{{i}}" class="form-check-label px-2">{{ct}}</label>
+            </div>
+        </div>
+        <div *ngIf="chatForm.controls['chatType']?.value" class="py-3">
+            <div *ngIf="chatForm.controls['chatType'].value == 'GRUPPO'" class="row">
+                <div class="col-md-6 position-relative">
+                    <label for="title">Come chiami questo gruppo?</label>
+                    <input name="title" id="title" placeholder="Inserisci un titolo ..." formControlName="title"
+                        class="form-control position-absolute bottom-0" />
+                </div>
+                <div class="col-md-6">
+                    <label for="users pb-4">Scegli l'immagine del gruppo</label>
+                    <input type="file" name="image" id="image" formControlName="image" class="d-none" #file
+                        (change)="handleImageEvent($event)" accept="image/png, image/gif, image/jpeg">
+                    <div class="rounded-circle shadow group-image m-auto" (click)="file.click()"
+                        style.backgroundImage="url('{{choosedImageUrl || 'assets/utils/avatar.png'}}')"></div>
+                    <div class="text-end pt-2" *ngIf="choosedImageUrl">
+                        <button class="btn btn-secondary" (click)="cleanImage()">rimuovi</button>
+                    </div>
+                </div>
+            </div>
+            <label for="users">Scegli a chi inserire</label>
+            <select name="users" id="users" formControlName="users" class="form-select w-50">
+                <option value="{{ct.id}}" *ngFor="let ct of users">{{ct.fullName}}</option>
+            </select>
         </div>
     </form>
 </div>
-<div mat-dialog-actions class="p-3">
-
+<div mat-dialog-actions class="p-3 text-end">
+    <button class="btn btn-light" *ngIf="addedUsers.length > 0">Salva</button>
+    <button class="btn btn-secondary">Annulla</button>
 </div>

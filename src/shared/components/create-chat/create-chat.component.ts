@@ -18,7 +18,7 @@ export class CreateChatComponent implements OnInit {
   chatTypes: string[] = ['SINGOLA', 'GRUPPO'];
   users: User[] = []
   selectedImage: File | null = null;
-  choosedImageUrl: string = '';
+  choosedImageUrl: string | null = '';
   addedUsers: User[] = [];
   createdChat: Chat | null = null;
   user: User | null = null;
@@ -34,7 +34,7 @@ export class CreateChatComponent implements OnInit {
   getAvailableUsers() {
     return this.chatService.getAvailableUsersForChat().subscribe({
       next: (data: any) => {
-        console.log("DATA : " + data);
+        this.users = data;
       }
     })
   }
@@ -60,8 +60,9 @@ export class CreateChatComponent implements OnInit {
   }
 
   cleanImage() {
-    (document.getElementById('uploadedChatImage')! as HTMLImageElement).src = "";
+    (document.getElementsByClassName('group-image')[0]! as HTMLDivElement).style.backgroundImage = "url('assets/utils/avatar.png')";
     this.selectedImage = null;
+    this.choosedImageUrl = null;
   }
 
   saveChat() {
