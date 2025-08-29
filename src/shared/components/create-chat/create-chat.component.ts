@@ -38,6 +38,15 @@ export class CreateChatComponent implements OnInit {
       }
     })
   }
+  manipulateUser(user: User, id: number) {
+    let input = document.getElementById('checkbox-' + id) as HTMLInputElement;
+    if (input.checked) {
+      this.addedUsers.push(user);
+    } else {
+      this.addedUsers = this.addedUsers.filter(u => u.id != user.id);
+    }
+    console.log(this.addedUsers);
+  }
 
   initializeForms() {
     this.chatForm = new FormGroup({
