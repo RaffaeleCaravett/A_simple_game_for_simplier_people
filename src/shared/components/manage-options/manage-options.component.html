@@ -18,7 +18,7 @@
                 </p>
             </div>
         </div>
-        <div *ngIf="chat?.chatType == 'GRUPPO'" class="my-3">
+        <div class="my-3">
             <p class="fs-5">
                 Partecipanti
             </p>
@@ -39,7 +39,23 @@
             </div>
         </div>
     </div>
+    <div *ngIf="action.toUpperCase() == 'AGGIUNGI PARTECIPANTE'" class="text-start my-3">
+        <div *ngIf="possiblesUsersToAdd.length > 0 else noUsersToAdd">
+            <p class="fs-3 user-panel" *ngFor="let u of possiblesUsersToAdd" title="Aggiungi utente"
+                (click)="addUserToChat(u)">
+                <img src="{{u.immagineProfilo}}" alt="Immagine_profilo" class="border shadow-sm rounded-circle"
+                    [style.width]="'70px'" [style.height]="'70px'">
+                <span class="fs-4">
+                    {{u.fullName}}
+                </span>
+            </p>
+        </div>
+        <ng-template #noUsersToAdd>
+            <p class="text-center">Non ci sono utenti da aggiungere alla chat.</p>
+        </ng-template>
+    </div>
 </div>
-<div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'">
-
+<div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
+    <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
+    <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
 </div>

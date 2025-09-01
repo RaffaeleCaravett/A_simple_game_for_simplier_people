@@ -27,8 +27,26 @@ export class ManageOptionsComponent implements OnInit {
   ngOnInit(): void {
     this.action = this.data[0];
     this.chat = this.data[1];
+    this.chatService.getAvailableUsersForChat().subscribe({
+      next: (data: any) => {
+        if (data && data.length > 0) {
+          let alreadyInChatIds = this.chat?.utenti.map(u => u.id);
+          data.forEach((u: User) => {
+            if (!alreadyInChatIds?.includes(u.id)) {
+              this.possiblesUsersToAdd.push(u);
+            }
+          })
+        }
+      }
+    });
   }
   closeModal(params?: any) {
     this.dialogRef.close();
+  }
+  addUserToChat(user: User) {
+
+  }
+  handleAction() {
+
   }
 }
