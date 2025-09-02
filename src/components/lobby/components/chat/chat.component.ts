@@ -278,11 +278,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   manageOptions(option: string) {
     switch (option) {
       case "Info chat": {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         break;
       }
       case "Aggiungi partecipante": {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
             for (let u of data) {
@@ -293,7 +293,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         break;
       }
       case "Cambia foto": {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
             this.selectedChat!.image = data;
@@ -303,7 +303,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
 
       case "Abbandona gruppo": {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
             this.getChats();
@@ -312,7 +312,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         break;
       }
       case "Elimina chat": {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
             this.getChats();
@@ -321,7 +321,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         break;
       }
       default: {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
             this.getChats();

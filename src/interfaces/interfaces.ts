@@ -94,7 +94,8 @@ export interface Chat {
     messaggi: Messaggio[],
     createdAt: string,
     title: string,
-    image: string
+    image: string,
+    chatType: string
 }
 export interface ChatDTO {
     userId: number[],

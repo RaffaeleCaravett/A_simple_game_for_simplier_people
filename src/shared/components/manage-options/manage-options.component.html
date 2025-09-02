@@ -1,1 +1,45 @@
-<p>manage-options works!</p>
+<div mat-dialog-title class="text-center bg-secondary bg-gradient position-relative">
+    {{action}}
+    <i class="bi bi-x-lg h3 text-danger position-absolute" title="Chiudi" (click)="closeModal()"></i>
+</div>
+<div mat-dialog-content class=" bg-white">
+    <div *ngIf="action.toUpperCase() == 'INFO CHAT'" class="text-start">
+        <div *ngIf="chat?.chatType == 'GRUPPO'" class="d-flex justify-content-center my-3">
+            <img src="{{'data:image/png;base64,'+chat?.image}}" alt="Immagine_chat"
+                class="border shadow-sm rounded-circle" [style.width]="'120px'" [style.height]="'120px'">
+        </div>
+        <div *ngIf="chat?.chatType == 'GRUPPO'" class="my-3">
+            <p class="fs-5">
+                Nome gruppo
+            </p>
+            <div class="bg-light shadow-sm p-2">
+                <p class="fs-3">
+                    {{chat?.title}}
+                </p>
+            </div>
+        </div>
+        <div *ngIf="chat?.chatType == 'GRUPPO'" class="my-3">
+            <p class="fs-5">
+                Partecipanti
+            </p>
+            <div class="bg-light shadow-sm p-2 users-container">
+                <p class="fs-3" *ngFor="let u of chat?.utenti">
+                    <img src="{{u.immagineProfilo}}" alt="Immagine_profilo" class="border shadow-sm rounded-circle"
+                        [style.width]="'70px'" [style.height]="'70px'">
+                    <span class="fs-4">
+                        {{u.fullName}}
+                    </span>
+                </p>
+            </div>
+        </div>
+        <div class="my-3">
+            <p class="fs-5">Creata</p>
+            <div class="my-2 bg-light shadow-sm p-2">
+                <p>{{chat?.createdAt}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'">
+
+</div>
