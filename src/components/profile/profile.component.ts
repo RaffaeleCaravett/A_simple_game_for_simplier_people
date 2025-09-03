@@ -76,7 +76,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   sizes: number[] = [2, 5, 10];
   windowWidth: number = 0;
   menuVoices: Set<{ label: string, emoji: string, title: string }> = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
-  { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+  { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
+  { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
   ]);
   section: string = 'Profilo';
   circles: number[] = [1, 2, 3, 4, 5];
@@ -224,7 +225,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               this.getCoordinates();
               if (this.user?.id == this.visitedUser?.id) {
                 this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
-                { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+                { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
+                { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
                 ]);
                 let yesImpostazioni: boolean = false;
                 this.menuVoices.forEach((d) => {
@@ -258,7 +260,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
               this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
-              { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+              { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
+              { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
               ]);
               let yesImpostazioni: boolean = false;
               this.menuVoices.forEach((d) => {

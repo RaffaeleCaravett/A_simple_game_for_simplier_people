@@ -136,7 +136,8 @@
                                 Non ci sono notifiche da leggere.
                             </p>
                         </div>
-                        <div class="row" [style.cursor]="'pointer'" [ngClass]="n.state=='SENT'?'bg-secondary bg-gradient':'bg-white'"
+                        <div class="row" [style.cursor]="'pointer'"
+                            [ngClass]="n.state=='SENT'?'bg-secondary bg-gradient':'bg-white'"
                             [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications"
                             (click)="openNotification(n)">
                             <div class="col-2">
