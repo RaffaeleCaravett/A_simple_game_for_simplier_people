@@ -102,6 +102,11 @@ i {
 
 .chat-options-menu-item {
   cursor: pointer;
+    transition: 1s;
+  &:hover {
+    transition: 1.5s;
+    scale: 1.05;
+  }
 }
 
 .chat-options-menu {
