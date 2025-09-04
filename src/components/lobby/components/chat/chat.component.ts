@@ -100,6 +100,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   addChat() {
     const dialogRef = this.matDialog.open(CreateChatComponent, { data: this.user });
     dialogRef.afterClosed().subscribe((data: any) => {
+      debugger
       if (data) {
         this.getChats();
       } else {
@@ -155,12 +156,25 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     })
   }
-  getChatImage(chat: any): any {
-    if (!chat?.image) {
-      let utente = chat?.utenti.filter((u: User) => u.id != this.user!.id)[0] as User;
-      return utente.immagineProfilo;
+  getChatImage(chat: Chat): any {
+    try {
+      if (!chat?.image && chat.chatType == 'SINGOLA') {
+        let utente = chat?.utenti.filter((u: User) => u.id != this.user!.id)[0] as User;
+        return utente.immagineProfilo;
+      } else if (chat?.chatType == 'GRUPPO') {
+        let img = chat.image;
+        if (null == img || undefined == img || !img) {
+          img = 'assets/utils/avatar.jpg'
+        } else {
+          img = 'data:image/png;base64,' + img;
+        }
+        return img;
+      }
+      return null;
+
+    } catch (error: any) {
+      console.log(error)
     }
-    return null;
   }
 
   messageNotValid() {
@@ -298,7 +312,28 @@ export class ChatComponent implements OnInit, OnDestroy {
             let chatDTO: ChatDTO = {
               userId: data.map((u: any) => u.id),
               title: null,
-              chatType: null
+              chatType: null,
+              administrators: null
+            }
+            this.chatService.patchChat(this.selectedChat!.id, chatDTO).subscribe({
+              next: (datas: any) => {
+                this.selectedChat = datas;
+                this.scrollChatContainerBottom();
+              }
+            });
+          }
+        });
+        break;
+      }
+      case "Aggiungi/rimuovi un Admin": {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '90%' });
+        dialogRef.afterClosed().subscribe((data: any) => {
+          if (data) {
+            let chatDTO: ChatDTO = {
+              userId: data.map((u: any) => u.id),
+              title: null,
+              chatType: null,
+              administrators: data.map((u: any) => u.id)
             }
             this.chatService.patchChat(this.selectedChat!.id, chatDTO).subscribe({
               next: (datas: any) => {

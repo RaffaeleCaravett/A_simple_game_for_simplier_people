@@ -31,6 +31,7 @@ export class ManageOptionsComponent implements OnInit {
   ngOnInit(): void {
     this.action = this.data[0];
     this.chat = this.data[1];
+    console.log(this.chat?.image)
     this.addedAdmins = [... this.chat!.administrators];
     this.addedAdminsIds = this.addedAdmins.map(u => u.id)!;
     this.chatService.getAvailableUsersForChat().subscribe({
@@ -75,6 +76,8 @@ export class ManageOptionsComponent implements OnInit {
   handleAction() {
     if (this.action == "Aggiungi partecipante") {
       this.closeModal(this.addedUsers);
+    } else if (this.action == "AggiungiRimuovi un admin") {
+      this.closeModal(this.addedAdmins);
     }
   }
   chatNotIncludes(user: User) {

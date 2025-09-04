@@ -5,7 +5,7 @@ import { Chat, ChatDTO, User } from '../../../interfaces/interfaces';
 import { ChatService } from '../../../services/chat.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../services/auth.service';
-import { DialogRef } from '@angular/cdk/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-chat',
@@ -24,7 +24,7 @@ export class CreateChatComponent implements OnInit {
   createdChat: Chat | null = null;
   user: User | null = null;
   constructor(private chatService: ChatService, private toastr: ToastrService, private authService: AuthService,
-    private dialogRef: DialogRef<CreateChatComponent>
+    private dialogRef: MatDialogRef<CreateChatComponent>
   ) { }
 
   ngOnInit(): void {
@@ -89,7 +89,8 @@ export class CreateChatComponent implements OnInit {
     let chatDTO: ChatDTO = {
       title: this.chatForm?.controls['title']?.value,
       userId: this.addedUsers?.map(u => u.id),
-      chatType: this.chatForm?.controls['chatType']?.value
+      chatType: this.chatForm?.controls['chatType']?.value,
+      administrators: null
     }
     if (chatDTO.chatType == 'GRUPPO' && (chatDTO.title == null || chatDTO.title == undefined || chatDTO.title.length == 0 || chatDTO.title.trim().length == 0)) {
       this.toastr.warning("Se la chat è di gruppo, devi mettere il titolo.");

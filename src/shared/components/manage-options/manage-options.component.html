@@ -114,17 +114,35 @@
         </div>
         <div class="col-12">
             <p class="fs-5">Persone da nominare amministratori</p>
-            <div class="col-md-3 p-2" *ngFor="let a of chat?.utenti">
-                <div class="w-100 border shadow p-2" *ngIf="!addedAdminsIds?.includes(a.id)">
-                    <div class="text-end w-100">
-                        <i class="bi bi-plus text-success fw-bolder h3 user-panel" (click)="addAdmin(a)"></i>
-                    </div>
-                    <div (click)="goToUser(a.id)" class="user-panel">
-                        <img src="{{a.immagineProfilo}}" alt="immagine profilo" [style.width]="'70px'"
-                            [style.height]="'70px'" class="rounded-circle border shadow my-2">
-                        <p class="fs-5">{{a.fullName}}</p>
+            <div class="row">
+                <div class="col-md-3 p-2" *ngFor="let a of chat?.utenti">
+                    <div class="w-100 border shadow p-2" *ngIf="!addedAdminsIds?.includes(a.id)">
+                        <div class="text-end w-100">
+                            <i class="bi bi-plus text-success fw-bolder h3 user-panel" (click)="addAdmin(a)"></i>
+                        </div>
+                        <div (click)="goToUser(a.id)" class="user-panel">
+                            <img src="{{a.immagineProfilo}}" alt="immagine profilo" [style.width]="'70px'"
+                                [style.height]="'70px'" class="rounded-circle border shadow my-2">
+                            <p class="fs-5">{{a.fullName}}</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="action.toUpperCase() == 'CAMBIA FOTO' && chat?.chatType =='GRUPPO'">
+        <div class="row">
+            <div class="col-md-12 text-start mt-3">
+                <p class="fs-5">Cambia immagine</p>
+            </div>
+            <div class="col-md-12 my-3 text-center">
+                <p class="text-end">
+                    <i class="bi bi-plus-lg text-success h3 fw-bolder user-panel" title="cambia foto..."
+                        (click)="file.click()"></i>
+                    <input type="file" class="d-none" #file>
+                </p>
+                <img src="{{chat!.image?'data:image/png;base64,'+chat?.image :'assets/utils/avatar.jpg'}}"
+                    alt="Immagine_chat_gruppo" [style.width]="'150px'" [style.height]="'150px'" class="border shadow">
             </div>
         </div>
     </div>

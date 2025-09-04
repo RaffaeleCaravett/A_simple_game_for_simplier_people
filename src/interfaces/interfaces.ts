@@ -101,7 +101,8 @@ export interface Chat {
 export interface ChatDTO {
     userId: number[],
     title: string | null,
-    chatType: string | null
+    chatType: string | null,
+    administrators: number[] | null
 }
 
 export interface Messaggio {
