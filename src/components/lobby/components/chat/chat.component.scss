@@ -103,3 +103,7 @@ i {
 .chat-options-menu-item {
   cursor: pointer;
 }
+
+.chat-options-menu {
+  z-index: 5 !important;
+}
