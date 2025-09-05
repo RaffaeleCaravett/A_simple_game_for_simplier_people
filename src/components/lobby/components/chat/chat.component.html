@@ -54,12 +54,13 @@
                                 (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
                             <i class="bi bi-three-dots" [ngClass]="selectedChat?'':'d-none'" title="Menù"
                                 (click)="checkChatOptions()"></i>
-                            <div class="d-flex justify-content-end position-relative" *ngIf="openChatOptionsMenu">
+                            <div class="d-flex justify-content-end position-relative chat-options-menu" *ngIf="openChatOptionsMenu">
                                 <div [ngClass]="windowWidth>737?'w-25':'w-50'"
                                     class="p-2 bg-gradient bg-light shadow border position-absolute end-0">
-                                    <p *ngFor="let o of chatOptionsMenu index as i"
+                                    <p *ngFor="let o of chatOptionsMenu index as i" title="{{o}}"
+                                        class="chat-options-menu-item"
                                         [ngClass]="(i+1) == chatOptionsMenu.length?'text-danger':''">
-                                        {{o}}</p>
+                                        {{o.toUpperCase()}}</p>
                                 </div>
                             </div>
                         </div>
@@ -96,11 +97,12 @@
                                     title="Chiudi chat" (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
                                 <i class="bi bi-three-dots" [ngClass]="selectedChat?'':'d-none'" title="Menù"
                                     (click)="checkChatOptions()"></i>
-                                <div class="d-flex justify-content-end position-relative" *ngIf="openChatOptionsMenu">
+                                <div class="d-flex justify-content-end position-relative chat-options-menu" *ngIf="openChatOptionsMenu">
                                     <div [ngClass]="windowWidth>737?'w-25':'w-50'"
                                         class="p-2 bg-gradient bg-light shadow border position-absolute end-0">
-                                        <p *ngFor="let o of chatOptionsMenu index as i"
-                                            [ngClass]="(i+1) == chatOptionsMenu.length?'text-danger':''">{{o}}</p>
+                                        <p *ngFor="let o of chatOptionsMenu index as i" class="chat-options-menu-item"
+                                            [ngClass]="(i+1) == chatOptionsMenu.length?'text-danger':''" title="{{o}}">
+                                            {{o.toUpperCase()}}</p>
                                     </div>
                                 </div>
                             </div>
