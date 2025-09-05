@@ -285,6 +285,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
+            data.push(this.user);
             let chatDTO: ChatDTO = {
               userId: data.map((u: any) => u.id),
               title: null,
