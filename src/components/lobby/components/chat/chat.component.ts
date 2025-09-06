@@ -31,6 +31,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   filteredChatList: Chat[] = [];
   mode: string = 'light';
   openChatOptionsMenu: boolean = false;
+  chatOptionsMenu: string[] = []
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService) {
@@ -55,6 +56,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       let equalChat: Chat = this.chatList.filter((c: any) => c.id == chat)[0];
       if (equalChat && equalChat != undefined) {
         this.selectedChat = equalChat;
+        this.chatService.getChatMenu(this.selectedChat.id).subscribe({
+          next: (data: any) => {
+            this.chatOptionsMenu = data.options;
+          }
+        });
       }
     });
     this.modeService.mode.subscribe((value: string) => {
@@ -188,6 +194,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isChatMenuOpen = false;
     menu.classList.add('d-none');
     menu.classList.remove('d-block');
+    this.chatService.getChatMenu(this.selectedChat.id).subscribe({
+      next: (data: any) => {
+        this.chatOptionsMenu = data.options;
+      }
+    });
     this.scrollChatContainerBottom();
   }
 

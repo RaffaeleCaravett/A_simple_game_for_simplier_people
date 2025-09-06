@@ -93,4 +93,8 @@ export class ChatService {
     getAvailableUsersForChat() {
         return this.http.get(environment.API_URL + this.chat + '/availableContacts');
     }
+
+    getChatMenu(chatId: number) {
+        return this.http.get(environment.API_URL + this.chat + '/options/' + chatId);
+    }
 };
