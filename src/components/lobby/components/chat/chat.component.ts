@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import { Chat, Message, Messaggio, User } from '../../../../interfaces/interfaces';
+import { Chat, ChatDTO, Message, Messaggio, User } from '../../../../interfaces/interfaces';
 import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
@@ -285,9 +285,17 @@ export class ChatComponent implements OnInit, OnDestroy {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
-            for (let u of data) {
-              this.selectedChat?.utenti.push(u);
+            let chatDTO: ChatDTO = {
+              userId: data.map((u: any) => u.id),
+              title: null,
+              chatType: null
             }
+            this.chatService.patchChat(this.selectedChat!.id, chatDTO).subscribe({
+              next: (datas: any) => {
+                this.selectedChat = datas;
+                this.scrollChatContainerBottom();
+              }
+            });
           }
         });
         break;

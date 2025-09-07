@@ -36,6 +36,10 @@ export class ManageOptionsComponent implements OnInit {
           data.forEach((u: User) => {
             if (!alreadyInChatIds?.includes(u.id)) {
               this.possiblesUsersToAdd.push(u);
+            } else {
+              if (u.id != this.user!.id) {
+                this.addedUsers.push(u);
+              }
             }
           })
         }
@@ -46,7 +50,16 @@ export class ManageOptionsComponent implements OnInit {
     this.dialogRef.close();
   }
   addUserToChat(user: User) {
-
+    if (!this.addedUsers.map(u => u.id).includes(user.id)) {
+      this.addedUsers.push(user);
+      this.possiblesUsersToAdd = this.possiblesUsersToAdd.filter(u => u.id != user.id);
+    }
+  }
+  removeUserFromChat(user: User) {
+    if (this.addedUsers.map(u => u.id).includes(user.id)) {
+      this.addedUsers = this.addedUsers.filter(u => u.id != user.id)
+      this.possiblesUsersToAdd.push(user);
+    }
   }
 
   goToUser(userId: number) {
@@ -56,6 +69,11 @@ export class ManageOptionsComponent implements OnInit {
     }
   }
   handleAction() {
-
+    if (this.action == "Aggiungi partecipanti") {
+    this.closeModal(this.addedUsers);
+    }
+  }
+  chatNotIncludes(user: User) {
+    return !this.chat?.utenti.map(us => us.id).includes(user.id);
   }
 }

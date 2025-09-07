@@ -41,22 +41,49 @@
         </div>
     </div>
     <div *ngIf="action.toUpperCase() == 'AGGIUNGI PARTECIPANTE'" class="text-start my-3">
-        <div *ngIf="possiblesUsersToAdd.length > 0 else noUsersToAdd">
-            <p class="fs-3 user-panel" *ngFor="let u of possiblesUsersToAdd" title="Aggiungi utente"
-                (click)="addUserToChat(u)">
-                <img src="{{u.immagineProfilo}}" alt="Immagine_profilo" class="border shadow-sm rounded-circle"
-                    [style.width]="'70px'" [style.height]="'70px'">
-                <span class="fs-4">
-                    {{u.fullName}}
-                </span>
-            </p>
+        <div *ngIf="possiblesUsersToAdd.length > 0 else noUsersToAdd" class="row">
+            <div class="py-3">
+                <p class="fs-5">Seleziona qualcuno <input type="text" class="rounded shadow-sm"
+                        placeholder="Inizia a cercare ..."></p>
+            </div>
+            <div class="col-sm-3 text-center p-1" *ngFor="let u of possiblesUsersToAdd">
+                <div class="border shadow p-2">
+                    <div class="text-end">
+                        <i class="bi bi-plus h2 fw-bolder text-success user-panel" (click)="addUserToChat(u)"
+                            title="Seleziona"></i>
+                    </div>
+                    <img src="{{u.immagineProfilo}}" alt="Immagine_profilo" class="border shadow-sm rounded-circle"
+                        [style.width]="'70px'" [style.height]="'70px'">
+                    <p class="fs-4 user-panel" (click)="addUserToChat(u)">
+                        {{u.fullName}}
+                    </p>
+                </div>
+            </div>
         </div>
         <ng-template #noUsersToAdd>
             <p class="text-center">Non ci sono utenti da aggiungere alla chat.</p>
         </ng-template>
+        <div *ngIf="addedUsers.length > 0 else noUsersAdded">
+            <div class="py-3">
+                <p class="fs-5">Utenti selezionati</p>
+            </div>
+            <p class="fs-3" *ngFor="let u of addedUsers" title="Rimuovi utente">
+                <img src="{{u.immagineProfilo}}" alt="Immagine_profilo" class="border shadow-sm rounded-circle"
+                    [style.width]="'70px'" [style.height]="'70px'">
+                <span class="fs-4 user-panel" (click)="addUserToChat(u)">
+                    {{u.fullName}}
+                </span>
+                <span class="text-end" *ngIf="chatNotIncludes(u)">
+                    <i class="bi bi-dash-lg h2 fw-bolder text-danger user-panel" (click)="removeUserFromChat(u)"
+                        title="Seleziona"></i>
+                </span>
+            </p>
+        </div>
+        <ng-template #noUsersAdded>
+
+        </ng-template>
     </div>
-</div>
-<div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
-    <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
-    <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
-</div>
+    <div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
+        <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
+        <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
+    </div>

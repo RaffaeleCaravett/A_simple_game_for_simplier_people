@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { Chat, ChatDTO, Message, SocketDTO } from "../interfaces/interfaces";
+import { Chat, ChatDTO, Message, SocketDTO, User } from "../interfaces/interfaces";
 import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
 import { WebsocketService } from "./websocket.service";
@@ -96,5 +96,9 @@ export class ChatService {
 
     getChatMenu(chatId: number) {
         return this.http.get(environment.API_URL + this.chat + '/options/' + chatId);
+    }
+
+    patchChat(chatId: number, chatDTO: ChatDTO) {
+        return this.http.patch(environment.API_URL + this.chat + '/' + chatId, chatDTO);
     }
 };
