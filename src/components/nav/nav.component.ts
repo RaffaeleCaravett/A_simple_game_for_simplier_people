@@ -1,4 +1,4 @@
-import { Component, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
@@ -32,7 +32,7 @@ export class NavComponent implements OnInit {
   @ViewChild('pTrigger') pTrigger: any;
   @ViewChild('p1Trigger') p1Trigger: any;
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService, private profileService: ProfileServive
+    private toastr: ToastrService, private profileService: ProfileServive, private cdr: ChangeDetectorRef
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
@@ -114,9 +114,13 @@ export class NavComponent implements OnInit {
   }
   openNotificationMenu() {
     this.notificationMenuOpen = !this.notificationMenuOpen;
-    if (this.notificationMenuOpen) {
+    if (!this.notificationMenuOpen) {
       let toRead: number[] = []
-      toRead = this.notifications.filter((n: Notification) => n.state == 'SENT').map((n: Notification) => n.id);
+      this.notifications.forEach((n: Notification) => {
+        if (n.state == 'SENT') {
+          toRead.push(n.id);
+        }
+      });
       if (toRead.length > 0) {
         this.profileService.readNotification(toRead).subscribe({
           next: (data: any) => {
@@ -136,7 +140,7 @@ export class NavComponent implements OnInit {
 
   openNotification(notification: Notification) {
     let route = 'lobby/profile';
-    this.notificationMenuOpen = false;
+    this.openNotificationMenu();
     if (notification.notificationType == 'MESSAGE') {
       this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
     } else if (notification.notificationType == 'CONNECTION_REQUEST') {
@@ -161,10 +165,8 @@ export class NavComponent implements OnInit {
   closeMenu(element?: any) {
     element?.closeMenu();
     if (this.p1Trigger) {
-      debugger
       this.p1Trigger?.closeMenu();
     } else {
-      debugger
       this.pTrigger?.closeMenu();
     }
   }

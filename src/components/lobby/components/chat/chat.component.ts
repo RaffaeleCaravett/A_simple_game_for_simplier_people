@@ -37,9 +37,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
       this.chatList.forEach((chat: Chat) => {
         if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
-          chat.messaggi.push(value);
+          chat?.messaggi?.push(value);
         } else if (chat.id == value?.settedChatId && value?.sender.id == this.user!.id) {
-          chat.messaggi.push(value);
+          chat?.messaggi?.push(value);
         }
       });
       this.scrollChatContainerBottom();
@@ -203,12 +203,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.readMessages(this.selectedChat!.id).subscribe({
       next: (read: any) => {
         if (read) {
-          this.selectedChat?.messaggi.forEach((messaggio: Messaggio) => {
-            if (messaggio.receivers.includes(this.user!.id)) {
-              if (!messaggio?.readers) messaggio.readers = [];
-              messaggio.readers.push(this.user!.id);
-            }
-          });
+            this.selectedChat?.messaggi?.forEach((messaggio: Messaggio) => {
+              if (messaggio?.receivers?.includes(this.user!.id)) {
+                if (!messaggio?.readers) messaggio.readers = [];
+                messaggio?.readers?.push(this.user!.id);
+                messaggio.state = "READ";
+              }
+            });
         }
       }
     })
@@ -249,7 +250,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   checkNewMessages(chat: Chat): boolean {
     let hasNewMessages: boolean = false;
-    chat.messaggi.forEach(m => {
+    chat?.messaggi?.forEach(m => {
       if (m?.receivers?.includes(this.user!.id) && !m?.readers?.includes(this.user!.id)) {
         hasNewMessages = true;
       }

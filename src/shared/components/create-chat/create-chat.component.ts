@@ -5,6 +5,7 @@ import { Chat, ChatDTO, User } from '../../../interfaces/interfaces';
 import { ChatService } from '../../../services/chat.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../services/auth.service';
+import { DialogRef } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-create-chat',
@@ -22,15 +23,20 @@ export class CreateChatComponent implements OnInit {
   addedUsers: User[] = [];
   createdChat: Chat | null = null;
   user: User | null = null;
-  constructor(private chatService: ChatService, private toastr: ToastrService, private authService: AuthService) { }
+  constructor(private chatService: ChatService, private toastr: ToastrService, private authService: AuthService,
+    private dialogRef: DialogRef<CreateChatComponent>
+  ) { }
 
   ngOnInit(): void {
     this.initializeForms();
     this.getAvailableUsers();
     this.user = this.authService.getUser();
+    this.addedUsers.push(this.user!);
   }
 
-
+  removeUser(user: User) {
+    this.addedUsers = this.addedUsers.filter(u => u.id != user.id);
+  }
   getAvailableUsers() {
     return this.chatService.getAvailableUsersForChat().subscribe({
       next: (data: any) => {
@@ -41,11 +47,16 @@ export class CreateChatComponent implements OnInit {
   manipulateUser(user: User, id: number) {
     let input = document.getElementById('checkbox-' + id) as HTMLInputElement;
     if (input.checked) {
-      this.addedUsers.push(user);
+      if (this.chatForm.controls['chatType'].value == "SINGOLA" && this.addedUsers.length < 2) {
+        this.addedUsers.push(user);
+      } else if (this.chatForm.controls['chatType'].value == "GRUPPO") {
+        this.addedUsers.push(user);
+      } else {
+        this.toastr.warning("Puoi aggiungere solo 1 partecipante se la chat è singola.");
+      }
     } else {
       this.addedUsers = this.addedUsers.filter(u => u.id != user.id);
     }
-    console.log(this.addedUsers);
   }
 
   initializeForms() {
@@ -80,16 +91,20 @@ export class CreateChatComponent implements OnInit {
       userId: this.addedUsers?.map(u => u.id),
       chatType: this.chatForm?.controls['chatType']?.value
     }
-    if (chatDTO.chatType == 'GRUPPO' && (chatDTO.title == null || chatDTO.title == undefined || chatDTO.title.length == 0 || chatDTO.title.trim())) {
+    if (chatDTO.chatType == 'GRUPPO' && (chatDTO.title == null || chatDTO.title == undefined || chatDTO.title.length == 0 || chatDTO.title.trim().length == 0)) {
       this.toastr.warning("Se la chat è di gruppo, devi mettere il titolo.");
       return;
     }
-    chatDTO.userId.push(this.user!.id);
     let choosedImage = this.selectedImage;
     this.chatService.createChat(chatDTO, choosedImage).subscribe({
       next: (data: any) => {
         this.createdChat = data;
+        this.close(this.createdChat!);
       }
     });
+  }
+
+  close(element: any) {
+    this.dialogRef.close(element);
   }
 }

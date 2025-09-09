@@ -59,6 +59,12 @@ h2,
     background-color: linear-gradient(black, gray);
 }
 
+.new-notification {
+    right: -10px;
+    height: auto;
+    cursor: pointer;
+}
+
 .notification-pic {
     width: 30px !important;
     height: 30px !important;

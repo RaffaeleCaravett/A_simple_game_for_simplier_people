@@ -417,7 +417,6 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     this.router.navigate(['/lobby'], { queryParams: { classificaId: c?.id, section: 'classifiche' } });
   }
   goToProfile(user: User | any) {
-    debugger
     if (user && user?.id) {
       localStorage.setItem('visitedUser', JSON.stringify(user));
       this.section = 'Profilo';

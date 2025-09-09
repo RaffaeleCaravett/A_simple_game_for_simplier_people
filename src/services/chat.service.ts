@@ -81,7 +81,7 @@ export class ChatService {
 
     createChat(chat: ChatDTO, multipartFile: File | null) {
         let formData = new FormData();
-        formData.append('body', new Blob([JSON.stringify(chat)], {
+        formData.append('chat', new Blob([JSON.stringify(chat)], {
             type: 'application/json'
         }));
         if (multipartFile) {
