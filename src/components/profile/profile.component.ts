@@ -125,6 +125,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   requestToShow: string = 'RICEVUTE';
   requestToShowArray: { value: string, label: string }[] = [{ value: 'RICEVUTE', label: 'Ricevute' }, { value: 'EFFETTUATE', label: 'Effettuate' }];
   infoFriend: boolean = false;
+  amici: any = null;
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private websocketService: WebsocketService) {

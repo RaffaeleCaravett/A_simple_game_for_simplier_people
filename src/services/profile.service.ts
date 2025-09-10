@@ -158,5 +158,9 @@ export class ProfileServive {
     deleteRequestByIds(visitedUserId: number) {
         return this.http.get(environment.API_URL + this.connectionRequest + '/deleteByIds?visitedUserId=' + visitedUserId);
     }
+
+    getAmici() {
+        return this.http.get(environment.API_URL + this.user + '/amici');
+    }
 }
 
