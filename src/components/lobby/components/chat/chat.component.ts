@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CreateChatComponent } from '../../../../shared/components/create-chat/create-chat.component';
 import { WebsocketService } from '../../../../services/websocket.service';
 import { ModeService } from '../../../../services/mode.service';
+import { ManageOptionsComponent } from '../../../../shared/components/manage-options/manage-options.component';
 
 @Component({
   selector: 'app-chat',
@@ -272,6 +273,62 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     });
     return hasNewMessages;
+  }
+
+  manageOptions(option: string) {
+    switch (option) {
+      case "Info chat": {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        break;
+      }
+      case "Aggiungi partecipante": {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        dialogRef.afterClosed().subscribe((data: any) => {
+          if (data) {
+            for (let u of data) {
+              this.selectedChat?.utenti.push(u);
+            }
+          }
+        });
+        break;
+      }
+      case "Cambia foto": {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        dialogRef.afterClosed().subscribe((data: any) => {
+          if (data) {
+            this.selectedChat!.image = data;
+          }
+        });
+        break;
+      }
+
+      case "Abbandona gruppo": {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        dialogRef.afterClosed().subscribe((data: any) => {
+          if (data) {
+            this.getChats();
+          }
+        });
+        break;
+      }
+      case "Elimina chat": {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        dialogRef.afterClosed().subscribe((data: any) => {
+          if (data) {
+            this.getChats();
+          }
+        });
+        break;
+      }
+      default: {
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat] });
+        dialogRef.afterClosed().subscribe((data: any) => {
+          if (data) {
+            this.getChats();
+          }
+        });
+      }
+    }
   }
 }
 

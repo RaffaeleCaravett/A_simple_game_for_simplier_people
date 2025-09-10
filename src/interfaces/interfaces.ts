@@ -93,7 +93,8 @@ export interface Chat {
     utenti: User[],
     messaggi: Messaggio[],
     createdAt: string,
-    title: string
+    title: string,
+    image: string
 }
 export interface ChatDTO {
     userId: number[],
