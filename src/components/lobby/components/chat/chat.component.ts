@@ -30,7 +30,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   openedUsersForChat: User[] = [];
   filteredChatList: Chat[] = [];
   mode: string = 'light';
-
+  openChatOptionsMenu: boolean = false;
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService) {
@@ -182,6 +182,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   selectChat(chat: Chat, menu: HTMLDivElement) {
     this.selectedChat = chat;
+    this.openChatOptionsMenu = false;
     this.chatService.setSelectedChat(this.selectedChat);
     this.chatForm.reset();
     this.isChatMenuOpen = false;
@@ -203,16 +204,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.readMessages(this.selectedChat!.id).subscribe({
       next: (read: any) => {
         if (read) {
-            this.selectedChat?.messaggi?.forEach((messaggio: Messaggio) => {
-              if (messaggio?.receivers?.includes(this.user!.id)) {
-                if (!messaggio?.readers) messaggio.readers = [];
-                messaggio?.readers?.push(this.user!.id);
-                messaggio.state = "READ";
-              }
-            });
+          this.selectedChat?.messaggi?.forEach((messaggio: Messaggio) => {
+            if (messaggio?.receivers?.includes(this.user!.id)) {
+              if (!messaggio?.readers) messaggio.readers = [];
+              messaggio?.readers?.push(this.user!.id);
+              messaggio.state = "READ";
+            }
+          });
         }
       }
     })
+  }
+  checkChatOptions() {
+    this.openChatOptionsMenu = !this.openChatOptionsMenu;
   }
   sendMessage() {
     if (!this.messageNotValid()) {
@@ -234,6 +238,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   deleteSelectedChat(value: null) {
     this.selectedChat = value;
+    this.openChatOptionsMenu = false;
     this.chatService.setSelectedChat(null);
   }
 

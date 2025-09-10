@@ -49,14 +49,20 @@
                     </div>
                     <div class="col-md-8 border border-top-0 border-start-0 border-bottom header-col"
                         *ngIf="windowWidth>767.20">
+                        <div class="text-end">
+                            <i class="bi bi-x-lg text-danger" [ngClass]="selectedChat?'':'d-none'" title="Chiudi chat"
+                                (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
+                            <i class="bi bi-three-dots" [ngClass]="selectedChat?'':'d-none'" title="Menù"
+                                (click)="checkChatOptions()"></i>
+                            <div class="d-flex justify-content-end position-relative" *ngIf="openChatOptionsMenu">
+                                <p [ngClass]="windowWidth>737?'w-25':'w-50'"
+                                    class="p-2 bg-gradient bg-light shadow border position-absolute end-0"></p>
+                            </div>
+                        </div>
                         <p class="fs-4 pt-3">
                             {{!selectedChat?'Inizia una chat ... 💬':selectedChat.title?selectedChat.title:
                             'La tua chat con ' +
                             getUserByExclusion(selectedChat!)}}
-                            <button class="btn" [ngClass]="selectedChat?'':'d-none'" title="Chiudi chat">
-                                <i class="bi bi-x-square text-danger" (click)="deleteSelectedChat(null)"
-                                    title="Chiudi chat"></i>
-                            </button>
                         </p>
                     </div>
                     <div class="col-md-4 border border-top-0 border-start-0 border-bottom text-center"
@@ -80,11 +86,18 @@
                         </ul>
                     </div>
                     <div class="col-md-8 text-center position-relative">
-                        <p class="text-end" *ngIf="windowWidth<767.20 && selectedChat">
-                            <button class="btn" *ngIf="selectedChat" (click)="selectedChat=null" title="Chiudi chat">
-                                <i class="bi bi-x-square text-danger"></i>
-                            </button>
-                        </p>
+                        <div class="text-end" *ngIf="windowWidth<767.20 && selectedChat">
+                            <div class="text-end">
+                                <i class="bi bi-x-lg text-danger" [ngClass]="selectedChat?'':'d-none'"
+                                    title="Chiudi chat" (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
+                                <i class="bi bi-three-dots" [ngClass]="selectedChat?'':'d-none'" title="Menù"
+                                    (click)="checkChatOptions()"></i>
+                                <div class="d-flex justify-content-end position-relative" *ngIf="openChatOptionsMenu">
+                                    <p [ngClass]="windowWidth>737?'w-25':'w-50'"
+                                        class="p-2 bg-gradient bg-light shadow border position-absolute end-0"></p>
+                                </div>
+                            </div>
+                        </div>
                         <p *ngIf="windowWidth<767.20 && selectedChat" class="fs-4 bolder">
                             {{selectedChat.title}}
                         </p>
