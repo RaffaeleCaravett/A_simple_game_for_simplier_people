@@ -4,6 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { ChatService } from '../../../services/chat.service';
 import { Chat, User } from '../../../interfaces/interfaces';
 import { NgIf, CommonModule, NgFor } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manage-options',
@@ -19,7 +20,8 @@ export class ManageOptionsComponent implements OnInit {
   possiblesUsersToAdd: User[] = [];
   addedUsers: User[] = [];
   action: string = '';
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<ManageOptionsComponent>, private authService: AuthService, private chatService: ChatService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<ManageOptionsComponent>,
+    private authService: AuthService, private chatService: ChatService, private router: Router) {
     this.user = this.authService.getUser()!;
   }
 
@@ -45,6 +47,13 @@ export class ManageOptionsComponent implements OnInit {
   }
   addUserToChat(user: User) {
 
+  }
+
+  goToUser(userId: number) {
+    if (userId) {
+      this.router.navigate(['/lobby/profile'], { queryParams: { user: userId } });
+      return;
+    }
   }
   handleAction() {
 

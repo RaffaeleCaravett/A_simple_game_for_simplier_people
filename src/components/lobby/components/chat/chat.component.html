@@ -120,7 +120,8 @@
                         <div class="message-container">
                             <div *ngIf="selectedChat?.messaggi">
                                 <div *ngFor="let m of selectedChat!.messaggi index as i;">
-                                    <p *ngIf="m.sender.id!=user!.id" class="text-start"
+                                    <p *ngIf="m.sender.id!=user!.id" class="text-start name-container"
+                                        (click)="goToUser(m.sender.id)"
                                         [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none no-pic':'':''">
                                         {{m.sender.fullName}}</p><br>
                                     <div class="d-flex justify-content-start" *ngIf="m.sender.id!=user!.id">
@@ -134,25 +135,30 @@
                                             [style.width]="'fit-content'">
                                             {{m.text}}
                                         </p>
-                                        <span
-                                            [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''">
-                                            <i class="bi bi-check2-all" *ngIf="m.state=='SENT'" title="Inviato"></i>
-                                            <i class="bi bi-check2-all" title="Letto"
+                                        <span class="p-1"
+                                            *ngIf="selectedChat!.messaggi[i+1]==null || 
+                                            (selectedChat!.messaggi[i+1]!=null && selectedChat!.messaggi[i+1].sender.id != m.sender.id)">
+                                            <i class="bi bi-check2-all h3 fw-bolder" *ngIf="m.state=='SENT'"
+                                                title="Inviato"></i>
+                                            <i class="bi bi-check2-all h3 fw-bolder" title="Letto"
                                                 *ngIf="m.state=='READ' && m.readers.length<(m.receivers.length)"></i>
-                                            <i class="bi bi-check2-all text-info" title="Letto"
+                                            <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
                                                 *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
                                         </span>
                                     </div>
-                                    <p *ngIf="m.sender.id==user!.id" class="text-end"
+                                    <p *ngIf="m.sender.id==user!.id" class="text-end name-container"
+                                        (click)="goToUser(m.sender.id)"
                                         [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none no-pic':'':''">
                                         {{m.sender.fullName}}</p>
                                     <div class="d-flex justify-content-end" *ngIf="m.sender.id==user!.id">
-                                        <span
-                                            [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''">
-                                            <i class="bi bi-check2-all" *ngIf="m.state=='SENT'" title="Inviato"></i>
-                                            <i class="bi bi-check2-all" title="Letto"
+                                        <span class="p-1"
+                                            *ngIf="selectedChat!.messaggi[i+1]==null || 
+                                            (selectedChat!.messaggi[i+1]!=null && selectedChat!.messaggi[i+1].sender.id != m.sender.id)">
+                                            <i class="bi bi-check2-all h3 fw-bolder" *ngIf="m.state=='SENT'"
+                                                title="Inviato"></i>
+                                            <i class="bi bi-check2-all h3 fw-bolder" title="Letto"
                                                 *ngIf="m.state=='READ' && m.readers.length<(m.receivers.length)"></i>
-                                            <i class="bi bi-check2-all text-info" title="Letto"
+                                            <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
                                                 *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
                                         </span>
                                         <p class="my-1 bg-info rounded shadow text-end p-2"

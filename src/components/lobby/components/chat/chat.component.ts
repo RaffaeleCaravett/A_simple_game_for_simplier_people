@@ -330,7 +330,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     }
   }
-  goToUser() {
+  goToUser(userId?: number) {
+    if (userId) {
+      this.router.navigate(['/lobby/profile'], { queryParams: { user: userId } });
+      return;
+    }
     if (this.selectedChat && this.selectedChat?.chatType == 'SINGOLA') {
       this.router.navigate(['/lobby/profile'], { queryParams: { user: this.selectedChat.utenti.filter(u => { return u.id != this.user!.id })[0].id } });
     }
