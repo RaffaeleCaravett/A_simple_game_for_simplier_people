@@ -95,7 +95,8 @@ export interface Chat {
     createdAt: string,
     title: string,
     image: string,
-    chatType: string
+    chatType: string,
+    administrators: User[]
 }
 export interface ChatDTO {
     userId: number[],

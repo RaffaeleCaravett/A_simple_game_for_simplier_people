@@ -33,6 +33,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   mode: string = 'light';
   openChatOptionsMenu: boolean = false;
   chatOptionsMenu: string[] = []
+
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService, private router: Router) {
@@ -105,6 +106,13 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.toastr.show("Non è stata creata nessuna chat.");
       }
     });
+  }
+  adminNotRequired(option: string) {
+    return option != "Aggiungi partecipante" && option != "Cambia foto";
+  }
+
+  userIdInchatAdministratorsIds() {
+    return this.selectedChat!.administrators.map(u => u.id).includes(this.user!.id);
   }
 
   checkChat(chat: Chat): boolean {
@@ -276,13 +284,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   manageOptions(option: string) {
+    this.openChatOptionsMenu = false;
     switch (option) {
       case "Info chat": {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         break;
       }
       case "Aggiungi partecipante": {
-        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
+        const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '90%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
             data.push(this.user);

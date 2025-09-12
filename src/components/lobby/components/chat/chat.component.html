@@ -57,12 +57,18 @@
                             <div class="d-flex justify-content-end position-relative chat-options-menu"
                                 *ngIf="openChatOptionsMenu">
                                 <div [ngClass]="windowWidth>737?'w-25':'w-50'"
-                                    class="p-2 bg-gradient bg-light shadow border position-absolute end-0">
+                                    [ngClass]="mode=='light'?'bg-white':'bg-secondary text-dark'"
+                                    class="p-2 bg-gradient shadow border position-absolute end-0">
                                     <p *ngFor="let o of chatOptionsMenu index as i" title="{{o}}"
                                         class="chat-options-menu-item"
                                         [ngClass]="(i+1) == chatOptionsMenu.length?'text-danger':''"
                                         (click)="manageOptions(o)">
-                                        {{o.toUpperCase()}}</p>
+                                        <span *ngIf="(adminNotRequired(o)&&!userIdInchatAdministratorsIds())
+                                        ||
+                                        (userIdInchatAdministratorsIds())">
+                                            {{o.toUpperCase()}}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -124,15 +130,15 @@
                                         (click)="goToUser(m.sender.id)"
                                         [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none no-pic':'':''">
                                         {{m.sender.fullName}}</p><br>
-                                    <div class="d-flex justify-content-start" *ngIf="m.sender.id!=user!.id">
+                                    <div class="d-flex justify-content-start text-dark" *ngIf="m.sender.id!=user!.id">
                                         <img src="{{m.sender.immagineProfilo}}"
                                             [ngClass]="
                                             selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''"
                                             alt="immagine di {{m.sender.fullName}}" [style.width]="'30px'"
                                             [style.height]="'30px'" class="rounded-circle mx-1 shadow"
                                             title="{{m.sender.fullName}}">
-                                        <p class="my-1 bg-light rounded shadow text-start p-2"
-                                            [style.width]="'fit-content'">
+                                        <p class="my-1 rounded shadow text-start p-2" [style.width]="'fit-content'"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-secondary'">
                                             {{m.text}}
                                         </p>
                                         <span class="p-1"
@@ -150,7 +156,7 @@
                                         (click)="goToUser(m.sender.id)"
                                         [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none no-pic':'':''">
                                         {{m.sender.fullName}}</p>
-                                    <div class="d-flex justify-content-end" *ngIf="m.sender.id==user!.id">
+                                    <div class="d-flex justify-content-end text-dark" *ngIf="m.sender.id==user!.id">
                                         <span class="p-1"
                                             *ngIf="selectedChat!.messaggi[i+1]==null || 
                                             (selectedChat!.messaggi[i+1]!=null && selectedChat!.messaggi[i+1].sender.id != m.sender.id)">
