@@ -108,4 +108,11 @@ export class ChatService {
         formData.append('chat_image', chatImage);
         return this.http.put(environment.API_URL + this.chat + this.updateImage + '/' + chatId, formData);
     }
+
+    eliminaChat(chat: Chat) {
+        return this.http.delete(environment.API_URL + this.chat + '/' + chat.id);
+    }
+    leaveChat(chat: Chat) {
+        return this.http.get(environment.API_URL + this.chat + '/leave/' + chat.id);
+    }
 };

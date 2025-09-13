@@ -86,6 +86,8 @@ export class ManageOptionsComponent implements OnInit {
       this.closeModal(this.addedAdmins);
     } else if (this.action == "Cambia foto") {
       this.closeModal(this.chatImage);
+    } else if (this.action == "Elimina chat" || this.action == "Abbandona gruppo") {
+      this.closeModal(this.chat);
     }
   }
   chatNotIncludes(user: User) {

@@ -363,7 +363,11 @@ export class ChatComponent implements OnInit, OnDestroy {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
-            this.getChats();
+            this.chatService.leaveChat(data).subscribe({
+              next: (chat: any) => {
+                this.getChats();
+              }
+            });
           }
         });
         break;
@@ -372,7 +376,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
-            this.getChats();
+            this.chatService.eliminaChat(data).subscribe({
+              next: (deleted: any) => {
+                this.getChats();
+                this.selectedChat = null;
+              }
+            });
           }
         });
         break;

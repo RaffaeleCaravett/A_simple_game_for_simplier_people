@@ -148,7 +148,15 @@
                 </div>
             </div>
         </div>
-        <div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
-            <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
-            <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
+    </div>
+    <div *ngIf="action.toUpperCase() == 'ELIMINA CHAT'">
+        <div class="py-5">
+            <p class="fs-3 delete-paragraph">Sei sicuro di volere <span class="text-danger"><u>eliminare</u></span>
+                questa chat?</p>
+            <p class="fs-6 fw-bold">L'azione è irreversibile *</p>
         </div>
+    </div>
+    <div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
+        <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
+        <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
+    </div>
