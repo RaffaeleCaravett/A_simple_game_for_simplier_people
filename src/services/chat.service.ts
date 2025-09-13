@@ -17,7 +17,8 @@ export class ChatService {
     private messages: string = '/messages';
     public selectedChat: Chat | null = null;
     public selectChat: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-    private read: string = '/read'
+    private read: string = '/read';
+    private updateImage: string = '/updateImage';
     constructor(private http: HttpClient, private ws: WebsocketService) { }
     //to call when user send message
     sendMessage(message: Message) {
@@ -100,5 +101,11 @@ export class ChatService {
 
     patchChat(chatId: number, chatDTO: ChatDTO) {
         return this.http.patch(environment.API_URL + this.chat + '/' + chatId, chatDTO);
+    }
+
+    changeChatImage(chatId: number, chatImage: File) {
+        let formData = new FormData();
+        formData.append('chat_image', chatImage);
+        return this.http.put(environment.API_URL + this.chat + this.updateImage + '/' + chatId, formData);
     }
 };

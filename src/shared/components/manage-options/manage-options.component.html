@@ -137,16 +137,18 @@
             </div>
             <div class="col-md-12 my-3 text-center">
                 <p class="text-end">
-                    <i class="bi bi-plus-lg text-success h3 fw-bolder user-panel" title="cambia foto..."
-                        (click)="file.click()"></i>
-                    <input type="file" class="d-none" #file>
+                    <i class="bi bi-plus-lg text-success h3 fw-bolder user-panel rounded-circle border border-success"
+                        title="cambia foto..." (click)="file.click()"></i>
+                    <input type="file" class="d-none" #file (change)="handleChangeImage($event)"
+                        accept="image/png, image/jpg, image/jpeg">
                 </p>
-                <img src="{{chat!.image?'data:image/png;base64,'+chat?.image :'assets/utils/avatar.jpg'}}"
-                    alt="Immagine_chat_gruppo" [style.width]="'150px'" [style.height]="'150px'" class="border shadow">
+                <div [style.width]="'150px'" [style.height]="'150px'" (click)="file.click()"
+                    style.backgroundImage="url('{{chatImageUrl?chatImageUrl :'assets/utils/avatar.jpg'}}')"
+                    class="border shadow user-panel m-auto bg-white to-point">
+                </div>
             </div>
         </div>
-    </div>
-    <div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
-        <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
-        <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
-    </div>
+        <div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
+            <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
+            <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
+        </div>

@@ -22,6 +22,9 @@ export class ManageOptionsComponent implements OnInit {
   action: string = '';
   addedAdmins: User[] = [];
   addedAdminsIds: number[] = [];
+  chatImage: string | null = null;
+  chatImageUrl: string | null = null;
+  chatImageUrlHasChanged: boolean = false;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<ManageOptionsComponent>,
     private authService: AuthService, private chatService: ChatService, private router: Router) {
     this.user = this.authService.getUser()!;
@@ -31,7 +34,10 @@ export class ManageOptionsComponent implements OnInit {
   ngOnInit(): void {
     this.action = this.data[0];
     this.chat = this.data[1];
-    console.log(this.chat?.image)
+    this.chatImageUrl = this.chat!.image;
+    if (this.chatImageUrl != null) {
+      this.chatImageUrl = 'data:image/png;base64,' + this.chat!.image;
+    }
     this.addedAdmins = [... this.chat!.administrators];
     this.addedAdminsIds = this.addedAdmins.map(u => u.id)!;
     this.chatService.getAvailableUsersForChat().subscribe({
@@ -78,6 +84,8 @@ export class ManageOptionsComponent implements OnInit {
       this.closeModal(this.addedUsers);
     } else if (this.action == "AggiungiRimuovi un admin") {
       this.closeModal(this.addedAdmins);
+    } else if (this.action == "Cambia foto") {
+      this.closeModal(this.chatImage);
     }
   }
   chatNotIncludes(user: User) {
@@ -92,5 +100,28 @@ export class ManageOptionsComponent implements OnInit {
       this.addedAdmins.push(admin);
       this.addedAdminsIds = this.addedAdmins.map(u => u.id)!;
     }
+  }
+  handleChangeImage(event: any) {
+    if (event && event.target && event.target.files && event.target.files[0]) {
+      this.chatImage = event.target.files[0];
+
+      var reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]);
+
+      reader.onload = (eventR: any) => {
+        this.chatImageUrl = eventR.target.result;
+        this.chatImageUrlHasChanged = true;
+      };
+    }
+  }
+
+  removeImage() {
+    this.chatImage = null;
+    this.chatImageUrl = this.chat!.image;
+    if (this.chatImageUrl != null) {
+      this.chatImageUrl = 'data:image/png;base64,' + this.chat!.image;
+    }
+    this.chatImageUrlHasChanged = false;
   }
 }

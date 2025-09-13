@@ -349,12 +349,16 @@ export class ChatComponent implements OnInit, OnDestroy {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
-            this.selectedChat!.image = data;
+            this.chatService.changeChatImage(this.selectedChat!.id, data).subscribe({
+              next: (dataChat: any) => {
+                this.getChats();
+                this.selectedChat = dataChat;
+              }
+            })
           }
         });
         break;
       }
-
       case "Abbandona gruppo": {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
@@ -390,6 +394,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     if (this.selectedChat && this.selectedChat?.chatType == 'SINGOLA') {
       this.router.navigate(['/lobby/profile'], { queryParams: { user: this.selectedChat.utenti.filter(u => { return u.id != this.user!.id })[0].id } });
+    }
+  }
+  takeChatPhoto() {
+    if (this.selectedChat && this.selectedChat.chatType == 'GRUPPO') {
+      if (this.selectedChat.image) {
+        return 'data:image/png;base64,' + this.selectedChat.image;
+      } else {
+        return 'assets/utils/avatar.jpg';
+      }
+    } else if (this.selectedChat?.chatType == 'SINGOLA') {
+      return this.selectedChat?.utenti.filter(u => u.id != this.user!.id)[0].immagineProfilo;
+    } else {
+      return '';
     }
   }
 }

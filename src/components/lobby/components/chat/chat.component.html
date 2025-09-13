@@ -49,12 +49,12 @@
                     </div>
                     <div class="col-md-8 border border-top-0 border-start-0 border-bottom header-col"
                         *ngIf="windowWidth>767.20">
-                        <div class="text-end">
-                            <i class="bi bi-x-lg text-danger" [ngClass]="selectedChat?'':'d-none'" title="Chiudi chat"
-                                (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
-                            <i class="bi bi-three-dots" [ngClass]="selectedChat?'':'d-none'" title="Menù"
+                        <div class="d-flex justify-content-end">
+                            <i class="bi bi-three-dots mx-2 h3" [ngClass]="selectedChat?'':'d-none'" title="Menù"
                                 (click)="checkChatOptions()"></i>
-                            <div class="d-flex justify-content-end position-relative chat-options-menu"
+                            <i class="bi bi-x-lg text-danger h3" [ngClass]="selectedChat?'':'d-none'"
+                                title="Chiudi chat" (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
+                            <div class="d-flex justify-content-end position-relative chat-options-menu mt-5"
                                 *ngIf="openChatOptionsMenu">
                                 <div [ngClass]="windowWidth>737?'w-25':'w-50'"
                                     [ngClass]="mode=='light'?'bg-white':'bg-secondary text-dark'"
@@ -72,8 +72,11 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="fs-4 pt-3" (click)="goToUser()"
+                        <p class="fs-4 pb-4" (click)="goToUser()"
                             [ngStyle]="{'cursor':selectedChat!=null?selectedChat.chatType=='SINGOLA'?'pointer':'':''}">
+                            <img src="{{takeChatPhoto()}}" alt="{{selectedChat?'immagine_chat':''}}"
+                                class="border shadow" [ngClass]="selectedChat?'':'d-none'" [style.width]="'70px'"
+                                [style.height]="'70px'">
                             {{!selectedChat?'Inizia una chat ... 💬':selectedChat.title?selectedChat.title:
                             'La tua chat con ' +
                             getUserByExclusion(selectedChat!)}}
@@ -83,7 +86,8 @@
                         *ngIf="windowWidth>767.20">
                         <ul class="chat-list py-2 h-100 overflow-auto z-0">
                             <li *ngFor="let chat of chatList" (click)="selectChat(chat,chatMenuMenu)"
-                                class="d-flex justify-content">
+                                class="d-flex justify-content"
+                                title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
                                 <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
                                     style.backgroundImage="url('{{getChatImage(chat)}}')"
                                     class="rounded-circle border shadow-sm to-point-sm mx-2">
@@ -92,7 +96,7 @@
                                     {{chat.title}}
                                 </p>
                                 <span class="p-1 rounded-circle span-circle"
-                                    [ngClass]="checkChat(chat)?'bg-success':'bg-danger'"></span>
+                                    [ngClass]="checkChat(chat)?'bg-success':chat.chatType=='SINGOLA'?'bg-danger':'d-none'"></span>
                                 <span class="bg-secondary new rounded mx-1 px-1"
                                     *ngIf="checkNewMessages(chat)">new</span>
                             </li>
@@ -101,24 +105,33 @@
                     </div>
                     <div class="col-md-8 text-center position-relative">
                         <div class="text-end" *ngIf="windowWidth<767.20 && selectedChat">
-                            <div class="text-end">
-                                <i class="bi bi-x-lg text-danger" [ngClass]="selectedChat?'':'d-none'"
-                                    title="Chiudi chat" (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
-                                <i class="bi bi-three-dots" [ngClass]="selectedChat?'':'d-none'" title="Menù"
+                            <div class="d-flex justify-content-end">
+                                <i class="bi bi-three-dots mx-2 h3" [ngClass]="selectedChat?'':'d-none'" title="Menù"
                                     (click)="checkChatOptions()"></i>
-                                <div class="d-flex justify-content-end position-relative chat-options-menu"
+                                <i class="bi bi-x-lg text-danger h3" [ngClass]="selectedChat?'':'d-none'"
+                                    title="Chiudi chat" (click)="deleteSelectedChat(null)" title="Chiudi chat"></i> <br>
+                                <div class="d-flex justify-content-end position-relative chat-options-menu mt-5"
                                     *ngIf="openChatOptionsMenu">
                                     <div [ngClass]="windowWidth>737?'w-25':'w-50'"
-                                        class="p-2 bg-gradient bg-light shadow border position-absolute end-0">
-                                        <p *ngFor="let o of chatOptionsMenu index as i" class="chat-options-menu-item"
-                                            [ngClass]="(i+1) == chatOptionsMenu.length?'text-danger':''" title="{{o}}">
-                                            {{o.toUpperCase()}}</p>
+                                        [ngClass]="mode=='light'?'bg-white':'bg-secondary text-dark'"
+                                        class="p-2 bg-gradient shadow border position-absolute end-0">
+                                        <p *ngFor="let o of chatOptionsMenu index as i" title="{{o}}"
+                                            class="chat-options-menu-item"
+                                            [ngClass]="(i+1) == chatOptionsMenu.length?'text-danger':''"
+                                            (click)="manageOptions(o)">
+                                            <span *ngIf="(adminNotRequired(o)&&!userIdInchatAdministratorsIds())
+                                        ||
+                                        (userIdInchatAdministratorsIds())">
+                                                {{o.toUpperCase()}}
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <p *ngIf="windowWidth<767.20 && selectedChat" class="fs-4 bolder">
-                            {{selectedChat.title}}
+                        <p *ngIf="windowWidth<767.20 && selectedChat" class="fs-4 bolder py-2">
+                            <img src="{{takeChatPhoto()}}" alt="immagine_chat" class="border shadow"
+                                [style.width]="'70px'" [style.height]="'70px'"> {{selectedChat.title}}
                         </p>
                         <div class="m-auto text-center py-5 overflow-auto" *ngIf="!selectedChat">
                             <h1>💬 ...</h1>
