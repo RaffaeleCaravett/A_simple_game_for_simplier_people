@@ -36,8 +36,33 @@
                             :this.chatForm.controls['search'].value.length == 0
                             &&
                             isChatMenuOpen? checkIsOpenMenu(chatMenuMenu):'';searchOpenedUsers();">
-                            <i class="bi bi-list pt-2" *ngIf="windowWidth<767.2" title="Apri il menu delle chat"></i>
+                            <i class="bi bi-list pt-2 user-panel" *ngIf="windowWidth<767.2"
+                                title="Apri il menu delle chat" (click)="isOpenSmallChatMenu=!isOpenSmallChatMenu"></i>
                         </form>
+                        <div class="w-100 position-relative" *ngIf="isOpenSmallChatMenu">
+                            <div class="position-absolute w-50 z-3 pt-4 end-0">
+                                <ul class="chat-list py-2 h-100 overflow-auto z-0">
+                                    <li *ngFor="let chat of chatList" (click)="selectChat(chat,chatMenuMenu)"
+                                        class="d-flex justify-content"
+                                        [ngClass]="isUserBlocked(chat)?'bg-secondary bg-gradient':''"
+                                        title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
+                                        <p class="fs-6 text-danger" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
+                                        <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
+                                            style.backgroundImage="url('{{getChatImage(chat)}}')"
+                                            class="rounded-circle border shadow-sm to-point-sm mx-2">
+                                        </div>
+                                        <p class="pt-2">
+                                            {{chat.title}}
+                                        </p>
+                                        <span class="p-1 rounded-circle span-circle"
+                                            [ngClass]="checkChat(chat)?'bg-success':chat.chatType=='SINGOLA'?'bg-danger':'d-none'"></span>
+                                        <span class="bg-secondary new rounded mx-1 px-1"
+                                            *ngIf="checkNewMessages(chat)">new</span>
+                                    </li>
+                                    <li *ngIf="chatList?.length == 0"> Non ci sono chat disponibili ancora!</li>
+                                </ul>
+                            </div>
+                        </div>
                         <div class="overflow-auto z-2 chat-menu py-2 d-none bg-light position-relative" #chatMenuMenu>
                             <ul class="text-start filtered-chat overflow-auto">
                                 <li *ngFor="let u of filteredChatList" (click)="selectChat(u,chatMenuMenu)"
@@ -90,7 +115,9 @@
                         <ul class="chat-list py-2 h-100 overflow-auto z-0">
                             <li *ngFor="let chat of chatList" (click)="selectChat(chat,chatMenuMenu)"
                                 class="d-flex justify-content"
+                                [ngClass]="isUserBlocked(chat)?'bg-secondary bg-gradient':''"
                                 title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
+                                <p class="fs-6 text-danger" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
                                 <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
                                     style.backgroundImage="url('{{getChatImage(chat)}}')"
                                     class="rounded-circle border shadow-sm to-point-sm mx-2">
@@ -141,7 +168,11 @@
                             <h1>💬 ...</h1>
                         </div>
                         <div class="message-container">
-                            <div *ngIf="selectedChat?.messaggi">
+
+                            <div *ngIf="selectedChat?.messaggi" class="position-relative">
+                                <div class="position-absolute top-50 lef-25" *ngIf="isUserBlocked(selectedChat!)">
+                                    <h1>Utente bloccato</h1>
+                                </div>
                                 <div *ngFor="let m of selectedChat!.messaggi index as i;">
                                     <p *ngIf="m.sender.id!=user!.id" class="text-start name-container"
                                         (click)="goToUser(m.sender.id)"

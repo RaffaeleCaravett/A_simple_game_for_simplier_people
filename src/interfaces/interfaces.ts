@@ -52,7 +52,8 @@ export interface User {
     },
     isConnected: boolean,
     open: boolean,
-    availableUsers: User[]
+    availableUsers: User[],
+    blocked: number[]
 }
 export interface Categoria {
     id: number,

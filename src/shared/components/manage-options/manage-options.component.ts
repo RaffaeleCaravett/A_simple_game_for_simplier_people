@@ -88,7 +88,12 @@ export class ManageOptionsComponent implements OnInit {
       this.closeModal(this.chatImage);
     } else if (this.action == "Elimina chat" || this.action == "Abbandona gruppo") {
       this.closeModal(this.chat);
+    } else if (this.action.includes("Blocca")) {
+      this.closeModal(this.chat?.utenti.filter(u => u.id != this.user!.id)[0].id);
     }
+  }
+  getToBlock() {
+    return this.chat?.utenti.filter(u => u.id != this.user!.id)[0].fullName;
   }
   chatNotIncludes(user: User) {
     return !this.chat?.utenti.map(us => us.id).includes(user.id);

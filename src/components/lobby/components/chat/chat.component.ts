@@ -12,6 +12,7 @@ import { CreateChatComponent } from '../../../../shared/components/create-chat/c
 import { WebsocketService } from '../../../../services/websocket.service';
 import { ModeService } from '../../../../services/mode.service';
 import { ManageOptionsComponent } from '../../../../shared/components/manage-options/manage-options.component';
+import { ProfileServive } from '../../../../services/profile.service';
 
 @Component({
   selector: 'app-chat',
@@ -33,10 +34,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   mode: string = 'light';
   openChatOptionsMenu: boolean = false;
   chatOptionsMenu: string[] = []
-
+  isOpenSmallChatMenu: boolean = false;
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
-    private modeService: ModeService, private router: Router) {
+    private modeService: ModeService, private router: Router, private profileService: ProfileServive) {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
       this.chatList.forEach((chat: Chat) => {
         if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
@@ -142,15 +143,21 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.isChatMenuOpen = this.isChatMenuOpen;
     }
   }
-  getChats() {
+  getChats(blocked?: boolean) {
     this.chatService.getAllChatsByUserId(this.user!.id).subscribe({
       next: (values: any) => {
         this.chatList = values;
+        if (blocked) {
+          this.selectedChat = this.chatList.filter(c => c.id == this.selectedChat!.id)[0];
+          setTimeout(() => {
+            this.scrollChatContainerBottom();
+          }, 300);
+        }
         if (this.activatedRoute.snapshot.queryParams['chat'] != null) {
           this.selectedChat = JSON.parse(this.activatedRoute.snapshot.queryParams['chat']);
           setTimeout(() => {
             this.scrollChatContainerBottom();
-          }, 300)
+          }, 300);
         }
       }
     })
@@ -390,11 +397,22 @@ export class ChatComponent implements OnInit, OnDestroy {
         const dialogRef = this.matDialog.open(ManageOptionsComponent, { data: [option, this.selectedChat], width: '60%' });
         dialogRef.afterClosed().subscribe((data: any) => {
           if (data) {
-            this.getChats();
+            this.profileService.block(data).subscribe({
+              next: (resp: any) => {
+                this.getChats(true);
+              }
+            });
           }
         });
       }
     }
+  }
+  isUserBlocked(chat: Chat): boolean {
+    if (chat.chatType == 'SINGOLA') {
+      let oppositeId = chat.utenti.filter(u => u.id != this.user!.id)[0].id;
+      return this.user?.blocked.includes(oppositeId) || false;
+    }
+    return false;
   }
   goToUser(userId?: number) {
     if (userId) {

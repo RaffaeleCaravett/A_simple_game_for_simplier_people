@@ -162,5 +162,9 @@ export class ProfileServive {
     getAmici() {
         return this.http.get(environment.API_URL + this.user + '/amici');
     }
+
+    block(userId: number) {
+        return this.http.get(environment.API_URL + this.user + '/block/' + userId);
+    }
 }
 

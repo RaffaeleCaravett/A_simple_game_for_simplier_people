@@ -168,6 +168,17 @@
             </p>
         </div>
     </div>
+    <div *ngIf="action.toUpperCase().includes('BLOCCA')">
+        <div class="py-5">
+            <p class="fs-3 delete-paragraph">Stai <span class="text-danger"><u>bloccando</u></span> <br>
+                {{getToBlock()}}</p>
+            <p class="fs-6 fw-bold">
+                <u>Puoi comunque sbloccare {{getToBlock()}} quando lo vorrai. Nel frattempo non potrà mandarti più
+                    messaggi, ne richieste, ne potrà vedere i tuoi aggiornamenti.
+                </u>
+            </p>
+        </div>
+    </div>
     <div mat-dialog-actions *ngIf="action.toUpperCase()!='INFO CHAT'" class="d-flex justify-content-end">
         <button class="btn btn-light mx-1" (click)="handleAction()">{{action}}</button>
         <button class="btn btn-secondary mx-1" (click)="closeModal()">Chiudi</button>
