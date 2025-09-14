@@ -100,7 +100,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   addChat() {
     const dialogRef = this.matDialog.open(CreateChatComponent, { data: this.user });
     dialogRef.afterClosed().subscribe((data: any) => {
-      debugger
       if (data) {
         this.getChats();
       } else {
@@ -366,6 +365,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.chatService.leaveChat(data).subscribe({
               next: (chat: any) => {
                 this.getChats();
+                this.selectedChat = null;
               }
             });
           }
