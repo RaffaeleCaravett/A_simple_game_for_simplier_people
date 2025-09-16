@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { Chat, ChatDTO, Message, Messaggio, User } from '../../../../interfaces/interfaces';
@@ -118,7 +118,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   checkChat(chat: Chat): boolean {
     if (chat.utenti.length > 2) return false;
-    return chat.utenti.filter((u: User) => u.id != this.user!.id)[0].isConnected;
+    return chat.utenti.filter((u: User) => u.id != this.user!.id)[0]?.isConnected;
   }
 
   initializeForms() {
@@ -218,6 +218,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectChat(chat: Chat, menu: HTMLDivElement) {
     this.selectedChat = chat;
     this.openChatOptionsMenu = false;
+    this.isOpenSmallChatMenu = false;
     this.chatService.setSelectedChat(this.selectedChat);
     this.chatForm.reset();
     this.isChatMenuOpen = false;
@@ -409,8 +410,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   isUserBlocked(chat: Chat): boolean {
     if (chat.chatType == 'SINGOLA') {
-      let oppositeId = chat.utenti.filter(u => u.id != this.user!.id)[0].id;
-      return this.user?.blocked.includes(oppositeId) || false;
+      let oppositeId = chat?.utenti?.filter(u => u.id != this.user!.id)[0].id;
+      return this.user?.blockeds?.map(u => u.id).includes(oppositeId) || false;
     }
     return false;
   }

@@ -37,7 +37,9 @@ export class NavComponent implements OnInit {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
       this.user = this.authService.getUser();
-      this.getNotifications();
+      if (bool) {
+        this.getNotifications();
+      }
     });
     this.modeService.mode.subscribe((mood: string) => {
       this.mode = mood;
@@ -154,12 +156,14 @@ export class NavComponent implements OnInit {
     }
   }
   getNotifications() {
-    this.profileService.getNotificationsByReceiverId().subscribe({
-      next: (values: any) => {
-        this.notifications = values;
-        this.notificationToRead = this.notifications.filter((n: Notification) => n.state == 'SENT').length;
-      }
-    })
+    if (this.authService.getToken() != null) {
+      this.profileService.getNotificationsByReceiverId().subscribe({
+        next: (values: any) => {
+          this.notifications = values;
+          this.notificationToRead = this.notifications.filter((n: Notification) => n.state == 'SENT').length;
+        }
+      });
+    }
   }
 
   closeMenu(element?: any) {

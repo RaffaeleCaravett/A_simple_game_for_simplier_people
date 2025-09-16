@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../core/environment";
-import { ConnectionRequestDTO } from "../interfaces/interfaces";
+import { BlockedDTO, ConnectionRequestDTO } from "../interfaces/interfaces";
 import { BehaviorSubject } from "rxjs";
 import { EsitoRichiesta } from "../enums/enums";
 
@@ -27,7 +27,7 @@ export class ProfileServive {
     private notification: string = '/notification';
     private connectionRequest: string = '/connectionRequest'
     public showRichiestaSpinner: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+    private blocked = "/blocked"
     constructor(private http: HttpClient) { }
 
     getRecensioniByUserId(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
@@ -164,7 +164,11 @@ export class ProfileServive {
     }
 
     block(userId: number) {
-        return this.http.get(environment.API_URL + this.user + '/block/' + userId);
+        let blockedDTO: BlockedDTO = { utente_id: userId };
+        return this.http.post(environment.API_URL + this.blocked, blockedDTO);
+    }
+    unblock(blockedId: number) {
+        return this.http.get(environment.API_URL + this.blocked + "/unblock/" + blockedId);
     }
 }
 

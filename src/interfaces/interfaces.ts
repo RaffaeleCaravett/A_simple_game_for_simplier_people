@@ -53,13 +53,15 @@ export interface User {
     isConnected: boolean,
     open: boolean,
     availableUsers: User[],
-    blocked: number[]
+    blockeds: User[]
 }
 export interface Categoria {
     id: number,
     nome: string
 }
-
+export interface BlockedDTO {
+    utente_id: number
+}
 export interface Gioco {
     id: number,
     nomeGioco: string;

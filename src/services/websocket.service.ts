@@ -50,11 +50,11 @@ export class WebsocketService implements OnDestroy {
             this.subscription = this.connection.subscribe('/updates/receive', (message: any) => {
                 fun(JSON.parse(message.body));
                 let response = JSON.parse(message.body);
-                if (response?.immagineProfilo) {
+                if (response?.immagineProfilo) { //user x connessione
                     this.connectionBehaviorSubject.next(JSON.parse(message.body) as User);
-                } else if (response?.settedChatId) {
+                } else if (response?.settedChatId) { //messaggio x chat
                     this.messageBehaviorSubject.next(JSON.parse(message.body) as Messaggio);
-                } else if (response?.inviteState && response?.inviteState == "CONNECTION_REQUEST") {
+                } else if (response?.inviteState && response?.inviteState == "CONNECTION_REQUEST") { //richiesta di connessione (amicizia)
                     let connectionRequestDTO: ConnectionRequestDTO = {
                         receiverId: JSON.parse(message.body)?.receiverId
                     }

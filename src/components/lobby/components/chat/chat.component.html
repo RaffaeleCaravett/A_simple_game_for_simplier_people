@@ -46,7 +46,7 @@
                                         class="d-flex justify-content"
                                         [ngClass]="isUserBlocked(chat)?'bg-secondary bg-gradient':''"
                                         title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
-                                        <p class="fs-6 text-danger" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
+                                        <p class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
                                         <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
                                             style.backgroundImage="url('{{getChatImage(chat)}}')"
                                             class="rounded-circle border shadow-sm to-point-sm mx-2">
@@ -107,6 +107,9 @@
                                 {{!selectedChat?'Inizia una chat ... 💬':selectedChat.title?selectedChat.title:
                                 'La tua chat con ' +
                                 getUserByExclusion(selectedChat!)}}
+                                <span class="fs-6 text-danger" *ngIf="selectedChat&&isUserBlocked(selectedChat)">(Utente
+                                    bloccato)</span>
+
                             </span>
                         </div>
                     </div>
@@ -114,21 +117,22 @@
                         *ngIf="windowWidth>767.20">
                         <ul class="chat-list py-2 h-100 overflow-auto z-0">
                             <li *ngFor="let chat of chatList" (click)="selectChat(chat,chatMenuMenu)"
-                                class="d-flex justify-content"
                                 [ngClass]="isUserBlocked(chat)?'bg-secondary bg-gradient':''"
                                 title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
-                                <p class="fs-6 text-danger" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
-                                <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
-                                    style.backgroundImage="url('{{getChatImage(chat)}}')"
-                                    class="rounded-circle border shadow-sm to-point-sm mx-2">
+                                <p class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
+                                <div class="d-flex justify-content">
+                                    <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
+                                        style.backgroundImage="url('{{getChatImage(chat)}}')"
+                                        class="rounded-circle border shadow-sm to-point-sm mx-2">
+                                    </div>
+                                    <p class="pt-2">
+                                        {{chat.title}}
+                                    </p>
+                                    <span class="p-1 rounded-circle span-circle"
+                                        [ngClass]="checkChat(chat)?'bg-success':chat.chatType=='SINGOLA'?'bg-danger':'d-none'"></span>
+                                    <span class="bg-secondary new rounded mx-1 px-1"
+                                        *ngIf="checkNewMessages(chat)">new</span>
                                 </div>
-                                <p class="pt-2">
-                                    {{chat.title}}
-                                </p>
-                                <span class="p-1 rounded-circle span-circle"
-                                    [ngClass]="checkChat(chat)?'bg-success':chat.chatType=='SINGOLA'?'bg-danger':'d-none'"></span>
-                                <span class="bg-secondary new rounded mx-1 px-1"
-                                    *ngIf="checkNewMessages(chat)">new</span>
                             </li>
                             <li *ngIf="chatList?.length == 0"> Non ci sono chat disponibili ancora!</li>
                         </ul>
@@ -163,6 +167,8 @@
                         <p *ngIf="windowWidth<767.20 && selectedChat" class="fs-4 bolder py-2">
                             <img src="{{takeChatPhoto()}}" alt="immagine_chat" class="border shadow"
                                 [style.width]="'70px'" [style.height]="'70px'"> {{selectedChat.title}}
+                            <span class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(selectedChat)">(Utente bloccato)</span>
+
                         </p>
                         <div class="m-auto text-center py-5 overflow-auto" *ngIf="!selectedChat">
                             <h1>💬 ...</h1>
@@ -170,7 +176,7 @@
                         <div class="message-container">
 
                             <div *ngIf="selectedChat?.messaggi" class="position-relative">
-                                <div class="position-absolute top-50 lef-25" *ngIf="isUserBlocked(selectedChat!)">
+                                <div class="position-absolute top-50 lef-25 fw-bolder" *ngIf="isUserBlocked(selectedChat!)">
                                     <h1>Utente bloccato</h1>
                                 </div>
                                 <div *ngFor="let m of selectedChat!.messaggi index as i;">
