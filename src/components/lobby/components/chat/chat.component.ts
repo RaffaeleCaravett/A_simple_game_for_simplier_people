@@ -297,6 +297,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   checkNewMessages(chat: Chat): boolean {
     let hasNewMessages: boolean = false;
     chat?.messaggi?.forEach(m => {
+
       if (m?.receivers?.includes(this.user!.id) && !m?.readers?.includes(this.user!.id)) {
         hasNewMessages = true;
       }
