@@ -35,6 +35,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   openChatOptionsMenu: boolean = false;
   chatOptionsMenu: string[] = []
   isOpenSmallChatMenu: boolean = false;
+  selectedMessageImages: File[] = [];
+  selectedMessageImagesUrl: string[] = [];
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService, private router: Router, private profileService: ProfileServive) {
@@ -437,6 +439,18 @@ export class ChatComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+  updateMessageImage(event: any) {
+    var selectedMessageImage = event.target.files[0];
+    this.selectedMessageImages.push(selectedMessageImage);
+    let reader = new FileReader();
+
+    reader.readAsDataURL(event.target.files[0]);
+
+    reader.onload = (eventR: any) => {
+      var choosedImageUrl = eventR.target.result;
+      this.selectedMessageImagesUrl.push(choosedImageUrl);
+    };
   }
 }
 

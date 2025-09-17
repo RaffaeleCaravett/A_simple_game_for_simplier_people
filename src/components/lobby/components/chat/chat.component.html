@@ -46,13 +46,14 @@
                                         class="d-flex justify-content"
                                         [ngClass]="isUserBlocked(chat)?'bg-secondary bg-gradient':''"
                                         title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
-                                        <p class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(chat)">Utente bloccato</p>
+                                        <p class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(chat)">Utente
+                                            bloccato</p>
                                         <div id="uploadedImage" [style.width]="'100px'" [style.height]="'100px'"
                                             style.backgroundImage="url('{{getChatImage(chat)}}')"
                                             class="rounded-circle border shadow-sm to-point-sm mx-2">
                                         </div>
                                         <p class="pt-2">
-                                            {{chat.title}}
+                                            {{chat?.title}}
                                         </p>
                                         <span class="p-1 rounded-circle span-circle"
                                             [ngClass]="checkChat(chat)?'bg-success':chat.chatType=='SINGOLA'?'bg-danger':'d-none'"></span>
@@ -167,16 +168,17 @@
                         <p *ngIf="windowWidth<767.20 && selectedChat" class="fs-4 bolder py-2">
                             <img src="{{takeChatPhoto()}}" alt="immagine_chat" class="border shadow"
                                 [style.width]="'70px'" [style.height]="'70px'"> {{selectedChat.title}}
-                            <span class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(selectedChat)">(Utente bloccato)</span>
+                            <span class="fs-6 text-danger fw-bolder" *ngIf="isUserBlocked(selectedChat)">(Utente
+                                bloccato)</span>
 
                         </p>
                         <div class="m-auto text-center py-5 overflow-auto" *ngIf="!selectedChat">
                             <h1>💬 ...</h1>
                         </div>
                         <div class="message-container">
-
                             <div *ngIf="selectedChat?.messaggi" class="position-relative">
-                                <div class="position-absolute top-50 lef-25 fw-bolder" *ngIf="isUserBlocked(selectedChat!)">
+                                <div class="position-absolute top-50 lef-25 fw-bolder"
+                                    *ngIf="isUserBlocked(selectedChat!)">
                                     <h1>Utente bloccato</h1>
                                 </div>
                                 <div *ngFor="let m of selectedChat!.messaggi index as i;">
@@ -233,11 +235,33 @@
                                 </div>
                             </div>
                             <form [formGroup]="messageForm" *ngIf="selectedChat"
-                                class="d-flex justify-content-evenly m-auto w-100 mt-2 mx-1 message-form">
-                                <textarea name="message" id="message" formControlName="message"
-                                    class="form-control -75 mx-1" rows="2"></textarea>
-                                <button class="mx-1 btn" [disabled]="messageNotValid()" (click)="sendMessage()"
-                                    [ngClass]="mode=='light'?'text-dark':'text-white'">Invia</button>
+                                class="m-auto w-100 mt-2 mx-1 message-form">
+                                <div class="w-100 row"
+                                    *ngIf="selectedMessageImagesUrl && selectedMessageImagesUrl.length>0">
+                                    <div class="col-3 position-relative text-start">
+                                        <img src="{{selectedMessageImagesUrl[0]}}" alt="image ..."
+                                            class="message-image m-3 p-2 shadow-sm user-panel"
+                                            (click)="showMessageImages()">
+                                        <div class="position-absolute start-25 top-0 fw-bolder fs-1"
+                                            *ngIf="selectedMessageImagesUrl.length>1">
+                                            + {{selectedMessageImagesUrl.length}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-evenly">
+                                    <div class="w-100">
+                                        <textarea name="message" id="message" formControlName="message"
+                                            class="form-control text-area mx-1" rows="2"></textarea>
+                                    </div>
+                                    <div class="flex-shrink-1">
+                                        <i class="bi bi-image-fill h3 user-panel text-success" (click)="file.click()"
+                                            title="Carica un'immagine"></i>
+                                        <input type="file" #file accept="image/png, image/gif, image/jpeg, image/jpg"
+                                            (change)="updateMessageImage($event)" class="d-none">
+                                        <button class="mx-1 btn" [disabled]="messageNotValid()" (click)="sendMessage()"
+                                            [ngClass]="mode=='light'?'text-dark':'text-white'">Invia</button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
