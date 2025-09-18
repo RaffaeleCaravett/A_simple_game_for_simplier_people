@@ -2,12 +2,15 @@
     <h1>Immagini</h1>
 </div>
 <div class="w-100 p-3 row" mat-dialog-content>
+    <div class="w-100 text-end">
+        <button class="btn btn-outline-danger">Delete</button>
+    </div>
     <div class="d-flex justify-content-evenly">
         <button class="btn" (click)="goBack(index-1)">
-            <i class="bi bi-arrow-left h1"></i>
+            <i class="bi bi-arrow-left h4"></i>
         </button>
         <button class="btn" (click)="goAhed(index+1)">
-            <i class="bi bi-arrow-right h1"></i>
+            <i class="bi bi-arrow-right h4"></i>
         </button>
     </div>
     <img src="{{imagesUrl[index]}}" class="w-100" alt="Immagine caricata">
