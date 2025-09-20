@@ -238,9 +238,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   scrollChatContainerBottom() {
     setTimeout(() => {
       let chatContainer = document.getElementsByClassName('message-container')[0] as HTMLDivElement;
-      chatContainer.scrollTop = chatContainer?.scrollHeight;
-      this.readAllMessages();
-    }, 200);
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer?.scrollHeight;
+        this.readAllMessages();
+      }
+    }, 300);
   }
 
   readAllMessages() {
