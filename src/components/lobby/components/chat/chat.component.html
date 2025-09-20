@@ -114,9 +114,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="col-md-4 border border-top-0 border-start-0 border-bottom text-center"
-                        *ngIf="windowWidth>767.20">
-                        <ul class="chat-list py-2 h-100 overflow-auto z-0">
+                    <!-- <div class="w-100">
+                        <div *ngIf="windowWidth>767.20"></div>
+                        <div></div>
+                    </div> -->
+                    <div class="col-md-4 text-center" *ngIf="windowWidth>767.20">
+                        <ul class="chat-list overflow-auto">
                             <li *ngFor="let chat of chatList" (click)="selectChat(chat,chatMenuMenu)"
                                 [ngClass]="isUserBlocked(chat)?'bg-secondary bg-gradient':''"
                                 title="{{chat.chatType=='SINGOLA'?'Chat singola':'Chat di gruppo'}}">
@@ -138,7 +141,7 @@
                             <li *ngIf="chatList?.length == 0"> Non ci sono chat disponibili ancora!</li>
                         </ul>
                     </div>
-                    <div class="col-md-8 text-center position-relative">
+                    <div class="col-md-8 border h-100 border-top-0 border-end-0 border-bottom-0  text-center">
                         <div class="text-end" *ngIf="windowWidth<767.20 && selectedChat">
                             <div class="d-flex justify-content-end">
                                 <i class="bi bi-three-dots mx-2 h3" [ngClass]="selectedChat?'':'d-none'" title="Menù"
@@ -175,12 +178,8 @@
                         <div class="m-auto text-center py-5 overflow-auto" *ngIf="!selectedChat">
                             <h1>💬 ...</h1>
                         </div>
-                        <div class="message-container">
-                            <div *ngIf="selectedChat?.messaggi" class="position-relative">
-                                <div class="position-absolute top-50 lef-25 fw-bolder"
-                                    *ngIf="isUserBlocked(selectedChat!)">
-                                    <h1>Utente bloccato</h1>
-                                </div>
+                        <div class="d-flex flex-column">
+                            <div *ngIf="selectedChat?.messaggi" class="message-container {{calculateHeight()}}">
                                 <div *ngFor="let m of selectedChat!.messaggi index as i;">
                                     <p *ngIf="m.sender.id!=user!.id" class="text-start name-container"
                                         (click)="goToUser(m.sender.id)"
@@ -234,20 +233,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <form [formGroup]="messageForm" *ngIf="selectedChat"
-                                class="m-auto w-100 mt-2 mx-1 message-form">
-                                <div class="w-100 row"
+                            <div class="w-100 row images-container">
+                                <div class="col-3 position-relative text-start"
                                     *ngIf="selectedMessageImagesUrl && selectedMessageImagesUrl.length>0">
-                                    <div class="col-3 position-relative text-start">
-                                        <img src="{{selectedMessageImagesUrl[0]}}" alt="image ..."
-                                            class="message-image m-3 p-2 shadow-sm user-panel"
-                                            (click)="showMessageImages()">
-                                        <div class="position-absolute start-25 top-0 fw-bolder fs-1"
-                                            *ngIf="selectedMessageImagesUrl.length>1">
-                                            + {{selectedMessageImagesUrl.length}}
-                                        </div>
+                                    <img src="{{selectedMessageImagesUrl[0]}}" alt="image ..."
+                                        class="message-image p-1 shadow-sm user-panel rounded name-container"
+                                        (click)="showMessageImages()">
+                                    <div class="position-absolute start-25 top-0 fw-bolder fs-1 name-container"
+                                        *ngIf="selectedMessageImagesUrl.length>1" (click)="showMessageImages()">
+                                        + {{selectedMessageImagesUrl.length}}
                                     </div>
                                 </div>
+                            </div>
+                            <form [formGroup]="messageForm" *ngIf="selectedChat"
+                                class="m-auto w-100 mt-2 mx-1 message-form flex-shrink-1">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="w-100">
                                         <textarea name="message" id="message" formControlName="message"

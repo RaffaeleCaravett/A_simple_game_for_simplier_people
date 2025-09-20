@@ -56,7 +56,7 @@ i {
 }
 
 .chat-container {
-  height: 700px;
+  height: 700px !important;
 }
 
 .chat-col {
@@ -64,15 +64,24 @@ i {
 }
 
 .message-form {
-  position: absolute;
   bottom: 5px;
-  left: auto;
 }
 
 .message-container {
-  height: 300px !important;
   overflow: auto;
   scroll-behavior: smooth;
+}
+
+.higher {
+  height: 428px !important;
+}
+
+.lower {
+  height: 230px !important;
+}
+
+.images-container {
+  height: 81px !important;
 }
 
 .header-col {
@@ -116,8 +125,8 @@ i {
 
 .message-image {
   position: relative;
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
 }
 
 .name-container {

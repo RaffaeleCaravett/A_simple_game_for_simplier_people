@@ -13,6 +13,7 @@ import { WebsocketService } from '../../../../services/websocket.service';
 import { ModeService } from '../../../../services/mode.service';
 import { ManageOptionsComponent } from '../../../../shared/components/manage-options/manage-options.component';
 import { ProfileServive } from '../../../../services/profile.service';
+import { ShowMessageImagesComponent } from '../../../../shared/components/show-message-images/show-message-images.component';
 
 @Component({
   selector: 'app-chat',
@@ -237,7 +238,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   scrollChatContainerBottom() {
     setTimeout(() => {
       let chatContainer = document.getElementsByClassName('message-container')[0] as HTMLDivElement;
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatContainer.scrollTop = chatContainer?.scrollHeight;
       this.readAllMessages();
     }, 200);
   }
@@ -451,6 +452,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       var choosedImageUrl = eventR.target.result;
       this.selectedMessageImagesUrl.push(choosedImageUrl);
     };
+  }
+  showMessageImages() {
+    if (this.selectedMessageImagesUrl.length > 0) {
+      const dialogRef = this.matDialog.open(ShowMessageImagesComponent, { data: [...this.selectedMessageImagesUrl], width: '90%' });
+      dialogRef.afterClosed().subscribe((data: any) => { if (data) { this.selectedMessageImagesUrl = data } });
+    }
+  }
+  calculateHeight() {
+    if (this.windowWidth > 767) {
+      return "higher";
+    } else {
+      return "lower";
+    }
   }
 }
 
