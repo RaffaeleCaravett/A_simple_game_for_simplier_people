@@ -457,7 +457,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   showMessageImages() {
     if (this.selectedMessageImagesUrl.length > 0) {
-      const dialogRef = this.matDialog.open(ShowMessageImagesComponent, { data: [...this.selectedMessageImagesUrl], width: '350px', height: '300px' });
+      const dialogRef = this.matDialog.open(ShowMessageImagesComponent, { data: [...this.selectedMessageImagesUrl] });
       dialogRef.afterClosed().subscribe((data: any) => { if (data) { this.selectedMessageImagesUrl = data } });
     }
   }
