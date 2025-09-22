@@ -35,4 +35,8 @@ export class ShowMessageImagesComponent implements OnInit {
       this.index = index;
     }
   }
+
+  closeDialog(argument?: string[]) {
+    this.matDialogRef.close(argument);
+  }
 }
