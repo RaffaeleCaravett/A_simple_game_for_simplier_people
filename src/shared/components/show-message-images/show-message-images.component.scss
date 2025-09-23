@@ -13,3 +13,15 @@
 .pointer {
     cursor: pointer;
 }
+
+.arrow-btn {
+    width: 40px;
+    height: 40px;
+    background-color: lightgray;
+    transition: 1s;
+
+    &:hover {
+        background-color: gray;
+        transition: 1s;
+    }
+}
