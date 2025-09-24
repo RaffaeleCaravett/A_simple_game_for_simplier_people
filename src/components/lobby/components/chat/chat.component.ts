@@ -36,8 +36,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   openChatOptionsMenu: boolean = false;
   chatOptionsMenu: string[] = []
   isOpenSmallChatMenu: boolean = false;
-  selectedMessageImages: File[] = [];
+  selectedMessageImages: Map<string, File> = new Map();
   selectedMessageImagesUrl: string[] = [];
+  isLoadingImages: boolean = false;
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService, private router: Router, private profileService: ProfileServive) {
@@ -188,7 +189,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageNotValid() {
     let messageValue: string = this.messageForm?.controls['message']?.value;
-    return messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0;
+    return (messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0) && this.selectedMessageImages.size == 0 && this.isLoadingImages;
   }
 
   searchOpenedUsers() {
@@ -445,20 +446,32 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   updateMessageImage(event: any) {
     var selectedMessageImage = event.target.files[0];
-    this.selectedMessageImages.push(selectedMessageImage);
     let reader = new FileReader();
 
     reader.readAsDataURL(event.target.files[0]);
 
     reader.onload = (eventR: any) => {
       var choosedImageUrl = eventR.target.result;
+      this.selectedMessageImages.set(choosedImageUrl, selectedMessageImage);
       this.selectedMessageImagesUrl.push(choosedImageUrl);
     };
   }
   showMessageImages() {
     if (this.selectedMessageImagesUrl.length > 0) {
       const dialogRef = this.matDialog.open(ShowMessageImagesComponent, { data: [...this.selectedMessageImagesUrl], width: '500px' });
-      dialogRef.afterClosed().subscribe((data: any) => { if (data) { this.selectedMessageImagesUrl = data } });
+      dialogRef.afterClosed().subscribe((data: any) => {
+        if (data) {
+          this.selectedMessageImagesUrl = data
+          let newMapValues: Map<string, File> = new Map();
+          for (let s of this.selectedMessageImagesUrl) {
+            let mapElement = this.selectedMessageImages.get(s);
+            if (mapElement != null) {
+              newMapValues.set(s, mapElement);
+            }
+          }
+          this.selectedMessageImages = newMapValues;
+        }
+      });
     }
   }
   calculateHeight() {

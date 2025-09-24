@@ -22,7 +22,7 @@ export class ShowMessageImagesComponent implements OnInit {
   }
   removePhoto(string: string) {
     this.imagesUrl = this.imagesUrl.filter(image => image != string);
-    if (this.imagesUrl.length > 0) {
+    if (this.imagesUrl?.length > 0) {
       this.index = this.index == 0 ? 0 : this.index - 1;
     } else {
       this.closeDialog([]);
