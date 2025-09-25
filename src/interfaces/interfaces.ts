@@ -89,7 +89,9 @@ export interface Message {
     message: string,
     riceventi: number[],
     mittente: number,
-    chat: number
+    chat: number,
+    messageImages: File[]
+
 }
 export interface Chat {
     id: number,
@@ -116,7 +118,8 @@ export interface Messaggio {
     createdAt: string,
     settedChatId: number,
     receivers: number[],
-    readers: number[]
+    readers: number[],
+    messageImages: File[]
 }
 
 export interface Notification {

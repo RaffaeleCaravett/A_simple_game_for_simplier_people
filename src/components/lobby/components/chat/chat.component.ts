@@ -38,11 +38,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   isOpenSmallChatMenu: boolean = false;
   selectedMessageImages: Map<string, File> = new Map();
   selectedMessageImagesUrl: string[] = [];
-  isLoadingImages: boolean = false;
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService, private router: Router, private profileService: ProfileServive) {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
+      debugger
       this.chatList.forEach((chat: Chat) => {
         if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
           chat?.messaggi?.push(value);
@@ -189,7 +189,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageNotValid() {
     let messageValue: string = this.messageForm?.controls['message']?.value;
-    return (messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0) && this.selectedMessageImages.size == 0 && this.isLoadingImages;
+    return (messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0) && this.selectedMessageImages.size == 0;
   }
 
   searchOpenedUsers() {
@@ -271,7 +271,9 @@ export class ChatComponent implements OnInit, OnDestroy {
         message: this.messageForm.controls['message'].value,
         riceventi: this.selectedChat?.utenti.filter((u: User) => u.id != this.user!.id).map((u: User) => u.id) as number[],
         mittente: this.user!.id,
-        chat: this.selectedChat!.id
+        chat: this.selectedChat!.id,
+        messageImages: Array.from(this.selectedMessageImages.values())
+
       }
 
       this.chatService.sendMessage(message)
