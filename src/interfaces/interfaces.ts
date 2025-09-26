@@ -89,8 +89,7 @@ export interface Message {
     message: string,
     riceventi: number[],
     mittente: number,
-    chat: number,
-    messageImages: File[]
+    chat: number
 
 }
 export interface Chat {

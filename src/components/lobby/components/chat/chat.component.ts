@@ -38,16 +38,32 @@ export class ChatComponent implements OnInit, OnDestroy {
   isOpenSmallChatMenu: boolean = false;
   selectedMessageImages: Map<string, File> = new Map();
   selectedMessageImagesUrl: string[] = [];
+  isProcressingImageUpload: boolean = false;
   constructor(private activatedRoute: ActivatedRoute, private authService: AuthService, private chatService: ChatService,
     private matDialog: MatDialog, private toastr: ToastrService, private ws: WebsocketService,
     private modeService: ModeService, private router: Router, private profileService: ProfileServive) {
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
-      debugger
       this.chatList.forEach((chat: Chat) => {
-        if (chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) {
-          chat?.messaggi?.push(value);
-        } else if (chat.id == value?.settedChatId && value?.sender.id == this.user!.id) {
-          chat?.messaggi?.push(value);
+        if ((chat.id == value?.settedChatId && value?.receivers.includes(this.user!.id)) || (chat.id == value?.settedChatId && value?.sender.id == this.user!.id)) {
+          if (!this.isProcressingImageUpload && this.selectedMessageImages.size > 0) {
+            this.isProcressingImageUpload = true;
+            let arrayFromMap: File[] = Array.from(this.selectedMessageImages.values());
+            this.chatService.uploadMessageImages(arrayFromMap, value.id)?.subscribe({
+              next: (images: any) => {
+                value.messageImages = [];
+                value.messageImages.push(images);
+                chat?.messaggi?.push(value);
+                this.selectedMessageImages = new Map<string, File>;
+                this.selectedMessageImagesUrl = [];
+                setTimeout(() => {
+                  this.isProcressingImageUpload = false;
+                }, 5000)
+                return;
+              }
+            });
+          } else {
+            chat?.messaggi?.push(value);
+          }
         }
       });
       this.scrollChatContainerBottom();
@@ -189,7 +205,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageNotValid() {
     let messageValue: string = this.messageForm?.controls['message']?.value;
-    return (messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0) && this.selectedMessageImages.size == 0;
+    return ((messageValue == null || messageValue == undefined || messageValue == '' || messageValue.replaceAll(" ", "").length == 0) && this.selectedMessageImages.size == 0) || this.isProcressingImageUpload;
   }
 
   searchOpenedUsers() {
@@ -228,6 +244,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isChatMenuOpen = false;
     menu.classList.add('d-none');
     menu.classList.remove('d-block');
+    this.selectedMessageImages = new Map<string, File>;
+    this.selectedMessageImagesUrl = [];
     this.chatService.getChatMenu(this.selectedChat.id).subscribe({
       next: (data: any) => {
         this.chatOptionsMenu = data.options;
@@ -266,13 +284,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.openChatOptionsMenu = !this.openChatOptionsMenu;
   }
   sendMessage() {
+    let arrayFromMap: File[] = Array.from(this.selectedMessageImages.values());
     if (!this.messageNotValid()) {
       let message: Message = {
         message: this.messageForm.controls['message'].value,
         riceventi: this.selectedChat?.utenti.filter((u: User) => u.id != this.user!.id).map((u: User) => u.id) as number[],
         mittente: this.user!.id,
-        chat: this.selectedChat!.id,
-        messageImages: Array.from(this.selectedMessageImages.values())
+        chat: this.selectedChat!.id
 
       }
 

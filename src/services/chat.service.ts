@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
 import { Chat, ChatDTO, Message, SocketDTO, User } from "../interfaces/interfaces";
-import { RxStompService, StompService } from "@stomp/ng2-stompjs";
 import { environment } from "../core/environment";
 import { WebsocketService } from "./websocket.service";
 
@@ -13,8 +12,7 @@ export class ChatService {
     private chat: string = '/chat';
     private params: string = '/params'
     private messaggio: string = '/messaggi';
-    private chatSubject = new Subject<string>();
-    private messages: string = '/messages';
+    private messageImage: string = '/messageImage';
     public selectedChat: Chat | null = null;
     public selectChat: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     private read: string = '/read';
@@ -114,5 +112,15 @@ export class ChatService {
     }
     leaveChat(chat: Chat) {
         return this.http.get(environment.API_URL + this.chat + '/leave/' + chat.id);
+    }
+    uploadMessageImages(files: File[], messageId: number) {
+        if (files == null || files == undefined || files.length == 0) {
+            return;
+        }
+        let formData = new FormData();
+        for (let f of files) {
+            formData.append('images', f);
+        }
+        return this.http.post(environment.API_URL + this.messageImage + '/' + messageId, formData);
     }
 };
