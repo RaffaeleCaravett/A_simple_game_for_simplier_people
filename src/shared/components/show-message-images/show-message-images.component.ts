@@ -1,6 +1,8 @@
 import { NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
+import { MessageImage, Messaggio, User } from '../../../interfaces/interfaces';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-show-message-images',
@@ -13,11 +15,19 @@ export class ShowMessageImagesComponent implements OnInit {
   imagesUrl: string[] = [];
   index: number = 0;
   startedImagesUrl: string[] = [];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private matDialogRef: MatDialogRef<ShowMessageImagesComponent>) { }
+  message: Messaggio | null = null;
+  user: User | null = null;
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private matDialogRef: MatDialogRef<ShowMessageImagesComponent>,
+    private authService: AuthService) { }
 
 
   ngOnInit(): void {
-    this.imagesUrl = this.data;
+    this.imagesUrl = this.data[0];
+    this.message = this.data[1];
+    if (this.message) {
+      this.user = this.authService.getUser();
+      this.imagesUrl = this.message.messageImages.map(m => 'data:image/png;base64,' + m.image);
+    }
     this.startedImagesUrl = [...this.imagesUrl];
   }
   removePhoto(string: string) {

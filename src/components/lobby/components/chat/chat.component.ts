@@ -1,7 +1,7 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import { Chat, ChatDTO, Message, Messaggio, User } from '../../../../interfaces/interfaces';
+import { Chat, ChatDTO, Message, MessageImage, Messaggio, User } from '../../../../interfaces/interfaces';
 import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
@@ -476,20 +476,42 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedMessageImagesUrl.push(choosedImageUrl);
     };
   }
-  showMessageImages() {
-    if (this.selectedMessageImagesUrl.length > 0) {
-      const dialogRef = this.matDialog.open(ShowMessageImagesComponent, { data: [...this.selectedMessageImagesUrl], width: '500px' });
+  showMessageImages(message?: Messaggio) {
+    if (this.selectedMessageImagesUrl.length > 0 || message) {
+      const dialogRef = this.matDialog.open(ShowMessageImagesComponent, { data: [[...this.selectedMessageImagesUrl], message], width: '500px' });
       dialogRef.afterClosed().subscribe((data: any) => {
         if (data) {
-          this.selectedMessageImagesUrl = data
-          let newMapValues: Map<string, File> = new Map();
-          for (let s of this.selectedMessageImagesUrl) {
-            let mapElement = this.selectedMessageImages.get(s);
-            if (mapElement != null) {
-              newMapValues.set(s, mapElement);
+          if (!message) {
+            this.selectedMessageImagesUrl = data
+            let newMapValues: Map<string, File> = new Map();
+            for (let s of this.selectedMessageImagesUrl) {
+              let mapElement = this.selectedMessageImages.get(s);
+              if (mapElement != null) {
+                newMapValues.set(s, mapElement);
+              }
             }
+            this.selectedMessageImages = newMapValues;
+          } else {
+            let newMessagesImage: MessageImage[] = [];
+            message.messageImages.forEach((m: MessageImage) => {
+              data?.forEach((d: string) => {
+                if (d.substring(22) == m.image) {
+                  newMessagesImage.push(m);
+                }
+              });
+            });
+            message.messageImages = newMessagesImage;
+            this.chatService.deleteMessageImages(message.messageImages.map(m => m.id)).subscribe({
+              next: (resp: any) => {
+                message.messageImages = resp;
+                this.selectedChat?.messaggi.forEach((mess: Messaggio) => {
+                  if (mess.id == message.id) {
+                    mess = message;
+                  }
+                });
+              }
+            });
           }
-          this.selectedMessageImages = newMapValues;
         }
       });
     }

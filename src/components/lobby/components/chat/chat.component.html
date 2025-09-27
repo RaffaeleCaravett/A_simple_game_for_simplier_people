@@ -192,10 +192,22 @@
                                             alt="immagine di {{m.sender.fullName}}" [style.width]="'30px'"
                                             [style.height]="'30px'" class="rounded-circle mx-1 shadow"
                                             title="{{m.sender.fullName}}">
-                                        <p class="my-1 rounded shadow text-start p-2" [style.width]="'fit-content'"
+                                        <div class="my-1 rounded shadow text-start p-2" [style.width]="'fit-content'"
                                             [ngClass]="mode=='light'?'bg-light':'bg-secondary'">
+                                            <div class="position-relative"
+                                                *ngIf="m.messageImages!= null && m.messageImages.length>0"
+                                                (click)="showMessageImages(m)">
+                                                <img src="{{'data:image/png;base64,'+m.messageImages[0].image}}"
+                                                    alt="image ..."
+                                                    class="message-image p-1 shadow-sm user-panel rounded name-container">
+                                                <div class="position-absolute start-25 images-number fw-bolder fs-1 name-container"
+                                                    *ngIf="m.messageImages.length>1" (click)="showMessageImages()">
+                                                    + {{m.messageImages.length}}
+                                                </div>
+                                            </div>
+                                            <br>
                                             {{m.text}}
-                                        </p>
+                                        </div>
                                         <span class="p-1"
                                             *ngIf="selectedChat!.messaggi[i+1]==null || 
                                             (selectedChat!.messaggi[i+1]!=null && selectedChat!.messaggi[i+1].sender.id != m.sender.id)">
@@ -222,10 +234,22 @@
                                             <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
                                                 *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
                                         </span>
-                                        <p class="my-1 bg-info rounded shadow text-end p-2"
+                                        <div class="my-1 bg-info rounded shadow text-end p-2"
                                             [style.width]="'fit-content'" title="{{m.createdAt}}">
+                                            <div class="position-relative"
+                                                *ngIf="m.messageImages!= null && m.messageImages.length>0"
+                                                (click)="showMessageImages(m)">
+                                                <img src="{{'data:image/png;base64,'+m.messageImages[0].image}}"
+                                                    alt="image ..."
+                                                    class="message-image p-1 shadow-sm user-panel rounded name-container">
+                                                <div class="position-absolute start-25 images-number fw-bolder fs-1 name-container"
+                                                    *ngIf="m.messageImages.length>1" (click)="showMessageImages()">
+                                                    + {{m.messageImages.length}}
+                                                </div>
+                                            </div>
+                                            <br>
                                             {{m.text}}
-                                        </p>
+                                        </div>
                                         <img [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''"
                                             src="{{m.sender.immagineProfilo}}" alt="immagine di {{m.sender.fullName}}"
                                             [style.width]="'30px'" [style.height]="'30px'"

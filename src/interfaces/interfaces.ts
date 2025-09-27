@@ -118,7 +118,12 @@ export interface Messaggio {
     settedChatId: number,
     receivers: number[],
     readers: number[],
-    messageImages: File[]
+    messageImages: MessageImage[]
+}
+export interface MessageImage {
+    id: number,
+    name: string,
+    image: string;
 }
 
 export interface Notification {
