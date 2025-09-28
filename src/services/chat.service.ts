@@ -123,8 +123,8 @@ export class ChatService {
         }
         return this.http.post(environment.API_URL + this.messageImage + '/' + messageId, formData);
     }
-    deleteMessageImages(messageImagesId: number[]) {
+    deleteMessageImages(messageImagesId: number[], messageId: number) {
         let ids: any = { ids: messageImagesId };
-        return this.http.delete(environment.API_URL + this.messageImage, ids);
+        return this.http.put(environment.API_URL + this.messageImage + `/${messageId}`, ids);
     }
 };

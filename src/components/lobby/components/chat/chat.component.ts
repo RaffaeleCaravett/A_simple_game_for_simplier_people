@@ -51,7 +51,11 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.chatService.uploadMessageImages(arrayFromMap, value.id)?.subscribe({
               next: (images: any) => {
                 value.messageImages = [];
-                value.messageImages.push(images);
+                images?.forEach((i: any) => {
+                  if (i && i?.image) {
+                    value.messageImages.push(i);
+                  }
+                })
                 chat?.messaggi?.push(value);
                 this.selectedMessageImages = new Map<string, File>;
                 this.selectedMessageImagesUrl = [];
@@ -186,7 +190,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     try {
       if (!chat?.image && chat.chatType == 'SINGOLA') {
         let utente = chat?.utenti.filter((u: User) => u.id != this.user!.id)[0] as User;
-        return utente.immagineProfilo;
+        return utente?.immagineProfilo || 'assets/utils/avatar.jpg';
       } else if (chat?.chatType == 'GRUPPO') {
         let img = chat.image;
         if (null == img || undefined == img || !img) {
@@ -437,7 +441,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   isUserBlocked(chat: Chat): boolean {
     if (chat.chatType == 'SINGOLA') {
-      let oppositeId = chat?.utenti?.filter(u => u.id != this.user!.id)[0].id;
+      let oppositeIds = chat?.utenti?.filter(u => u.id != this.user!.id);
+      let oppositeId = 0;
+      if (oppositeIds != null && oppositeIds.length > 0) {
+        oppositeId = oppositeIds[0].id;
+      }
       return this.user?.blockeds?.map(u => u.id).includes(oppositeId) || false;
     }
     return false;
@@ -459,7 +467,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         return 'assets/utils/avatar.jpg';
       }
     } else if (this.selectedChat?.chatType == 'SINGOLA') {
-      return this.selectedChat?.utenti.filter(u => u.id != this.user!.id)[0].immagineProfilo;
+      return this.selectedChat?.utenti.filter(u => u.id != this.user!.id)[0]?.immagineProfilo || 'assets/utils/avatar.jpg';
     } else {
       return '';
     }
@@ -501,7 +509,7 @@ export class ChatComponent implements OnInit, OnDestroy {
               });
             });
             message.messageImages = newMessagesImage;
-            this.chatService.deleteMessageImages(message.messageImages.map(m => m.id)).subscribe({
+            this.chatService.deleteMessageImages(message.messageImages.map(m => m.id), message.id).subscribe({
               next: (resp: any) => {
                 message.messageImages = resp;
                 this.selectedChat?.messaggi.forEach((mess: Messaggio) => {
