@@ -505,7 +505,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             message.messageImages.forEach((m: MessageImage) => {
               let contains: boolean = false;
               data?.forEach((d: string) => {
-                if ( m.image==d.substring(22)) {
+                if (m.image == d.substring(22)) {
                   contains = true;
                 }
               });
@@ -516,12 +516,18 @@ export class ChatComponent implements OnInit, OnDestroy {
             message.messageImages = newMessagesImage;
             this.chatService.deleteMessageImages(message.messageImages.map(m => m.id), message.id).subscribe({
               next: (resp: any) => {
-                message.messageImages = resp;
-                this.selectedChat?.messaggi.forEach((mess: Messaggio) => {
-                  if (mess.id == message.id) {
-                    mess = message;
+                if (resp && resp?.length > 0) {
+                  message.messageImages = resp;
+                  this.selectedChat?.messaggi.forEach((mess: Messaggio) => {
+                    if (mess.id == message.id) {
+                      mess = message;
+                    }
+                  });
+                } else {
+                  if (message.text.length == 0 || null == message.text) {
+                    this.selectedChat!.messaggi = this.selectedChat?.messaggi.filter(m => m.id != message.id) || [];
                   }
-                });
+                }
               }
             });
           }
