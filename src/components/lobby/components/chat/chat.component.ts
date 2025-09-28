@@ -501,12 +501,17 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.selectedMessageImages = newMapValues;
           } else {
             let newMessagesImage: MessageImage[] = [];
+            let toDelete: MessageImage[] = [];
             message.messageImages.forEach((m: MessageImage) => {
+              let contains: boolean = false;
               data?.forEach((d: string) => {
-                if (d.substring(22) == m.image) {
-                  newMessagesImage.push(m);
+                if ( m.image==d.substring(22)) {
+                  contains = true;
                 }
               });
+              if (!contains) {
+                newMessagesImage.push(m);
+              }
             });
             message.messageImages = newMessagesImage;
             this.chatService.deleteMessageImages(message.messageImages.map(m => m.id), message.id).subscribe({
