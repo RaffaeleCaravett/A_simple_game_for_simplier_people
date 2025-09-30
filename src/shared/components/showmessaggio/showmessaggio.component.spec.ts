@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShowClassificaComponent } from './show-classifica.component';
+import { ShowmessaggioComponent } from './showmessaggio.component';
 
-describe('ShowClassificaComponent', () => {
-  let component: ShowClassificaComponent;
-  let fixture: ComponentFixture<ShowClassificaComponent>;
+describe('ShowmessaggioComponent', () => {
+  let component: ShowmessaggioComponent;
+  let fixture: ComponentFixture<ShowmessaggioComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShowClassificaComponent]
+      imports: [ShowmessaggioComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ShowClassificaComponent);
+    fixture = TestBed.createComponent(ShowmessaggioComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

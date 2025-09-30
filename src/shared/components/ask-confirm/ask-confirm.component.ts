@@ -1,15 +1,19 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
-import { User } from '../../../interfaces/interfaces';
+import { Categoria, User } from '../../../interfaces/interfaces';
 import { AuthService } from '../../../services/auth.service';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { RecensioneService } from '../../../services/recensione.service';
+import { MatTooltip, MatTooltipModule } from "@angular/material/tooltip";
+import { AdministrationService } from '../../../services/administration.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-ask-confirm',
   standalone: true,
-  imports: [MatDialogClose, MatDialogActions, MatDialogContent, NgClass, NgIf, NgFor],
+  imports: [MatDialogClose, MatDialogActions, MatDialogContent, MatTooltipModule,
+    NgClass, NgIf, NgFor, ɵInternalFormsSharedModule, ReactiveFormsModule, MatTooltip],
   templateUrl: './ask-confirm.component.html',
   styleUrl: './ask-confirm.component.scss'
 })
@@ -23,7 +27,10 @@ export class AskConfirmComponent implements OnInit {
   user!: User;
   action: string = '';
   recePoints: number = 0;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<AskConfirmComponent>, private authService: AuthService, private recensioneService: RecensioneService) {
+  categoria: Categoria | null = null;
+  categoriaForm: FormGroup = new FormGroup({});
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<AskConfirmComponent>, private authService: AuthService,
+    private recensioneService: RecensioneService, private administrationService: AdministrationService, private toastr: ToastrService) {
     this.user = this.authService.getUser()!;
   }
 
@@ -34,6 +41,12 @@ export class AskConfirmComponent implements OnInit {
     this.recensione = this.data[1];
     this.action = this.data[2]
     this.recePoints = this.recensione?.punteggio
+    this.categoria = this.data[3];
+    if (this.categoria && this.categoria != undefined) {
+      this.categoriaForm = new FormGroup({
+        categoria: new FormControl(this.categoria.nome, Validators.required)
+      });
+    }
   }
 
 
@@ -53,6 +66,20 @@ export class AskConfirmComponent implements OnInit {
           this.dialogRef.close([true, data]);
         }
       })
+    } else if (this.categoria != null) {
+      if (this.categoriaForm.valid && this.categoriaForm.get('categoria')?.value != this.categoria.nome) {
+        this.administrationService.modifyCategoria(this.categoria.id, this.categoriaForm.controls['categoria'].value).subscribe({
+          next: (data: any) => {
+            this.dialogRef.close("Categoria modificata con successo.");
+          }
+        });
+      } else {
+        if (this.categoriaForm.get('categoria')?.value == this.categoria.nome) {
+          this.toastr.error("Modifica il nome prima.");
+        } else {
+          this.toastr.error("Inserisci il nome prima.");
+        }
+      }
     } else {
       this.dialogRef.close(true);
     }

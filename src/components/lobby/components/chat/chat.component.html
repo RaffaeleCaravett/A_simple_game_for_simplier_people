@@ -186,12 +186,6 @@
                                         [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none no-pic':'':''">
                                         {{m.sender.fullName}}</p><br>
                                     <div class="d-flex justify-content-start text-dark" *ngIf="m.sender.id!=user!.id">
-                                        <img src="{{m.sender.immagineProfilo}}"
-                                            [ngClass]="
-                                            selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''"
-                                            alt="immagine di {{m.sender.fullName}}" [style.width]="'30px'"
-                                            [style.height]="'30px'" class="rounded-circle mx-1 shadow"
-                                            title="{{m.sender.fullName}}">
                                         <div class="my-1 rounded shadow text-start p-2" [style.width]="'fit-content'"
                                             [ngClass]="mode=='light'?'bg-light':'bg-secondary'">
                                             <div class="position-relative"
@@ -208,32 +202,54 @@
                                             <br>
                                             {{m.text}}
                                         </div>
-                                        <span class="p-1"
-                                            *ngIf="selectedChat!.messaggi[i+1]==null || 
+                                        <div class="d-flex justify-content-start flex-column text-dark">
+                                            <span class="p-1"
+                                                *ngIf="selectedChat!.messaggi[i+1]==null || 
                                             (selectedChat!.messaggi[i+1]!=null && selectedChat!.messaggi[i+1].sender.id != m.sender.id)">
-                                            <i class="bi bi-check2-all h3 fw-bolder" *ngIf="m.state=='SENT'"
-                                                title="Inviato"></i>
-                                            <i class="bi bi-check2-all h3 fw-bolder" title="Letto"
-                                                *ngIf="m.state=='READ' && m.readers.length<(m.receivers.length)"></i>
-                                            <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
-                                                *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
-                                        </span>
+                                                <i class="bi bi-check2-all h3 fw-bolder" *ngIf="m.state=='SENT'"
+                                                    title="Inviato"></i>
+                                                <i class="bi bi-check2-all h3 fw-bolder" title="Letto"
+                                                    *ngIf="m.state=='READ' && m.readers.length<(m.receivers.length)"></i>
+                                                <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
+                                                    *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
+                                            </span>
+                                            <img src="{{m.sender.immagineProfilo}}"
+                                                [ngClass]="
+                                            selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''"
+                                                alt="immagine di {{m.sender.fullName}}" [style.width]="'30px'"
+                                                [style.height]="'30px'" class="rounded-circle mx-1 shadow"
+                                                title="{{m.sender.fullName}}"><br>
+                                            <button class="btn" title="opzioni messaggio" (click)="openMessageInfo(m)">
+                                                ...
+                                            </button>
+
+                                        </div>
                                     </div>
                                     <p *ngIf="m.sender.id==user!.id" class="text-end name-container"
                                         (click)="goToUser(m.sender.id)"
                                         [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none no-pic':'':''">
                                         {{m.sender.fullName}}</p>
                                     <div class="d-flex justify-content-end text-dark" *ngIf="m.sender.id==user!.id">
-                                        <span class="p-1"
-                                            *ngIf="selectedChat!.messaggi[i+1]==null || 
+                                        <div class="d-flex justify-content-end flex-column text-dark">
+                                            <span class="p-1"
+                                                *ngIf="selectedChat!.messaggi[i+1]==null || 
                                             (selectedChat!.messaggi[i+1]!=null && selectedChat!.messaggi[i+1].sender.id != m.sender.id)">
-                                            <i class="bi bi-check2-all h3 fw-bolder" *ngIf="m.state=='SENT'"
-                                                title="Inviato"></i>
-                                            <i class="bi bi-check2-all h3 fw-bolder" title="Letto"
-                                                *ngIf="m.state=='READ' && m.readers.length<(m.receivers.length)"></i>
-                                            <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
-                                                *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
-                                        </span>
+                                                <i class="bi bi-check2-all h3 fw-bolder" *ngIf="m.state=='SENT'"
+                                                    title="Inviato"></i>
+                                                <i class="bi bi-check2-all h3 fw-bolder" title="Letto"
+                                                    *ngIf="m.state=='READ' && m.readers.length<(m.receivers.length)"></i>
+                                                <i class="bi bi-check2-all text-info h3 fw-bolder" title="Letto"
+                                                    *ngIf="m.state=='READ' && m.readers.length>=(m.receivers.length)"></i>
+                                            </span>
+                                            <img [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''"
+                                                src="{{m.sender.immagineProfilo}}"
+                                                alt="immagine di {{m.sender.fullName}}" [style.width]="'30px'"
+                                                [style.height]="'30px'" class="rounded-circle mx-1 shadow"
+                                                title="{{m.sender.fullName}}">
+                                            <button class="btn" title="opzioni messaggio" (click)="openMessageInfo(m)">
+                                                ...
+                                            </button>
+                                        </div>
                                         <div class="my-1 bg-info rounded shadow text-end p-2"
                                             [style.width]="'fit-content'" title="{{m.createdAt}}">
                                             <div class="position-relative"
@@ -250,10 +266,6 @@
                                             <br>
                                             {{m.text}}
                                         </div>
-                                        <img [ngClass]="selectedChat!.messaggi[i-1]!=null?selectedChat!.messaggi[i-1].sender.id==m.sender.id ?'d-none':'':''"
-                                            src="{{m.sender.immagineProfilo}}" alt="immagine di {{m.sender.fullName}}"
-                                            [style.width]="'30px'" [style.height]="'30px'"
-                                            class="rounded-circle mx-1 shadow" title="{{m.sender.fullName}}">
                                     </div>
                                 </div>
                             </div>

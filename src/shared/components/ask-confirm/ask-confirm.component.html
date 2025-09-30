@@ -1,5 +1,5 @@
-<div class="w-100 bg-light-personal text-center">
-    <h2 class="">{{action}}</h2>
+<div class="w-100 bg-light-personal d-flex align-items-center justify-content-center">
+    <h2 class="pt-4">{{action}}</h2>
 </div>
 <div class="p-3 text-center position-relative bg-white">
     <mat-dialog-content class="py-2">
@@ -31,15 +31,30 @@
                 Sei sicuro di voler {{getLowerAction(action)+"re" + " " + giocoName}} ?
             </p>
         </div>
-        <div *ngIf="recensione == null && giocoName == null" [style.height]="'100px'">
+        <div *ngIf="categoria!=null" class="py-4">
+            <form [formGroup]="categoriaForm">
+                <label for="categoria" class="fs-2 py-2 text-start">{{getLowerAction(action) + " il nome dellacategoria"
+                    }}
+                    <span class="text-success fw-bold">{{categoria.id + " -" +
+                        categoria.nome}}</span></label>
+                <input type="text" class="form-control fs-4 mt-4" placeholder="Inserisci una categoria"
+                    formControlName="categoria" id="categoria">
+            </form>
+        </div>
+        <div *ngIf="recensione == null && giocoName == null && categoria == null" [style.height]="'100px'">
             <p class="fs-2">
-                Vuoi davvero {{action == 'Accetta' ? ' accettare ': action == 'Rifiuta'? ' rifiutare ' : ' annullare '}}
-                la richiesta?
+                Vuoi davvero {{action == 'Accetta' ? ' accettare ': action == 'Rifiuta'? ' rifiutare ' : action ==
+                'Modifica'? 'modificare' : action == 'Elimina'? 'eliminare': ' annullare '}}
+                la {{action=='Modifica' || action =='Elimina'?'categoria':'richiesta'}}?
             </p>
         </div>
     </mat-dialog-content>
-    <mat-dialog-actions class="text-end position-absolute bottom-0 end-0">
-        <button class="btn btn-light m-1" (click)="modifica()">{{action}}</button>
-        <button class="btn btn-secondary m-1" [mat-dialog-close]="false">Annulla</button>
+</div>
+<div mat-dialog-actions class="bg-white">
+    <mat-dialog-actions class="text-end mt-5">
+        <button class="btn btn-light m-1 fs-4" matTooltip="{{action}}" [matTooltipPosition]="'above'" s
+            (click)="modifica()">{{action}}</button>
+        <button class="btn btn-secondary m-1 fs-4" matTooltip="'Annulla'" [matTooltipPosition]="'above'"
+            [mat-dialog-close]="false">Annulla</button>
     </mat-dialog-actions>
 </div>

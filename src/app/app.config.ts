@@ -11,18 +11,18 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { RxStompService } from '@stomp/ng2-stompjs';
+import { provideStore } from '@ngrx/store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     RxStompService,
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimations(),
-    provideToastr(), provideHttpClient(
-      withInterceptorsFromDi()
-    ), provideNativeDateAdapter(),
+    provideToastr(), provideHttpClient(withInterceptorsFromDi()), provideNativeDateAdapter(),
     DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    [{ provide: DEFAULT_TIMEOUT, useValue: 30000 }]
-    , provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync()
-  ],
+    [{ provide: DEFAULT_TIMEOUT, useValue: 30000 }],
+    provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(),
+    provideStore()
+],
 };

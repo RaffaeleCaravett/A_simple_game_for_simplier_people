@@ -29,6 +29,9 @@ export class AdministrationService {
     saveCategoria(categoria: {}) {
         return this.http.post(environment.API_URL + this.categoria, categoria);
     }
+    modifyCategoria(categoria: number, name: string) {
+        return this.http.get(environment.API_URL + this.categoria + `/${categoria}/${name}`);
+    }
     putGameById(giocoId: number, gioco?: any, giocoImage?: File | null) {
         let headers = new HttpHeaders();
         let formData: FormData = new FormData();

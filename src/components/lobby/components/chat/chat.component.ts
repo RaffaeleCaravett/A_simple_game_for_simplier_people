@@ -14,6 +14,7 @@ import { ModeService } from '../../../../services/mode.service';
 import { ManageOptionsComponent } from '../../../../shared/components/manage-options/manage-options.component';
 import { ProfileServive } from '../../../../services/profile.service';
 import { ShowMessageImagesComponent } from '../../../../shared/components/show-message-images/show-message-images.component';
+import { ShowmessaggioComponent } from '../../../../shared/components/showmessaggio/showmessaggio.component';
 
 @Component({
   selector: 'app-chat',
@@ -541,6 +542,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     } else {
       return "lower";
     }
+  }
+  openMessageInfo(message: Messaggio) {
+    const dialogRef = this.matDialog.open(ShowmessaggioComponent, { data: message });
+    dialogRef.afterClosed().subscribe((data: any) => {
+      this.selectedChat?.messaggi.forEach(m => {
+        if (m.id == message.id) {
+          m = data;
+        }
+      });
+    });
   }
 }
 

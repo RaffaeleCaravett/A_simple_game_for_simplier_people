@@ -3,17 +3,21 @@
         <div class="col-md-12 text-center py-5">
             <h1 *ngIf="innerWidth>767.20">Benvenuto {{user?.fullName}}</h1>
             <h2 *ngIf="innerWidth<767.20">Benvenuto {{user?.fullName}}</h2>
+            <p class="fs-3">Questa è la tua dashboard personale.</p>
         </div>
-        <div class="col-sm-5 col-7 text-start p-3">
-            <form [formGroup]="actionForm" class="row">
-                <label class="pb-1" for="action">Scegli la sezione</label>
+        <hr class="mt-5 mb-5">
+        <div class="col-12 text-start p-3">
+            <h1 class="pb-1" for="action">Scegli la sezione</h1>
+            <form [formGroup]="actionForm" class="row my-2">
                 <div class="d-flex">
-                    <select name="action" id="action" formControlName="action" class="form-select" #action
-                        (change)="switchLocation(action.value)" placeholder="Seleziona un valore...">
+                    <select name="action" id="action" formControlName="action" class="form-select my-3" #action
+                        (change)="switchLocation(action.value)" placeholder="Seleziona un valore..."
+                        [style.width]="'350px'">
                         <option value="" disabled selected>Select your option</option>
                         <option value="{{action}}" *ngFor="let action of actions">{{action}}</option>
                     </select>
-                    <button class="btn" title="Torna all'inizio" (click)="resetFormAndLocation()" *ngIf="action.value">❌</button>
+                    <button class="btn" title="Torna all'inizio" (click)="resetFormAndLocation()"
+                        *ngIf="action.value">❌</button>
                 </div>
             </form>
         </div>

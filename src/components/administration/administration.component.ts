@@ -4,6 +4,7 @@ import { User } from '../../interfaces/interfaces';
 import { AuthService } from '../../services/auth.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { AdministrationService } from '../../services/administration.service';
 
 @Component({
   selector: 'app-administration',
@@ -34,6 +35,7 @@ export class AdministrationComponent implements OnInit {
       if (this.user?.role == 'Admin') localStorage.setItem('location', 'amministrazione');
       else this.router.navigate([`/${localStorage.getItem('location') ? localStorage.getItem('location') : 'home'}`])
     } else {
+      this.user = this.authService.getUser();
       this.router.navigate([`/${localStorage.getItem('location') ? localStorage.getItem('location') : 'home'}`])
     }
     this.initializeForms();
@@ -59,11 +61,13 @@ export class AdministrationComponent implements OnInit {
   }
 
   switchLocation(action: string) {
-    this.router.navigate(['/amministrazione/' + action], { queryParams: { user: JSON.stringify(this.user) } });
+    this.router.navigate(['/amministrazione/' + action], { queryParams: { user: JSON.stringify(this.user?.id) } });
   }
   resetFormAndLocation() {
     this.actionForm.controls['action'].setValue("");
     this.actionForm.updateValueAndValidity();
     this.router.navigate(['/amministrazione']);
   }
+
+
 }
