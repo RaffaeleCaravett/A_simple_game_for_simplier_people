@@ -75,6 +75,8 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
   }
   resetFormAndLocation() {
     this.actionForm.controls['action'].setValue("");
+    localStorage.setItem('location','amministrazione');
+    localStorage.removeItem('action');
     this.actionForm.updateValueAndValidity();
     this.router.navigate(['/amministrazione']);
   }

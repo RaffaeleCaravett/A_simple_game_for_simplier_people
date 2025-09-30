@@ -1,1 +1,26 @@
-<p>ad-tornei works!</p>
+<div class="row">
+    <div class="col-12">
+        <h1>Tornei
+        </h1>
+    </div>
+    <div class="col-12 p-3">
+        <form [formGroup]="filtersForm" class="w-100">
+            <div class="w-100 m-auto border filtri-container p-2 overflow-x-scroll d-flex">
+                <div class="p-2" *ngFor="let f of filters">
+                    <div class="border p-2 px-5 text-center filter-container" [style.height]="'100%'">
+                        <p class="fs-4">{{f}}</p>
+                        <input type="text" class="form-control" *ngIf="f == 'Nome' || f == 'Gioco'"
+                            [formControlName]="f.toLowerCase()">
+                        <input type="date" class="form-control" *ngIf="f == 'Creazione' || f == 'Inizio' || f == 'Fine'"
+                            [formControlName]="f.toLowerCase()">
+                        <input type="number" class="form-control" *ngIf="f=='Pagina'" [max]="maxPage||0">
+                        <select name="{{f}}" id="{{f}}" class="form-select" *ngIf="f=='Elementi'|| f =='Ordina'"
+                            [formControlName]="f.toLowerCase()">
+                            <option value="{{e}}" *ngFor="let e of giveBackArray(f)">{{e}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
