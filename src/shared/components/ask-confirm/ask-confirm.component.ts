@@ -67,10 +67,16 @@ export class AskConfirmComponent implements OnInit {
         }
       })
     } else if (this.categoria != null) {
-      if (this.categoriaForm.valid && this.categoriaForm.get('categoria')?.value != this.categoria.nome) {
+      if (this.categoriaForm.valid && this.categoriaForm.get('categoria')?.value != this.categoria.nome && this.action == 'Modifica') {
         this.administrationService.modifyCategoria(this.categoria.id, this.categoriaForm.controls['categoria'].value).subscribe({
           next: (data: any) => {
             this.dialogRef.close("Categoria modificata con successo.");
+          }
+        });
+      } else if (this.action == 'Elimina') {
+        this.administrationService.deleteCategoria(this.categoria.id).subscribe({
+          next: (data: any) => {
+            this.dialogRef.close("Categoria eliminata con successo.");
           }
         });
       } else {

@@ -1,19 +1,26 @@
 <div class="row">
-    <div class="col-md-4 col-sm-6 p-3 categoria-container" *ngFor="let c of categorie">
-        <div class="border shadow p-2">
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-outline-secondary" [matTooltip]="'Modifica'" [matTooltipPosition]="'above'"
-                    (click)="handleEvent('Modifica',c)">
-                    <i class="bi bi-pencil h3"></i>
-                </button>
-                <button class="btn btn-outline-danger" [matTooltip]="'Elimina'" [matTooltipPosition]="'above'"
-                    (click)="handleEvent('Elimina',c)">
-                    <i class="bi bi-trash h3"></i>
-                </button>
+    <div class="row" *ngIf="!showSpinner else spinner">
+        <div class="col-md-4 col-sm-6 p-3 categoria-container" *ngFor="let c of categorie">
+            <div class="border shadow p-2">
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-secondary" [matTooltip]="'Modifica'" [matTooltipPosition]="'above'"
+                        (click)="handleEvent('Modifica',c)">
+                        <i class="bi bi-pencil h3"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" [matTooltip]="'Elimina'" [matTooltipPosition]="'above'"
+                        (click)="handleEvent('Elimina',c)">
+                        <i class="bi bi-trash h3"></i>
+                    </button>
+                </div>
+                <p class="fs-4 text-center py-3">
+                    {{firstLetterToUpperCase(c.nome)}}
+                </p>
             </div>
-            <p class="fs-4 text-center py-3">
-                {{firstLetterToUpperCase(c.nome)}}
-            </p>
         </div>
     </div>
+    <ng-template #spinner>
+        <div class="col-12 py-5 d-flex justify-content-center">
+            <mat-spinner [color]="'warn'"></mat-spinner>
+        </div>
+    </ng-template>
 </div>

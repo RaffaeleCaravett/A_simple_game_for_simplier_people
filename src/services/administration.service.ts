@@ -30,7 +30,10 @@ export class AdministrationService {
         return this.http.post(environment.API_URL + this.categoria, categoria);
     }
     modifyCategoria(categoria: number, name: string) {
-        return this.http.get(environment.API_URL + this.categoria + `/${categoria}/${name}`);
+        return this.http.put(environment.API_URL + this.categoria + `/${categoria}`, { nome: name });
+    }
+    deleteCategoria(categoriaId: number) {
+        return this.http.delete(environment.API_URL + this.categoria + `/${categoriaId}`)
     }
     putGameById(giocoId: number, gioco?: any, giocoImage?: File | null) {
         let headers = new HttpHeaders();

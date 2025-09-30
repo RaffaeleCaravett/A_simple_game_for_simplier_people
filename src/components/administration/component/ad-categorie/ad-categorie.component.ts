@@ -3,21 +3,23 @@ import { AdministrationService } from '../../../../services/administration.servi
 import { AuthService } from '../../../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { Categoria, User } from '../../../../interfaces/interfaces';
-import { NgFor } from "@angular/common";
+import { NgFor, NgIf } from "@angular/common";
 import { MatDialog } from '@angular/material/dialog';
 import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-ad-categorie',
   standalone: true,
-  imports: [NgFor, MatTooltipModule],
+  imports: [NgFor, MatTooltipModule, MatProgressSpinnerModule, NgIf],
   templateUrl: './ad-categorie.component.html',
   styleUrl: './ad-categorie.component.scss'
 })
 export class AdCategorieComponent implements OnInit {
   user: User | null = null;
   categorie: Categoria[] = [];
+  showSpinner: boolean = false;
   constructor(private administrationService: AdministrationService, private authService: AuthService, private toastr: ToastrService,
     private matDialog: MatDialog) { }
   ngOnInit(): void {
@@ -26,9 +28,13 @@ export class AdCategorieComponent implements OnInit {
     this.getCategorie();
   }
   getCategorie() {
+    this.showSpinner = true;
     this.administrationService.getAllCategories().subscribe({
       next: (data: any) => {
-        this.categorie = data;
+        setTimeout(() => {
+          this.categorie = data;
+          this.showSpinner = false;
+        }, 1500);
       }
     });
   }
@@ -38,6 +44,7 @@ export class AdCategorieComponent implements OnInit {
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
         this.toastr.success(data);
+        this.getCategorie();
       } else {
         this.toastr.show("Non è stata effettuata nessuna azione");
       }
