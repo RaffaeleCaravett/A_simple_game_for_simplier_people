@@ -8,11 +8,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-ad-categorie',
   standalone: true,
-  imports: [NgFor, MatTooltipModule, MatProgressSpinnerModule, NgIf],
+  imports: [NgFor, MatTooltipModule, ReactiveFormsModule, MatProgressSpinnerModule, NgIf, FormsModule],
   templateUrl: './ad-categorie.component.html',
   styleUrl: './ad-categorie.component.scss'
 })
@@ -20,14 +21,21 @@ export class AdCategorieComponent implements OnInit {
   user: User | null = null;
   categorie: Categoria[] = [];
   showSpinner: boolean = false;
+  addCategory: boolean = false;
+  addCategoriaForm: FormGroup = new FormGroup({});
   constructor(private administrationService: AdministrationService, private authService: AuthService, private toastr: ToastrService,
     private matDialog: MatDialog) { }
   ngOnInit(): void {
     localStorage.setItem('location', 'amministrazione/categorie');
+    localStorage.setItem('action', 'categorie');
     this.user = this.authService.getUser();
     this.getCategorie();
+    this.addCategoriaForm = new FormGroup({
+      nome: new FormControl('', Validators.required)
+    });
   }
   getCategorie() {
+    this.addCategory = false;
     this.showSpinner = true;
     this.administrationService.getAllCategories().subscribe({
       next: (data: any) => {
@@ -54,5 +62,17 @@ export class AdCategorieComponent implements OnInit {
   firstLetterToUpperCase(element: string) {
     if (element?.length == 0) return "";
     return element.substring(0, 1).toUpperCase() + element.substring(1, element.length);
+  }
+  addCategoria() {
+    if (this.addCategoriaForm.valid) {
+      this.administrationService.addCategoria({ nome: this.addCategoriaForm?.controls['nome']?.value }).subscribe({
+        next: (data: any) => {
+          this.addCategoriaForm.reset();
+          this.toastr.success("Categoria aggiunta con successo.");
+        }
+      })
+    } else {
+      this.toastr.error("Aggiungi un nome");
+    }
   }
 }

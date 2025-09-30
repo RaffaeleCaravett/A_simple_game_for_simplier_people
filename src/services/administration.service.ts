@@ -56,4 +56,7 @@ export class AdministrationService {
     restoreGame(gameId: number) {
         return this.http.get(environment.API_URL + this.gioco + `${this.restore + '/' + gameId}`);
     }
+    addCategoria(categoria: {}) {
+        return this.http.post(environment.API_URL + this.categoria, categoria);
+    }
 }

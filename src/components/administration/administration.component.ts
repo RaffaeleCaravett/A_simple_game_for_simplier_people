@@ -1,21 +1,20 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../interfaces/interfaces';
 import { AuthService } from '../../services/auth.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { AdministrationService } from '../../services/administration.service';
 
 @Component({
   selector: 'app-administration',
   templateUrl: './administration.component.html',
   styleUrl: './administration.component.scss'
 })
-export class AdministrationComponent implements OnInit {
+export class AdministrationComponent implements OnInit, AfterViewInit {
   user: User | null = null;
   actionForm: FormGroup = new FormGroup({});
   innerWidth: number = 0;
-  actions: string[] = ['giochi', 'categorie', 'tornei', 'utenti', 'messaggi']
+  actions: string[] = ['giochi', 'categorie', 'tornei', 'utenti', 'messaggi'];
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
@@ -38,9 +37,20 @@ export class AdministrationComponent implements OnInit {
       this.user = this.authService.getUser();
       this.router.navigate([`/${localStorage.getItem('location') ? localStorage.getItem('location') : 'home'}`])
     }
-    this.initializeForms();
-  }
 
+    this.initializeForms();
+
+  }
+  ngAfterViewInit(): void {
+    if (!this.activatedRoute?.snapshot?.queryParams['user']) {
+      setTimeout(() => {
+        let action = localStorage.getItem('action');
+        if (action) {
+          this.actionForm.controls['action'].setValue(localStorage.getItem('action'));
+        }
+      }, 1500);
+    }
+  }
   initializeForms() {
     this.actionForm = new FormGroup({
       action: new FormControl('', Validators.required)

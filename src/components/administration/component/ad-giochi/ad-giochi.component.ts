@@ -56,7 +56,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
 
   constructor(private administrationService: AdministrationService, private giochiService: GiochiService,
     private changeDet: ChangeDetectorRef, private toastr: ToastrService, private matDialog: MatDialog,
-     private activatedRoute: ActivatedRoute, private authService: AuthService) { }
+    private activatedRoute: ActivatedRoute, private authService: AuthService) { }
 
   ngAfterContentChecked(): void {
     this.changeDet.detectChanges();
@@ -68,8 +68,10 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
     } else {
       this.user = this.authService.getUser();
     }
-    
+
     this.innerWidth = window.innerWidth;
+    localStorage.setItem('location', 'amministrazione/giochi');
+    localStorage.setItem('action', 'giochi');
     this.getAllCategorie();
     this.initializeForms();
   }

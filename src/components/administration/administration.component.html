@@ -11,8 +11,8 @@
             <form [formGroup]="actionForm" class="row my-2">
                 <div class="d-flex">
                     <select name="action" id="action" formControlName="action" class="form-select my-3" #action
-                        (change)="switchLocation(action.value)" placeholder="Seleziona un valore..."
-                        [style.width]="'350px'">
+                        (change)="switchLocation(action.value)"
+                        placeholder="Seleziona un valore..." [style.width]="'350px'">
                         <option value="" disabled selected>Select your option</option>
                         <option value="{{action}}" *ngFor="let action of actions">{{action}}</option>
                     </select>
