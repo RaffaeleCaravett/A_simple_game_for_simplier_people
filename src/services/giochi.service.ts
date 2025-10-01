@@ -15,7 +15,7 @@ export class GiochiService {
 
 
 
-    searchGiochi(body: { nome: string, difficolta: number, punteggio: number, categoria: number }, page: number, size: number, orderBy: string, sortOrder: string, isActive?: boolean) {
+    searchGiochi(body: { nome?: string, difficolta?: number, punteggio?: number, categoria?: number }, page: number, size: number, orderBy: string, sortOrder: string, isActive?: boolean) {
 
         let params: HttpParams = new HttpParams();
         params = params.set('page', page);

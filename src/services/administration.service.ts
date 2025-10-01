@@ -72,7 +72,7 @@ export class AdministrationService {
             params = params.set('size', size);
         }
         if (order) {
-            params = params.set('order', order);
+            params = params.set('sort', order);
         }
         if (stato) {
             params = params.set('stato', stato);

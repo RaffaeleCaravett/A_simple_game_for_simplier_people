@@ -1,0 +1,13 @@
+label {
+    font-size: 18px !important;
+    font-weight: 400;
+}
+
+.state-container {
+    transition: 1s;
+
+    &:hover {
+        transition: 1s;
+        scale: 1.05;
+    }
+}

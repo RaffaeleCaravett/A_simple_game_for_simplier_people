@@ -1,1 +1,77 @@
-<p>add-tournament works!</p>
+<div class="container">
+    <div class="row">
+        <div class="col-12" mat-dialog-title>
+            <h2>Aggiungi un torneo
+
+            </h2>
+        </div>
+        <div class="col-12" mat-dialog-content>
+            <form [formGroup]="torneoForm" class="w-75 m-auto row">
+                <div class="col-12">
+                    <label for="nome" class="py-3">
+                        Nome
+                    </label>
+                    <input type="text" formControlName="nome" id="nome" class="form-control">
+                    <div class="col-12" *ngIf="torneoForm.controls['nome'].value && checkNomeValueLength()">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="dataInizio" class="py-3">
+                                    Data inizio
+                                </label>
+                                <input type="date" formControlName="dataInizio" [min]="todayDateString" id="dataInizio"
+                                    (change)="checkDataFineValueMayor()" class="form-control">
+                            </div>
+                            <div class="col-6">
+                                <label for="dataFine" class="py-3">
+                                    Data fine
+                                </label>
+                                <input type="date" formControlName="dataFine" id="dataFine"
+                                    [min]="torneoForm.controls['dataInizio'].value|| todayDatePlusOneString"
+                                    class="form-control">
+                            </div>
+                            <div class="row py-3"
+                                *ngIf="torneoForm.controls['dataInizio'].value && torneoForm.controls['dataFine'].value">
+                                <label for="stato py-3"> Stato</label>
+                                <div class="col-sm-4 p-2 state-container" *ngFor="let s of stati index as i">
+                                    <div class="boder p-1 shadow-sm" (click)="checkClick(i)">
+                                        <div class="text-start">
+                                            <input type="radio" id="check-{{i}}" class="form-control-check"
+                                                formControlName="stato" id="stato" [value]="s">
+                                        </div>
+                                        <div class="text-center py-2"
+                                            [ngClass]="s=='ANNUNCIATO'?'text-info':s=='IN_CORSO'?'text-success':'text-danger'">
+                                            {{s}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-12 py-3" *ngIf="torneoForm.controls['stato'].value">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label for="gioco py-3">Gioco</label>
+                                            <div class="text-start">
+                                                <button class="btn" (click)="addGame = !addGame">
+                                                    <i class="bi bi-plus h2" [matTooltip]="'Aggiungi gioco'"
+                                                        [matTooltipPosition]="'above'"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-12 d-flex" *ngIf="addGame">
+                                                <input type="text" placeholder="Cerca un gioco" class="form-control"
+                                                    #giocoName (input)="searchGame(giocoName.value)">
+                                                <button class="btn mx-2">
+                                                    Cerca <i class="bi bi-search h3"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12" mat-dialog-actions>
+
+        </div>
+    </div>
+</div>
