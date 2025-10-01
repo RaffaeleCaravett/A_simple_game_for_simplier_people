@@ -5,11 +5,13 @@ import { AdministrationService } from '../../../../services/administration.servi
 import { ToastrService } from 'ngx-toastr';
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatDialog } from '@angular/material/dialog';
+import { AddTournamentComponent } from '../../../../shared/components/add-tournament/add-tournament.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-ad-tornei',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, MatTooltip],
+  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, MatTooltip, MatProgressSpinnerModule],
   templateUrl: './ad-tornei.component.html',
   styleUrl: './ad-tornei.component.scss'
 })
@@ -29,7 +31,7 @@ export class AdTorneiComponent implements OnInit {
   filters: string[] = ["Pagina", "Elementi", "Ordina", "Nome", "Stato", "Creazione", "Inizio", "Fine", "Gioco"];
   maxPage: number | null = null;
   filtersForm: FormGroup = new FormGroup({});
-
+  showTorneiSpinner: boolean = false;
   constructor(private administration: AdministrationService, private toastr: ToastrService, private matDialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -78,13 +80,16 @@ export class AdTorneiComponent implements OnInit {
   }
 
   getTornei() {
+    this.showTorneiSpinner = true;
     this.administration.getAllTorneiPaged(this.page, this.size, this.orderBy, this.nome, this.stato, this.dataCreazione, this.dataInizio, this.dataFine, this.nomeGioco)
       .subscribe({
         next: (data: any) => {
           if (data) {
             this.tornei = data;
             this.maxPage = this.tornei?.totalPages > 0 ? this.tornei.totalPages - 1 : 0;
-            console.log(this.tornei);
+            setTimeout(() => {
+              this.showTorneiSpinner = false;
+            }, 1500);
           }
         }
       });
@@ -92,6 +97,14 @@ export class AdTorneiComponent implements OnInit {
 
   aggiungiTorneo() {
     const dialogRef = this.matDialog.open(AddTournamentComponent);
-
+    dialogRef.afterClosed().subscribe((data: any) => {
+      if (data) {
+        this.toastr.success("Torneo aggiunto");
+        this.getTornei();
+      } else {
+        this.toastr.show("Non è stata effettuata alcuna azione");
+      }
+    });
   }
+
 }

@@ -33,7 +33,13 @@
             </div>
         </form>
     </div>
-    <div class="col-12" *ngIf="!tornei || tornei?.content?.length == 0">
+    <div class="col-12 py-5 d-flex justify-content-center" *ngIf="showTorneiSpinner">
+        <mat-spinner [color]="'warn'"></mat-spinner>
+    </div>
+    <div class="col-12" *ngIf="(!tornei || tornei?.content?.length == 0)&&!showTorneiSpinner">
         <h2>Non ci sono tornei ...</h2>
+    </div>
+    <div class="col-12" *ngIf="(tornei && tornei?.content?.length > 0)&&!showTorneiSpinner">
+        <h2>Ci sono tornei ...</h2>
     </div>
 </div>
