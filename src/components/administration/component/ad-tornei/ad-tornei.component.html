@@ -4,23 +4,36 @@
         </h1>
     </div>
     <div class="col-12 p-3">
+        <button class="btn" (click)="aggiungiTorneo()">
+            <i class="bi bi-plus h2 fw-bolder" matTooltip="Aggiungi" [matTooltipPosition]="'above'"></i>
+        </button>
+    </div>
+    <div class="col-12 p-3">
         <form [formGroup]="filtersForm" class="w-100">
-            <div class="w-100 m-auto border filtri-container p-2 overflow-x-scroll d-flex">
+            <div class="w-100 m-auto  filtri-container p-2 overflow-x-scroll d-flex">
                 <div class="p-2" *ngFor="let f of filters">
-                    <div class="border p-2 px-5 text-center filter-container" [style.height]="'100%'">
+                    <div class="border shadow-sm p-2 px-5 text-center filter-container" [style.height]="'100%'">
                         <p class="fs-4">{{f}}</p>
                         <input type="text" class="form-control" *ngIf="f == 'Nome' || f == 'Gioco'"
-                            [formControlName]="f.toLowerCase()">
+                            [formControlName]="f.toLowerCase()" (change)="updateFilters()">
                         <input type="date" class="form-control" *ngIf="f == 'Creazione' || f == 'Inizio' || f == 'Fine'"
-                            [formControlName]="f.toLowerCase()">
+                            [formControlName]="f.toLowerCase()" (change)="updateFilters()">
                         <input type="number" class="form-control" *ngIf="f=='Pagina'" [max]="maxPage||0">
-                        <select name="{{f}}" id="{{f}}" class="form-select" *ngIf="f=='Elementi'|| f =='Ordina'"
-                            [formControlName]="f.toLowerCase()">
+                        <select name="{{f}}" id="{{f}}" class="form-select"
+                            *ngIf="f=='Elementi'|| f =='Ordina'|| f =='Stato'" [formControlName]="f.toLowerCase()"
+                            (change)="updateFilters()">
                             <option value="{{e}}" *ngFor="let e of giveBackArray(f)">{{e}}</option>
                         </select>
                     </div>
                 </div>
             </div>
+            <div class="w-100 text-center pt-5">
+                <button class="btn btn-light border" (click)="getTornei()"> Cerca <i
+                        class="bi bi-search h5 mx-2"></i></button>
+            </div>
         </form>
+    </div>
+    <div class="col-12" *ngIf="!tornei || tornei?.content?.length == 0">
+        <h2>Non ci sono tornei ...</h2>
     </div>
 </div>

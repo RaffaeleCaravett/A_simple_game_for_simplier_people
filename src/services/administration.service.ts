@@ -9,6 +9,8 @@ export class AdministrationService {
     private categoria: string = '/categoria';
     private gioco: string = '/gioco';
     private restore: string = '/restore';
+    private torneo: string = '/tournament';
+
     constructor(private http: HttpClient) { }
 
 
@@ -58,5 +60,39 @@ export class AdministrationService {
     }
     addCategoria(categoria: {}) {
         return this.http.post(environment.API_URL + this.categoria, categoria);
+    }
+    getAllTorneiPaged(page?: number, size?: number, order?: string, nome?: string, stato?: string, creazione?: string, inizio?: string, fine?: string, gioco?: string) {
+
+        let params: HttpParams = new HttpParams();
+
+        if (page) {
+            params = params.set('page', page);
+        }
+        if (size) {
+            params = params.set('size', size);
+        }
+        if (order) {
+            params = params.set('order', order);
+        }
+        if (stato) {
+            params = params.set('stato', stato);
+        }
+        if (nome) {
+            params = params.set('nome', nome);
+        }
+        if (fine) {
+            params = params.set('fine', fine);
+        }
+        if (inizio) {
+            params = params.set('inizio', inizio);
+        }
+        if (creazione) {
+            params = params.set('creazione', creazione);
+        }
+        if (gioco) {
+            params = params.set('gioco', gioco);
+        }
+
+        return this.http.get(environment.API_URL + this.torneo, { params: params })
     }
 }
