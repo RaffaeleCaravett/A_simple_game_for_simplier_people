@@ -26,6 +26,7 @@ export class AddTournamentComponent implements OnInit {
   isSearchingGames: boolean = false;
   difficulties: number[] = [1, 2, 3, 4, 5];
   selectedGame: Gioco | null = null;
+  step: number = 1;
   constructor(private dialogRef: MatDialogRef<AddTournamentComponent>, private toastr: ToastrService, private giochiService: GiochiService) {
 
   }
@@ -92,5 +93,27 @@ export class AddTournamentComponent implements OnInit {
   chooseGame(game: Gioco) {
     this.addGame = false;
     this.selectedGame = game;
+    this.torneoForm.controls['gioco'].setValue(this.selectedGame.id);
+    this.torneoForm.controls['gioco'].updateValueAndValidity();
+  }
+
+  addTorneo() {
+    if (this.torneoForm.valid) {
+      let torneoForm = this.torneoForm.controls;
+      let tournament = {
+        nome: torneoForm['nome'].value,
+        gioco_id: torneoForm['gioco'].value,
+        dateFrom: torneoForm['dataInizio'].value,
+        dateTo: torneoForm['dataFine'].value,
+        stato: torneoForm['stato'].value
+      }
+      this.toastr.show("Da aggiungere ...");
+    } else {
+      this.toastr.show("Compila correttamente il form. Ci sono delle informazioni mancanti.");
+    }
+  }
+
+  changeStep(step: number) {
+    this.step = step;
   }
 }

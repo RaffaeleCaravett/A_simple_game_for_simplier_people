@@ -3,7 +3,13 @@
     </h2>
 </div>
 <div mat-dialog-content>
-    <form [formGroup]="torneoForm" class="w-75 m-auto row">
+    <div class="text-end w-100 py-4">
+        <button class="btn shadow" *ngIf="torneoForm.valid && step == 1" (click)="changeStep(2)">Vai avanti <i
+                class="bi bi-arrow-right"></i></button>
+        <button class="btn shadow" *ngIf="torneoForm.valid && step == 2" (click)="changeStep(1)">Vai indietro <i
+                class="bi bi-arrow-left"></i></button>
+    </div>
+    <form [formGroup]="torneoForm" class="w-75 m-auto row" *ngIf="step == 1">
         <div class="col-12">
             <label for="nome" class="py-3">
                 Nome
@@ -118,6 +124,56 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-12 p-3" *ngIf="selectedGame">
+                                        <h3 class="p-2">Hai selezionato</h3>
+                                        <div class="w-100 mt-5 p-1">
+                                            <div class="border p-1 shadow-sm gioco-container overflow-y-scroll overflow-x-hidden"
+                                                [ngClass]="addClass('')" [style.height]="'200px'"
+                                                style.backgroundImage="linear-gradient(to right, rgba(255,255,255, 0.8) 0 100%),url('{{'data:image/png;base64,'+selectedGame.image}}')">
+                                                <div class="w-100 p-2 text-end">
+                                                    <button class="btn" (click)="chooseGame(selectedGame)">
+                                                        <i class="bi bi-check2-square h3" matTooltip="Scegli gioco"
+                                                            [matTooltipPosition]="'above'"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="w-100 bg-light py-2 border shadow-sm">
+                                                    {{selectedGame.nomeGioco}}
+                                                </div>
+                                                <div class="d-flex mt-4">
+                                                    <div class="bg-light p-1 m-auto border shadow-sm">
+                                                        <img src="assets/home/star.png" [style.width]="'10px'"
+                                                            [style.height]="'10px'"
+                                                            *ngFor="let d of difficulties index as i" alt="star"
+                                                            class="m-1"
+                                                            [ngClass]="i< selectedGame.difficolta?'':'d-none'">
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="p-2">
+                                                    <div class="p-1 bg-light border shadow-sm">
+                                                        {{selectedGame.descrizione}}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 p-1" *ngFor="let c of selectedGame?.categorie">
+                                                        <div class="border w-75 m-auto shadow-sm p-1 bg-light">
+                                                            {{c.nome}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 p-1"
+                                                        *ngIf="selectedGame?.categorie == null || selectedGame?.categorie?.length == 0">
+                                                        <div class="border w-75 m-auto shadow-sm p-1 bg-light">
+                                                            Non ci sono categorie
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-end p-2 py-4">
+                                            <button class="btn m-2 shadow" (click)="changeStep(2)">Vai avanti <i
+                                                    class="bi bi-arrow-right"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -127,6 +183,70 @@
             </div>
         </div>
     </form>
+    <div class="w-75 m-auto" *ngIf="torneoForm.valid && step == 2">
+        <div class="row p-2 border border-bottom-0 bg-secondary bg-gradient shadow-sm">
+            <h3>Riepilogo</h3>
+        </div>
+        <div class="row border shadow-sm p-2">
+            <div class="col-12 py-3">
+                <p class="fs-3 py-2">Nome</p>
+                <p class="fs-4">{{torneoForm.controls['nome'].value}}</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="fs-3 py-2">Data inizio</p>
+                <p class="fs-4">{{torneoForm.controls['dataInizio'].value}}</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="fs-3 py-2">Data fine</p>
+                <p class="fs-4">{{torneoForm.controls['dataFine'].value}}</p>
+            </div>
+            <div class="col-12 py-2">
+                <p class="fs-3 py-2">Stato</p>
+                <p class="fs-4">{{torneoForm.controls['stato'].value}}</p>
+            </div>
+            <div class="col-12">
+                <p class="fs-3 py-2">Gioco</p>
+                <div class="w-100 mt-1 p-1">
+                    <div class="border p-1 shadow-sm gioco-container overflow-y-scroll overflow-x-hidden"
+                        [ngClass]="addClass('')" [style.height]="'200px'"
+                        style.backgroundImage="linear-gradient(to right, rgba(255,255,255, 0.8) 0 100%),url('{{'data:image/png;base64,'+selectedGame!.image}}')">
+                        <div class="w-100 bg-light py-2 border shadow-sm">
+                            {{selectedGame!.nomeGioco}}
+                        </div>
+                        <div class="d-flex mt-4">
+                            <div class="bg-light p-1 m-auto border shadow-sm">
+                                <img src="assets/home/star.png" [style.width]="'10px'" [style.height]="'10px'"
+                                    *ngFor="let d of difficulties index as i" alt="star" class="m-1"
+                                    [ngClass]="i< selectedGame!.difficolta?'':'d-none'">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="p-2">
+                            <div class="p-1 bg-light border shadow-sm">
+                                {{selectedGame!.descrizione}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 p-1" *ngFor="let c of selectedGame?.categorie">
+                                <div class="border w-75 m-auto shadow-sm p-1 bg-light">
+                                    {{c.nome}}
+                                </div>
+                            </div>
+                            <div class="col-12 p-1"
+                                *ngIf="selectedGame?.categorie == null || selectedGame?.categorie?.length == 0">
+                                <div class="border w-75 m-auto shadow-sm p-1 bg-light">
+                                    Non ci sono categorie
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 py-3">
+                <button class="btn" (click)="addTorneo()">Conferma</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div mat-dialog-actions>
 
