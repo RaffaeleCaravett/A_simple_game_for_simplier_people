@@ -5,11 +5,13 @@ import { NgIf, CommonModule } from "@angular/common";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToastrService } from 'ngx-toastr';
 import { GiochiService } from '../../../services/giochi.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Gioco } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-add-tournament',
   standalone: true,
-  imports: [MatDialogModule, FormsModule, ReactiveFormsModule, NgIf, CommonModule, MatTooltipModule],
+  imports: [MatDialogModule, FormsModule, ReactiveFormsModule, NgIf, CommonModule, MatTooltipModule, MatProgressSpinnerModule],
   templateUrl: './add-tournament.component.html',
   styleUrl: './add-tournament.component.scss'
 })
@@ -21,6 +23,9 @@ export class AddTournamentComponent implements OnInit {
   stati: string[] = ['ANNUNCIATO', 'IN_CORSO', 'TERMINATO'];
   addGame: boolean = false;
   giochi: any = null;
+  isSearchingGames: boolean = false;
+  difficulties: number[] = [1, 2, 3, 4, 5];
+  selectedGame: Gioco | null = null;
   constructor(private dialogRef: MatDialogRef<AddTournamentComponent>, private toastr: ToastrService, private giochiService: GiochiService) {
 
   }
@@ -31,7 +36,7 @@ export class AddTournamentComponent implements OnInit {
 
   initializeForm() {
     this.torneoForm = new FormGroup({
-      nome: new FormControl('', Validators.required),
+      nome: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       gioco: new FormControl('', Validators.required),
       dataInizio: new FormControl('', Validators.required),
       dataFine: new FormControl('', Validators.required),
@@ -55,15 +60,37 @@ export class AddTournamentComponent implements OnInit {
     document.getElementById(`check-${i}`)?.click();
   }
   searchGame(giocoName: string) {
+    this.isSearchingGames = true;
     this.giochiService.searchGiochi({ nome: giocoName }, 0, 100, 'id', 'ASC').subscribe({
       next: (giochi: any) => {
         this.giochi = giochi;
+        setTimeout(() => {
+          this.isSearchingGames = false;
+        }, 1500);
       }
     });
     setTimeout(() => {
       if (this.giochi == null) {
         this.toastr.show("Refresha la pagina, il token è scaduto!");
       }
-    }, 5000)
+    }, 5000);
+  }
+  addClass(state: string) {
+    console.log(state)
+    switch (state) {
+      case ('ANNUNCIATO'): {
+        return 'box-info';
+      }
+      case ('IN_CORSO'): {
+        return 'box-success';
+      }
+      default: {
+        return 'box-danger';
+      }
+    }
+  }
+  chooseGame(game: Gioco) {
+    this.addGame = false;
+    this.selectedGame = game;
   }
 }

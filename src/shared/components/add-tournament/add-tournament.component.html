@@ -1,59 +1,61 @@
-<div class="container">
-    <div class="row">
-        <div class="col-12" mat-dialog-title>
-            <h2>Aggiungi un torneo
-
-            </h2>
-        </div>
-        <div class="col-12" mat-dialog-content>
-            <form [formGroup]="torneoForm" class="w-75 m-auto row">
-                <div class="col-12">
-                    <label for="nome" class="py-3">
-                        Nome
-                    </label>
-                    <input type="text" formControlName="nome" id="nome" class="form-control">
-                    <div class="col-12" *ngIf="torneoForm.controls['nome'].value && checkNomeValueLength()">
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="dataInizio" class="py-3">
-                                    Data inizio
-                                </label>
-                                <input type="date" formControlName="dataInizio" [min]="todayDateString" id="dataInizio"
-                                    (change)="checkDataFineValueMayor()" class="form-control">
-                            </div>
-                            <div class="col-6">
-                                <label for="dataFine" class="py-3">
-                                    Data fine
-                                </label>
-                                <input type="date" formControlName="dataFine" id="dataFine"
-                                    [min]="torneoForm.controls['dataInizio'].value|| todayDatePlusOneString"
-                                    class="form-control">
-                            </div>
-                            <div class="row py-3"
-                                *ngIf="torneoForm.controls['dataInizio'].value && torneoForm.controls['dataFine'].value">
-                                <label for="stato py-3"> Stato</label>
-                                <div class="col-sm-4 p-2 state-container" *ngFor="let s of stati index as i">
-                                    <div class="boder p-1 shadow-sm" (click)="checkClick(i)">
-                                        <div class="text-start">
-                                            <input type="radio" id="check-{{i}}" class="form-control-check"
-                                                formControlName="stato" id="stato" [value]="s">
-                                        </div>
-                                        <div class="text-center py-2"
-                                            [ngClass]="s=='ANNUNCIATO'?'text-info':s=='IN_CORSO'?'text-success':'text-danger'">
-                                            {{s}}</div>
-                                    </div>
+<div mat-dialog-title>
+    <h2>Aggiungi un torneo
+    </h2>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="torneoForm" class="w-75 m-auto row">
+        <div class="col-12">
+            <label for="nome" class="py-3">
+                Nome
+            </label>
+            <input type="text" formControlName="nome" id="nome" class="form-control">
+            <p class="fs-6 text-danger" *ngIf="torneoForm.controls['nome'].value.length >30">
+                Massimo 30 caratteri
+            </p>
+            <div class="col-12" *ngIf="torneoForm.controls['nome'].value && checkNomeValueLength()">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="dataInizio" class="py-3">
+                            Data inizio
+                        </label>
+                        <input type="date" formControlName="dataInizio" [min]="todayDateString" id="dataInizio"
+                            (change)="checkDataFineValueMayor()" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label for="dataFine" class="py-3">
+                            Data fine
+                        </label>
+                        <input type="date" formControlName="dataFine" id="dataFine"
+                            [min]="torneoForm.controls['dataInizio'].value|| todayDatePlusOneString"
+                            class="form-control">
+                    </div>
+                    <div class="row py-3"
+                        *ngIf="torneoForm.controls['dataInizio'].value && torneoForm.controls['dataFine'].value">
+                        <label for="stato py-3"> Stato</label>
+                        <div class="col-sm-4 p-2 state-container" *ngFor="let s of stati index as i">
+                            <div class="boder p-1 shadow-sm" (click)="checkClick(i)" [ngClass]="addClass(s)">
+                                <div class="text-start">
+                                    <input type="radio" id="check-{{i}}" class="form-control-check"
+                                        formControlName="stato" id="stato" [value]="s">
                                 </div>
-                                <div class="col-12 py-3" *ngIf="torneoForm.controls['stato'].value">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <label for="gioco py-3">Gioco</label>
-                                            <div class="text-start">
-                                                <button class="btn" (click)="addGame = !addGame">
-                                                    <i class="bi bi-plus h2" [matTooltip]="'Aggiungi gioco'"
-                                                        [matTooltipPosition]="'above'"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-12 d-flex" *ngIf="addGame">
+                                <div class="text-center py-2"
+                                    [ngClass]="s=='ANNUNCIATO'?'text-info':s=='IN_CORSO'?'text-success':'text-danger'">
+                                    {{s}}</div>
+                            </div>
+                        </div>
+                        <div class="col-12 py-3" *ngIf="torneoForm.controls['stato'].value">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="gioco py-3">Gioco</label>
+                                    <div class="text-start">
+                                        <button class="btn" (click)="addGame = !addGame; selectedGame = null;">
+                                            <i class="bi bi-plus h2" [matTooltip]="'Aggiungi gioco'"
+                                                [matTooltipPosition]="'above'"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-12" *ngIf="addGame && !selectedGame">
+                                        <div class="row">
+                                            <div class="col-12 d-flex">
                                                 <input type="text" placeholder="Cerca un gioco" class="form-control"
                                                     #giocoName (input)="searchGame(giocoName.value)">
                                                 <button class="btn mx-2">
@@ -61,17 +63,71 @@
                                                 </button>
                                             </div>
                                         </div>
+                                        <div class="col-12 d-flex p-2 my-4 justify-content-center"
+                                            *ngIf="isSearchingGames">
+                                            <mat-spinner color="warn"></mat-spinner>
+                                        </div>
+                                        <div class="col-12" *ngIf="!isSearchingGames">
+                                            <div class="row">
+                                                <div class="col-sm-6 mt-5 p-1" *ngFor="let g of giochi?.content">
+                                                    <div class="border p-1 shadow-sm gioco-container overflow-y-scroll overflow-x-hidden"
+                                                        [ngClass]="addClass('')" [style.height]="'200px'"
+                                                        style.backgroundImage="linear-gradient(to right, rgba(255,255,255, 0.8) 0 100%),url('{{'data:image/png;base64,'+g?.image}}')">
+                                                        <div class="w-100 p-2 text-end">
+                                                            <button class="btn" (click)="chooseGame(g)">
+                                                                <i class="bi bi-check2-square h3"
+                                                                    matTooltip="Scegli gioco"
+                                                                    [matTooltipPosition]="'above'"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="w-100 bg-light py-2 border shadow-sm">
+                                                            {{g.nomeGioco}}
+                                                        </div>
+                                                        <div class="d-flex mt-4">
+                                                            <div class="bg-light p-1 m-auto border shadow-sm">
+                                                                <img src="assets/home/star.png" [style.width]="'10px'"
+                                                                    [style.height]="'10px'"
+                                                                    *ngFor="let d of difficulties index as i" alt="star"
+                                                                    class="m-1" [ngClass]="i< g.difficolta?'':'d-none'">
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="p-2">
+                                                            <div class="p-1 bg-light border shadow-sm">
+                                                                {{g.descrizione}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 p-1" *ngFor="let c of g.categorie">
+                                                                <div class="border w-75 m-auto shadow-sm p-1 bg-light">
+                                                                    {{c.nome}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12 p-1"
+                                                                *ngIf="g.categorie == null || g?.categorie.length == 0">
+                                                                <div class="border w-75 m-auto shadow-sm p-1 bg-light">
+                                                                    Non ci sono categorie
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12" *ngIf="giochi?.content?.lenght == 0">
+                                                    Non ci sono giochi ...
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class="col-12" mat-dialog-actions>
+    </form>
+</div>
+<div mat-dialog-actions>
 
-        </div>
-    </div>
 </div>

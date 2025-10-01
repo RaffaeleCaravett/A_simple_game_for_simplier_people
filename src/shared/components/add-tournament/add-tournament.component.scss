@@ -11,3 +11,48 @@ label {
         scale: 1.05;
     }
 }
+
+.gioco-container {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.box-info {
+    transition: 1s;
+    border-top: 3.5px solid lightskyblue !important;
+
+    &:hover {
+        transition: 1s;
+        box-shadow: 2px 2px 2px lightskyblue !important;
+    }
+}
+
+.box-success {
+    transition: 1s;
+    border-top: 3.5px solid rgb(31, 150, 45) !important;
+
+    &:hover {
+        transition: 1s;
+        box-shadow: 2px 2px 2px rgb(31, 150, 45) !important;
+    }
+}
+
+.box-danger {
+    transition: 1s;
+    border-top: 3.5px solid rgb(252, 63, 63) !important;
+
+    &:hover {
+        transition: 1s;
+        box-shadow: 2px 2px 2px rgb(252, 63, 63) !important;
+    }
+}
+
+.bi-check2-square {
+    transition: 1s !important;
+
+    &:hover {
+        transition: 1s !important;
+        scale: 1.1 !important;
+    }
+}
