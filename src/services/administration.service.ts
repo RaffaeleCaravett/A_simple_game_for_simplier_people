@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../core/environment";
+import { TorneoDTO } from "../interfaces/interfaces";
 
 @Injectable({
     providedIn: 'root'
@@ -94,5 +95,9 @@ export class AdministrationService {
         }
 
         return this.http.get(environment.API_URL + this.torneo, { params: params })
+    }
+
+    addTorneo(torneo: TorneoDTO) {
+        return this.http.post(environment.API_URL + this.torneo, torneo);
     }
 }

@@ -62,6 +62,13 @@ export interface Categoria {
 export interface BlockedDTO {
     utente_id: number
 }
+export interface TorneoDTO {
+    nome: string,
+    gioco_id: number,
+    dateFrom: string,
+    dateTo: string,
+    stato: string
+}
 export interface Gioco {
     id: number,
     nomeGioco: string;
