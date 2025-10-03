@@ -78,7 +78,8 @@
                                                 <div class="col-sm-6 mt-5 p-1" *ngFor="let g of giochi?.content">
                                                     <div class="w-100 p-2 text-end">
                                                         <button class="btn" (click)="chooseGame(g)">
-                                                            <i class="bi bi-check2-square h3" matTooltip="Scegli gioco"
+                                                            <i class="bi bi-check2-square h3"
+                                                                matTooltip="Scegli {{g.nomeGioco}}"
                                                                 [matTooltipPosition]="'above'"></i>
                                                         </button>
                                                     </div>
@@ -237,6 +238,17 @@
             </div>
             <div class="col-12 py-5">
                 <button class="btn shadow" (click)="addTorneo()">Conferma</button>
+            </div>
+            <div class="col-12 py-3" *ngIf="confirmation">
+                <p class="fs-4">Confermi di voler creare il torneo?</p>
+                <div class="d flex justify-content-center">
+                    <button class="btn btn-outline-secondary m-1" (click)="addTorneo()">
+                        Conferma
+                    </button>
+                    <button class="btn btn-outline-dark m-1" (click)="confirmation = false;">
+                        No
+                    </button>
+                </div>
             </div>
         </div>
     </div>

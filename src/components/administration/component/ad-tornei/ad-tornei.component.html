@@ -40,8 +40,13 @@
         <h2>Non ci sono tornei ...</h2>
     </div>
     <div class="col-12" *ngIf="(tornei && tornei?.content?.length > 0)&&!showTorneiSpinner">
-        <div class="row">
-            
+        <div class="row p-3 my-2 shadow-sm border" *ngFor="let t of tornei?.content">
+            <div class="col-12">
+                <h2>
+                    {{t.name}}
+
+                </h2>
+            </div>
         </div>
     </div>
 </div>

@@ -6,7 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToastrService } from 'ngx-toastr';
 import { GiochiService } from '../../../services/giochi.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Gioco } from '../../../interfaces/interfaces';
+import { Gioco, TorneoDTO } from '../../../interfaces/interfaces';
 import { AdministrationService } from '../../../services/administration.service';
 
 @Component({
@@ -21,13 +21,14 @@ export class AddTournamentComponent implements OnInit {
   todayDateDate: Date = new Date();
   todayDateString: string = this.todayDateDate.toISOString().split('T')[0];
   todayDatePlusOneString: string = new Date(this.todayDateDate.setDate(this.todayDateDate.getDate() + 1)).toISOString().split('T')[0];
-  stati: string[] = ['ANNUNCIATO', 'IN_CORSO', 'TERMINATO'];
+  stati: string[] = ['ANNUNCIATO'];
   addGame: boolean = false;
   giochi: any = null;
   isSearchingGames: boolean = false;
   difficulties: number[] = [1, 2, 3, 4, 5];
   selectedGame: Gioco | null = null;
   step: number = 1;
+  confirmation: boolean = false;
   constructor(private dialogRef: MatDialogRef<AddTournamentComponent>, private toastr: ToastrService, private giochiService: GiochiService,
     private administration: AdministrationService
   ) {
@@ -58,6 +59,11 @@ export class AddTournamentComponent implements OnInit {
         this.torneoForm.controls['dataFine'].setValue('');
         this.torneoForm.controls['dataFine'].updateValueAndValidity();
       }
+    }
+    if (inizio && inizio == new Date().toISOString().split('T')[0]) {
+      this.stati.push('IN_CORSO');
+    } else {
+      this.stati = this.stati.filter(s => s != 'IN_CORSO');
     }
   }
   checkClick(i: number) {
@@ -101,22 +107,26 @@ export class AddTournamentComponent implements OnInit {
   }
 
   addTorneo() {
-    if (this.torneoForm.valid) {
-      let torneoForm = this.torneoForm.controls;
-      let tournament = {
-        nome: torneoForm['nome'].value,
-        gioco_id: torneoForm['gioco'].value,
-        dateFrom: torneoForm['dataInizio'].value,
-        dateTo: torneoForm['dataFine'].value,
-        stato: torneoForm['stato'].value
-      }
-      this.administration.addTorneo(tournament).subscribe({
-        next: (data: any) => {
-          this.close(true);
-        }
-      });
+    if (!this.confirmation) {
+      this.confirmation = true;
     } else {
-      this.toastr.show("Compila correttamente il form. Ci sono delle informazioni mancanti.");
+      if (this.torneoForm.valid) {
+        let torneoForm = this.torneoForm.controls;
+        let tournament: TorneoDTO = {
+          nome: torneoForm['nome'].value,
+          gioco_id: torneoForm['gioco'].value,
+          dateFrom: torneoForm['dataInizio'].value,
+          dateTo: torneoForm['dataFine'].value,
+          stato: torneoForm['stato'].value
+        }
+        this.administration.addTorneo(tournament).subscribe({
+          next: (data: any) => {
+            this.close(true);
+          }
+        });
+      } else {
+        this.toastr.show("Compila correttamente il form. Ci sono delle informazioni mancanti.");
+      }
     }
   }
 
