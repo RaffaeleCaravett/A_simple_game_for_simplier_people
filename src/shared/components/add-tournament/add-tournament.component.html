@@ -6,8 +6,8 @@
     <div class="text-end w-100 py-4">
         <button class="btn shadow" *ngIf="torneoForm.valid && step == 1" (click)="changeStep(2)">Vai avanti <i
                 class="bi bi-arrow-right"></i></button>
-        <button class="btn shadow" *ngIf="torneoForm.valid && step == 2" (click)="changeStep(1)">Vai indietro <i
-                class="bi bi-arrow-left"></i></button>
+        <button class="btn shadow" *ngIf="torneoForm.valid && step == 2" (click)="changeStep(1)"><i
+                class="bi bi-arrow-left"> Vai indietro</i></button>
     </div>
     <form [formGroup]="torneoForm" class="w-75 m-auto row" *ngIf="step == 1">
         <div class="col-12">
@@ -76,16 +76,15 @@
                                         <div class="col-12" *ngIf="!isSearchingGames">
                                             <div class="row">
                                                 <div class="col-sm-6 mt-5 p-1" *ngFor="let g of giochi?.content">
+                                                    <div class="w-100 p-2 text-end">
+                                                        <button class="btn" (click)="chooseGame(g)">
+                                                            <i class="bi bi-check2-square h3" matTooltip="Scegli gioco"
+                                                                [matTooltipPosition]="'above'"></i>
+                                                        </button>
+                                                    </div>
                                                     <div class="border p-1 shadow-sm gioco-container overflow-y-scroll overflow-x-hidden"
                                                         [ngClass]="addClass('')" [style.height]="'200px'"
                                                         style.backgroundImage="linear-gradient(to right, rgba(255,255,255, 0.8) 0 100%),url('{{'data:image/png;base64,'+g?.image}}')">
-                                                        <div class="w-100 p-2 text-end">
-                                                            <button class="btn" (click)="chooseGame(g)">
-                                                                <i class="bi bi-check2-square h3"
-                                                                    matTooltip="Scegli gioco"
-                                                                    [matTooltipPosition]="'above'"></i>
-                                                            </button>
-                                                        </div>
                                                         <div class="w-100 bg-light py-2 border shadow-sm">
                                                             {{g.nomeGioco}}
                                                         </div>
@@ -130,12 +129,6 @@
                                             <div class="border p-1 shadow-sm gioco-container overflow-y-scroll overflow-x-hidden"
                                                 [ngClass]="addClass('')" [style.height]="'200px'"
                                                 style.backgroundImage="linear-gradient(to right, rgba(255,255,255, 0.8) 0 100%),url('{{'data:image/png;base64,'+selectedGame.image}}')">
-                                                <div class="w-100 p-2 text-end">
-                                                    <button class="btn" (click)="chooseGame(selectedGame)">
-                                                        <i class="bi bi-check2-square h3" matTooltip="Scegli gioco"
-                                                            [matTooltipPosition]="'above'"></i>
-                                                    </button>
-                                                </div>
                                                 <div class="w-100 bg-light py-2 border shadow-sm">
                                                     {{selectedGame.nomeGioco}}
                                                 </div>
@@ -242,12 +235,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 py-3">
-                <button class="btn" (click)="addTorneo()">Conferma</button>
+            <div class="col-12 py-5">
+                <button class="btn shadow" (click)="addTorneo()">Conferma</button>
             </div>
         </div>
     </div>
 </div>
 <div mat-dialog-actions>
-
+    <div class="w-100 text-end py-4">
+        <button class="btn btn-outline-danger" (click)="close(false)">Esci</button>
+    </div>
 </div>

@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GiochiService } from '../../../services/giochi.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Gioco } from '../../../interfaces/interfaces';
+import { AdministrationService } from '../../../services/administration.service';
 
 @Component({
   selector: 'app-add-tournament',
@@ -27,7 +28,9 @@ export class AddTournamentComponent implements OnInit {
   difficulties: number[] = [1, 2, 3, 4, 5];
   selectedGame: Gioco | null = null;
   step: number = 1;
-  constructor(private dialogRef: MatDialogRef<AddTournamentComponent>, private toastr: ToastrService, private giochiService: GiochiService) {
+  constructor(private dialogRef: MatDialogRef<AddTournamentComponent>, private toastr: ToastrService, private giochiService: GiochiService,
+    private administration: AdministrationService
+  ) {
 
   }
 
@@ -107,7 +110,11 @@ export class AddTournamentComponent implements OnInit {
         dateTo: torneoForm['dataFine'].value,
         stato: torneoForm['stato'].value
       }
-      this.toastr.show("Da aggiungere ...");
+      this.administration.addTorneo(tournament).subscribe({
+        next: (data: any) => {
+          this.close(true);
+        }
+      });
     } else {
       this.toastr.show("Compila correttamente il form. Ci sono delle informazioni mancanti.");
     }
@@ -115,5 +122,9 @@ export class AddTournamentComponent implements OnInit {
 
   changeStep(step: number) {
     this.step = step;
+  }
+
+  close(value?: boolean) {
+    this.dialogRef.close(value);
   }
 }
