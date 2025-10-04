@@ -65,7 +65,6 @@ export class AdministrationService {
     getAllTorneiPaged(page?: number, size?: number, order?: string, nome?: string, stato?: string, creazione?: string, inizio?: string, fine?: string, gioco?: string) {
 
         let params: HttpParams = new HttpParams();
-
         if (page) {
             params = params.set('page', page);
         }
@@ -99,5 +98,11 @@ export class AdministrationService {
 
     addTorneo(torneo: TorneoDTO) {
         return this.http.post(environment.API_URL + this.torneo, torneo);
+    }
+    deleteTorneo(torneoId: number) {
+        return this.http.delete(environment.API_URL + this.torneo + `/${torneoId}`)
+    }
+    putTorneo(torneoId: number, nome: string, torneo: any) {
+        return this.http.put(environment.API_URL + this.torneo + `/${torneoId}/${nome}`, torneo);
     }
 }

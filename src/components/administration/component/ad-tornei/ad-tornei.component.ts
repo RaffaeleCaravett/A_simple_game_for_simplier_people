@@ -20,8 +20,8 @@ export class AdTorneiComponent implements OnInit {
 
   selectedTorneo: any = null;
   tornei: any = null;
-  page: number = 0;
-  size: number = 10;
+  page: number = 1;
+  size: number = 5;
   orderBy: string = 'id';
   nome: string = '';
   stato: string = '';
@@ -45,7 +45,7 @@ export class AdTorneiComponent implements OnInit {
 
   giveBackArray(f: string) {
     if (f == 'Elementi') {
-      return ['10', '20', '50'];
+      return ['5', '20', '50'];
     } else if (f == 'Ordina') {
       return ['Id', 'Utenti iscritti', 'Nome torneo', 'Data creazione', 'Data inizio', 'Data fine', 'Stato'];
     } else if (f == 'Stato') {
@@ -56,8 +56,8 @@ export class AdTorneiComponent implements OnInit {
   }
   initializeForms() {
     this.filtersForm = new FormGroup({
-      pagina: new FormControl(0, Validators.max(this.maxPage || 0)),
-      elementi: new FormControl(10, Validators.required),
+      pagina: new FormControl(1, Validators.max(this.maxPage || 0)),
+      elementi: new FormControl(5, Validators.required),
       ordina: new FormControl('Id', Validators.required),
       nome: new FormControl(''),
       stato: new FormControl(''),
@@ -83,7 +83,7 @@ export class AdTorneiComponent implements OnInit {
 
   getTornei() {
     this.showTorneiSpinner = true;
-    this.administration.getAllTorneiPaged(this.page, this.size, this.orderBy, this.nome, this.stato, this.dataCreazione, this.dataInizio, this.dataFine, this.nomeGioco)
+    this.administration.getAllTorneiPaged(this.page - 1, this.size, this.orderBy, this.nome, this.stato, this.dataCreazione, this.dataInizio, this.dataFine, this.nomeGioco)
       .subscribe({
         next: (data: any) => {
           if (data) {
@@ -97,6 +97,16 @@ export class AdTorneiComponent implements OnInit {
       });
   }
 
+  checkValue(value: string) {
+    let numb = Number(value);
+    if (numb < 1) {
+      this.filtersForm.controls['pagina'].setValue(1);
+    }
+    else {
+      this.filtersForm.controls['pagina'].setValue(numb > this.tornei?.totalPages ? this.tornei.totalPages : numb);
+    }
+    this.filtersForm.controls['pagina'].updateValueAndValidity();
+  }
   aggiungiTorneo() {
     const dialogRef = this.matDialog.open(AddTournamentComponent);
     dialogRef.afterClosed().subscribe((data: any) => {
@@ -118,5 +128,14 @@ export class AdTorneiComponent implements OnInit {
         this.toastr.show("Non è stata effettuata nessuna azione");
       }
     })
+  }
+  handlePageEvent(event: string) {
+    if (event == 'plus') {
+      this.page = this.page + 1;
+    } else {
+      this.page = this.page - 1;
+    }
+    this.getTornei();
+
   }
 }

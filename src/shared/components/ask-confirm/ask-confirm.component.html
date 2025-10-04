@@ -43,10 +43,16 @@
         </div>
         <div *ngIf="torneo!=null && action != 'Elimina'" class="py-4">
             <form [formGroup]="torneoForm">
-                <label for="categoria" class="fs-2 py-2 text-start">{{getLowerAction(action) + " il torneo"
+                <label for="categoria" class="fs-2 py-2 text-start">{{getLowerAction(action) + " il nome del torneo"
                     }}
                     <span class="text-success fw-bold">{{torneo?.id + " -" +
                         torneo?.name}}</span></label>
+                <input type="text" class="form-control my-3" formControlName="torneo">
+                <p class="mt-3 fs-4">
+                    <u>
+                        *Per ragioni amministrative puoi cambiare solo il nome del torneo.
+                    </u>
+                </p>
             </form>
         </div>
         <div *ngIf="(recensione == null && giocoName == null && categoria == null && torneo == null) || action == 'Elimina'"

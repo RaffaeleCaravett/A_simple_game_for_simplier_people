@@ -49,6 +49,10 @@ export class AskConfirmComponent implements OnInit {
       this.categoriaForm = new FormGroup({
         categoria: new FormControl(this.categoria.nome, Validators.required)
       });
+    } else if (this.torneo && this.torneo != undefined) {
+      this.torneoForm = new FormGroup({
+        torneo: new FormControl(this.torneo?.name, Validators.required)
+      });
     }
   }
 
@@ -91,11 +95,23 @@ export class AskConfirmComponent implements OnInit {
       }
     } else if (this.torneo != null) {
       if (this.action == 'Elimina') {
-        this.toastr.show("Eliminato!");
+        this.administrationService.deleteTorneo(this.torneo.id).subscribe({
+          next: (data: any) => {
+            this.dialogRef.close("Torneo eliminato con successo");
+          }
+        })
       } else if (this.action == 'Modifica') {
-        this.toastr.show("Modificato!");
+        if (this.torneoForm.valid) {
+          this.administrationService.putTorneo(this.torneo.id,this.torneoForm.controls['torneo'].value,  {})
+            .subscribe({
+              next: (data: any) => {
+                this.dialogRef.close("Torneo modificato con successo");
+              }
+            });
+        } else {
+          this.toastr.error("Inserisci un nome!");
+        }
       }
-      this.dialogRef.close(true);
     } else {
       this.dialogRef.close(true);
     }

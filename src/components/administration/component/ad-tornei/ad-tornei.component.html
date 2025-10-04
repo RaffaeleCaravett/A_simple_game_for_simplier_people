@@ -18,7 +18,9 @@
                             [formControlName]="f.toLowerCase()" (change)="updateFilters()">
                         <input type="date" class="form-control" *ngIf="f == 'Creazione' || f == 'Inizio' || f == 'Fine'"
                             [formControlName]="f.toLowerCase()" (change)="updateFilters()">
-                        <input type="number" class="form-control" *ngIf="f=='Pagina'" [max]="maxPage||0">
+                        <input type="number" class="form-control" [formControlName]="f.toLowerCase()"
+                            *ngIf="f=='Pagina'" (change)="updateFilters()" (input)="checkValue(pageNumber.value);"
+                            #pageNumber [max]="maxPage||0" [min]="1">
                         <select name="{{f}}" id="{{f}}" class="form-select"
                             *ngIf="f=='Elementi'|| f =='Ordina'|| f =='Stato'" [formControlName]="f.toLowerCase()"
                             (change)="updateFilters()">
@@ -40,8 +42,8 @@
         <h2>Non ci sono tornei ...</h2>
     </div>
     <div class="col-12 tuornament-container" *ngIf="(tornei && tornei?.content?.length > 0)&&!showTorneiSpinner">
-        <div class="row p-3 my-2 shadow-sm border" *ngFor="let t of tornei?.content">
-            <div class="col-md-4 tournament-gioco-image-container">
+        <div class="row p-3 my-2 shadow-sm border tournament-container" *ngFor="let t of tornei?.content">
+            <div class="col-md-4 tournament-gioco-image-container shadow-sm">
                 <div class="w-100 tournament-gioco-image"
                     style.background="url({{'data:image/png;base64,'+ t?.gioco?.image}})">
 
@@ -95,6 +97,28 @@
                         già giocato.
                     </div>
                 </ng-template>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center align-items-center py-3">
+                <button class="btn" matTooltip="Vai indietro" matTooltipPosition="above"
+                    (click)="handlePageEvent('minus')">
+                    <i class="bi bi-arrow-left-circle-fill h1" *ngIf="!tornei.first"></i>
+                </button>
+                <p>
+                    Elementi {{(size*(page)-(size-1))+" - " +
+                    (size*(page)>tornei.totalElements?tornei.totalElements:size*(page)) +" di " +
+                    tornei.totalElements }}
+                </p>
+                <button class="btn" matTooltip="Vai avanti" matTooltipPosition="above"
+                    (click)="handlePageEvent('plus')">
+                    <i class="bi bi-arrow-right-circle-fill h1" *ngIf="!tornei.last"></i>
+                </button>
+            </div>
+            <div class="col-12 text-center">
+                <p>
+                    Pagina {{tornei.number+1}} di {{tornei.totalPages}}
+                </p>
             </div>
         </div>
     </div>
