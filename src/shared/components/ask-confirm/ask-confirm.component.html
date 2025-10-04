@@ -41,14 +41,27 @@
                     formControlName="categoria" id="categoria">
             </form>
         </div>
-        <div *ngIf="(recensione == null && giocoName == null && categoria == null) || action == 'Elimina'"
+        <div *ngIf="torneo!=null && action != 'Elimina'" class="py-4">
+            <form [formGroup]="torneoForm">
+                <label for="categoria" class="fs-2 py-2 text-start">{{getLowerAction(action) + " il torneo"
+                    }}
+                    <span class="text-success fw-bold">{{torneo?.id + " -" +
+                        torneo?.name}}</span></label>
+            </form>
+        </div>
+        <div *ngIf="(recensione == null && giocoName == null && categoria == null && torneo == null) || action == 'Elimina'"
             [style.height]="'100px'">
             <p class="fs-2">
                 Vuoi davvero {{action == 'Accetta' ? ' accettare ': action == 'Rifiuta'? ' rifiutare ' : action ==
                 'Modifica'? 'modificare' : action == 'Elimina'? 'eliminare': ' annullare '}}
-                la {{action=='Modifica' || action =='Elimina'?'categoria':'richiesta'}}
-                {{categoria?(categoria.id + " - " +
-                categoria.nome):''}}'?
+                {{action=='Modifica' || action =='Elimina'?torneo!=null?'il torneo':'la categoria':'la richiesta'}}
+                <span class="text-danger">
+                    {{categoria?(categoria.id + " - " +
+                    categoria.nome):''}}
+                </span>
+                <span class="text-danger">
+                    {{torneo?torneo?.name:''}}
+                </span>??
             </p>
         </div>
     </mat-dialog-content>

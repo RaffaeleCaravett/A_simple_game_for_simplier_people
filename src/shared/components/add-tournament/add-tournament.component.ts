@@ -132,6 +132,9 @@ export class AddTournamentComponent implements OnInit {
 
   changeStep(step: number) {
     this.step = step;
+    if (step == 1) {
+      this.confirmation = false;
+    }
   }
 
   close(value?: boolean) {

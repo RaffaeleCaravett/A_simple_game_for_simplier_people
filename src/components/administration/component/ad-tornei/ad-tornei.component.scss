@@ -2,3 +2,20 @@
     min-width: 250px;
     border-top: 5px solid rgb(111, 111, 255) !important;
 }
+
+.tournament-gioco-image-container {
+    display: flex;
+    align-items: center;
+    vertical-align: center;
+    justify-content: center;
+
+    .tournament-gioco-image {
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-color: whitesmoke;
+        min-height: 100px;
+    }
+
+    box-shadow: 0px 0px 5px 5px rgb(111, 111, 255);
+}

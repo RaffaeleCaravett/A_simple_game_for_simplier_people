@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from "@angular/common";
+import { NgFor, NgIf, NgClass } from "@angular/common";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AdministrationService } from '../../../../services/administration.service';
 import { ToastrService } from 'ngx-toastr';
@@ -7,11 +7,12 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { MatDialog } from '@angular/material/dialog';
 import { AddTournamentComponent } from '../../../../shared/components/add-tournament/add-tournament.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AskConfirmComponent } from '../../../../shared/components/ask-confirm/ask-confirm.component';
 
 @Component({
   selector: 'app-ad-tornei',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, MatTooltip, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, MatTooltip, MatProgressSpinnerModule, NgClass],
   templateUrl: './ad-tornei.component.html',
   styleUrl: './ad-tornei.component.scss'
 })
@@ -32,6 +33,7 @@ export class AdTorneiComponent implements OnInit {
   maxPage: number | null = null;
   filtersForm: FormGroup = new FormGroup({});
   showTorneiSpinner: boolean = false;
+
   constructor(private administration: AdministrationService, private toastr: ToastrService, private matDialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -106,5 +108,15 @@ export class AdTorneiComponent implements OnInit {
       }
     });
   }
-
+  openDialog(action: string, torneo: any) {
+    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, action, null, torneo] });
+    dialogRef.afterClosed().subscribe((data: any) => {
+      if (data) {
+        this.toastr.success(data);
+        this.getTornei();
+      } else {
+        this.toastr.show("Non è stata effettuata nessuna azione");
+      }
+    })
+  }
 }

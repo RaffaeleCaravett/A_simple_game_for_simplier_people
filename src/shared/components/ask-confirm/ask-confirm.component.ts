@@ -29,6 +29,8 @@ export class AskConfirmComponent implements OnInit {
   recePoints: number = 0;
   categoria: Categoria | null = null;
   categoriaForm: FormGroup = new FormGroup({});
+  torneo: any = null;
+  torneoForm: FormGroup = new FormGroup({});
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<AskConfirmComponent>, private authService: AuthService,
     private recensioneService: RecensioneService, private administrationService: AdministrationService, private toastr: ToastrService) {
     this.user = this.authService.getUser()!;
@@ -42,6 +44,7 @@ export class AskConfirmComponent implements OnInit {
     this.action = this.data[2]
     this.recePoints = this.recensione?.punteggio
     this.categoria = this.data[3];
+    this.torneo = this.data[4];
     if (this.categoria && this.categoria != undefined) {
       this.categoriaForm = new FormGroup({
         categoria: new FormControl(this.categoria.nome, Validators.required)
@@ -86,6 +89,13 @@ export class AskConfirmComponent implements OnInit {
           this.toastr.error("Inserisci il nome prima.");
         }
       }
+    } else if (this.torneo != null) {
+      if (this.action == 'Elimina') {
+        this.toastr.show("Eliminato!");
+      } else if (this.action == 'Modifica') {
+        this.toastr.show("Modificato!");
+      }
+      this.dialogRef.close(true);
     } else {
       this.dialogRef.close(true);
     }

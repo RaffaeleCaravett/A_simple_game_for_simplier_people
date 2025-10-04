@@ -39,13 +39,62 @@
     <div class="col-12" *ngIf="(!tornei || tornei?.content?.length == 0)&&!showTorneiSpinner">
         <h2>Non ci sono tornei ...</h2>
     </div>
-    <div class="col-12" *ngIf="(tornei && tornei?.content?.length > 0)&&!showTorneiSpinner">
+    <div class="col-12 tuornament-container" *ngIf="(tornei && tornei?.content?.length > 0)&&!showTorneiSpinner">
         <div class="row p-3 my-2 shadow-sm border" *ngFor="let t of tornei?.content">
-            <div class="col-12">
-                <h2>
-                    {{t.name}}
+            <div class="col-md-4 tournament-gioco-image-container">
+                <div class="w-100 tournament-gioco-image"
+                    style.background="url({{'data:image/png;base64,'+ t?.gioco?.image}})">
 
-                </h2>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-end align-items-center">
+                        <button class="btn btn-outline-secondary mx-1" matTooltip="Modifica" matTooltipPosition="above"
+                            (click)="openDialog('Modifica',t)">
+                            <i class="bi bi-pencil h3"></i>
+                        </button>
+                        <button class="btn btn-outline-danger mx-1" matTooltip="Elimina" matTooltipPosition="above"
+                            (click)="openDialog('Elimina',t)">
+                            <i class="bi bi-trash h3"></i>
+                        </button>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="text-center">
+                            {{t.name}}
+                        </h2>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="fs-4 text-center">
+                            Stato
+                        </p>
+                        <p class="fs-5 text-center fw-bold"
+                            [ngClass]="t?.tournamentState =='ANNUNCIATO'?'text-info' : t?.tournamentState =='IN_CORSO'?'text-success':'text-danger'">
+                            {{t?.tournamentState}}
+                        </p>
+                    </div>
+                    <div class="col-md-8">
+                        <p class="fs-4 text-center">
+                            Date
+                        </p>
+                        <p class="fs-5 text-center fw-bold">
+                            <span class="mx-2">{{t?.startDate}}</span>
+                            <span class="mx-2">{{t.endDate}}</span>
+                        </p>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="col-12 pt-3 fs-4 text-center" *ngIf="(t?.users?.length == 0 || !t?.users)else usersLength">
+                    Diventa il primo a partecipare!
+                </div>
+                <ng-template #usersLength>
+                    <div class="col-12 pt-3 fs-4 text-center">
+                        {{t?.users?.length==1? (t?.users?.length +'
+                        user ha' ):
+                        (t?.users?.length +' users hanno')}}
+                        già giocato.
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>
