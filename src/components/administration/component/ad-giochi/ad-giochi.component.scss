@@ -48,9 +48,42 @@ ol {
     transform: rotate(-45deg);
 }
 
-.categoria{
-    z-index: 5!important;
+.categoria {
+    z-index: 5 !important;
 }
-.banner{
+
+.banner {
     z-index: 1;
+}
+
+.shadow-lg {
+    box-shadow: 3px 3px 3px 3px dark !important;
+}
+
+.action {
+    transition: .5s;
+
+    &:hover {
+        transition: .5s;
+        scale: 1.2 !important;
+    }
+}
+
+label {
+    font-size: 30px !important;
+    margin-bottom: 3%;
+    margin-top: 3%;
+}
+
+.game-container {
+    .to-point {
+        transition: 1s;
+    }
+
+    &:hover {
+        .to-point {
+            transition: 1s;
+            scale: 1.05;
+        }
+    }
 }

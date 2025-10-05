@@ -12,12 +12,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RecensioniComponent } from '../../../../shared/components/recensioni/recensioni.component';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
   selector: 'app-ad-giochi',
   standalone: true,
-  imports: [NgIf, MatMenuModule, NgFor, ReactiveFormsModule, NgClass, MatSlideToggleModule, FormsModule],
+  imports: [NgIf, MatMenuModule, NgFor, ReactiveFormsModule, NgClass, MatSlideToggleModule, FormsModule, MatTooltipModule],
   templateUrl: './ad-giochi.component.html',
   styleUrl: './ad-giochi.component.scss'
 })
@@ -39,7 +40,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
   pages: number[] = [1];
   categorie: Categoria[] = [];
   choosedCategories: Categoria[] = [];
-  actions: { class: string, action: string }[] = [{ class: "bi bi-eye", action: 'view' }, { class: "bi bi-pencil", action: 'edit' }, { class: "bi bi-trash", action: 'delete' }
+  actions: { class: string, action: string }[] = [{ class: "bi bi-eye text-info fw-bolder", action: 'view' }, { class: "bi bi-pencil text-success fw-bolder", action: 'edit' }, { class: "bi bi-trash text-danger fw-bolder", action: 'delete' }
     , { class: "bi bi-arrow-clockwise", action: 'restore' }];
   showModal: boolean = false;
   choosedAction: string = '';
@@ -68,10 +69,10 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
     } else {
       this.user = this.authService.getUser();
     }
-
     this.innerWidth = window.innerWidth;
     localStorage.setItem('location', 'amministrazione/giochi');
     localStorage.setItem('action', 'giochi');
+    this.searchGiochi();
     this.getAllCategorie();
     this.initializeForms();
   }

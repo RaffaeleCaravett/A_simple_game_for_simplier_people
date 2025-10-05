@@ -85,9 +85,9 @@
         </form>
     </div>
     <div class="col-sm-12" *ngIf="giochiArray.length>0">
-        <div class="row">
+        <div class="row my-5 p-3 border shadow-lg" *ngIf="choosedGame">
             <div class="col-md-12" *ngIf="showModal&&choosedAction=='edit'&& choosedGame">
-                <p class="fs-1">Modifica le componenti del gioco</p>
+                <h2>Modifica le componenti del gioco</h2>
                 <form [formGroup]="editGameForm" class="row">
                     <div class="col-md-4">
                         <label for="nome">Nome</label>
@@ -106,8 +106,8 @@
                             placeholder="Modifica la descrizione ..." class="form-control"
                             (input)="handleEditedGame()"></textarea>
                     </div>
-                    <div class="col-md-12 my-2 text-start">
-                        <p class="fs-3">Modifica l'immagine</p>
+                    <div class="col-md-12 my-5 text-center">
+                        <h2 class="text-center">Modifica l'immagine</h2>
                         <div class="d-flex justify-content-around">
                             <div>
                                 <p class="fs-5">Immagine corrente: </p>
@@ -135,11 +135,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <p class="fs-2">Modifica le categorie</p>
+                    <div class="col-md-12 mt-5">
+                        <h2>Modifica le categorie</h2>
                     </div>
                     <div class="col-md-3">
-                        <label for="categorie pb-2">Aggiungi una categoria</label>
+                        <label for="categorie pb-2 fs-2">Aggiungi una categoria</label>
                         <select name="categorie" id="categorie" class="form-select" #categorie
                             (change)="onAddCategory(categorie.value,categorie)">
                             <option value=""></option>
@@ -148,138 +148,148 @@
                         </select>
                     </div>
                     <div class="col-md-12 mb-4 mt-3">
-                        <p class="text-start">Categorie del gioco </p>
+                        <h2 class="text-center my-5">Categorie del gioco </h2>
                         <div class="row">
-                            <div class="col-md-3 mt-3" *ngFor="let c of choosedGame.categorie">
-                                <span class="p-2 border rounded-circle shadow-sm bg-light">{{c.nome}}</span> <button
+                            <div class="col-md-4 my-5" *ngFor="let c of choosedGame.categorie">
+                                <span class="p-3 shadow-sm border bg-light fs-4">{{c.nome}}</span> <button
                                     class="btn text-danger" title="Elimina" (click)="onRemoveCategory(c)">X</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <button class="btn btn-warning border border-success text-success mb-3"
-                            (click)="modifyGame(choosedGame)">
-                            Modifica definitivamente
-                        </button>
-                    </div>
                 </form>
             </div>
-        </div>
-        <div class="row" *ngIf="showModal&&choosedAction!=''&& choosedGame">
-        </div>
-        <div *ngIf="showModal&&choosedAction!=''&& choosedGame" class="row border rounded">
-            <div class="col-md-12 rounded-top bg-warning p-1 shadow-sm border d-flex justify-content-between">
-                <p class="fs-4 pt-1 w-75 text-center">{{editedChoosedGameName || choosedGame.nomeGioco}}</p>
-                <div class="w-25">
-                    <button class="btn btn-outline-success" *ngIf="choosedAction=='view'"
-                        (click)="manageGame('edit',choosedGame)"><i class="bi bi-pencil h3"></i></button>
-                    <button class="btn btn-outline-danger" (click)="closeModal()"><i class="bi bi-x-lg h3"></i></button>
-                </div>
-            </div>
-            <div class="col-md-4 pt-2">
-                <div style.background="url({{'data:image/png;base64,'+ choosedGame.image}})" [style.width]="'100px'"
-                    [style.height]="'100px'" class="rounded-circle border shadow-sm to-point">
-                </div>
-            </div>
-            <div class="col-md-8 pt-2">
-                <p class="fs-4 w-75 m-auto">
-                    {{editedChoosedGameDescription || choosedGame.descrizione}}
-                </p>
-            </div>
-            <div class="col-md-8">
-                <div class="row p-0 m-0 mt-2">
-                    <div class="col-md-12">
-                        <p class="fs-2">Recensioni</p>
-                    </div>
-                    <div class="col-md-6 p-2" *ngFor="let r of choosedGame.recensione">
-                        <div class="w-100 border rounded shadow-sm">
-                            <p class="fs-4">{{r.commentoPreview}}</p>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <img src="{{r.user.immagineProfilo}}" alt="user_image" [style.width]="'60px'"
-                                        [style.height]="'60px'" class="rounded-circle m-auto border shadow m-auto">
+            <div class="row m-auto" *ngIf="showModal&&choosedAction!=''&& choosedGame">
+                <div class="col-12 border shadow-sm my-5">
+                    <div class="row">
+                        <div class="col-sm-12 bg-warning p-3 w-100 shadow-sm border position-relative">
+                            <p class="fs-1 pt-3 text-center">{{editedChoosedGameName || choosedGame.nomeGioco}}</p>
+                            <div class="position-absolute end-0 top-0 m-2">
+                                <button class="btn btn-outline-success" *ngIf="choosedAction=='view'"
+                                    (click)="manageGame('edit',choosedGame)"><i class="bi bi-pencil h3"></i></button>
+                                <button class="btn btn-outline-danger" (click)="closeModal()"><i
+                                        class="bi bi-x-lg h3"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 pt-2">
+                            <div style.background="url({{'data:image/png;base64,'+ choosedGame.image}})"
+                                [style.width]="'100px'" [style.height]="'100px'"
+                                class="rounded-circle border shadow-sm to-point">
+                            </div>
+                        </div>
+                        <div class="col-md-8 pt-2">
+                            <p class="fs-4 w-75 m-auto">
+                                {{editedChoosedGameDescription || choosedGame.descrizione}}
+                            </p>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row p-0 m-0 mt-2">
+                                <div class="col-md-12">
+                                    <p class="fs-2">Recensioni</p>
                                 </div>
-                                <div class="col-md-8">
-                                    {{r.user.fullName}}
+                                <div class="col-md-6 p-2" *ngFor="let r of choosedGame.recensione">
+                                    <div class="w-100 border rounded shadow-sm">
+                                        <p class="fs-4">{{r.commentoPreview}}</p>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <img src="{{r.user.immagineProfilo}}" alt="user_image"
+                                                    [style.width]="'60px'" [style.height]="'60px'"
+                                                    class="rounded-circle m-auto border shadow m-auto">
+                                            </div>
+                                            <div class="col-md-8">
+                                                {{r.user.fullName}}
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="fs-6">
+                                                    {{r.createdAt}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-12">
-                                    <p class="fs-6">
-                                        {{r.createdAt}}
+                                <div class="col-md-12 text-start" *ngIf="choosedGame.recensione.length>2">
+                                    <button class="btn btn-transparent my-2" (click)="seeValidations(choosedGame)">Vedi
+                                        tutte le
+                                        recensioni</button>
+                                </div>
+                                <div class="col-md-12" *ngIf="choosedGame?.recensione?.length==0">
+                                    <p class="fs-3">
+                                        Non ci sono recensioni ancora ...
                                     </p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-12 text-start" *ngIf="choosedGame.recensione.length>2">
-                        <button class="btn btn-transparent my-2" (click)="seeValidations(choosedGame)">Vedi tutte le
-                            recensioni</button>
-                    </div>
-                    <div class="col-md-12" *ngIf="choosedGame?.recensione?.length==0">
-                        <p class="fs-3">
-                            Non ci sono recensioni ancora ...
-                        </p>
+                        <div class="col-md-4 px-2">
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <p class="fs-2">Difficolta gioco </p>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="text-center" *ngIf="!editedChoosedGameDifficult else editedDifficultNumb"
+                                        [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
+                                        <span class="fw-bolder">{{choosedGame.difficolta}}</span>
+                                    </p>
+                                    <ng-template #editedDifficultNumb>
+                                        <p class="text-center fs-3"
+                                            [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
+                                            <span class="fw-bolder">{{toNumber(editedChoosedGameDifficult)}}</span>
+                                        </p>
+                                    </ng-template>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="text-center fs-3 fw-bolder"
+                                        *ngIf="!editedChoosedGameDifficult else editedDifficult"
+                                        [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
+                                        {{choosedGame.difficolta
+                                        <=3?'FACILE':choosedGame.difficolta<=4?'MEDIO':'DIFFICILE'}} </p>
+                                            <ng-template #editedDifficult>
+                                                <p class="text-center fs-3 fw-bolder"
+                                                    [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
+                                                    {{toNumber(editedChoosedGameDifficult)
+                                                    <=3?'FACILE':toNumber(editedChoosedGameDifficult)<=4?'MEDIO':'DIFFICILE'}}
+                                                        </p>
+                                            </ng-template>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="fs-2 mt-2">Stato gioco:</p>
+                                    <p class="fs-3 fw-bolder text-center"
+                                        [ngClass]="choosedGame.active?'text-success':'text-danger'">
+                                        {{choosedGame.active?"ATTIVO":"INATTIVO"}}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 px-2">
-                <div class="row mt-2">
-                    <div class="col-md-12">
-                        <p class="fs-2">Difficolta gioco </p>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-center" *ngIf="!editedChoosedGameDifficult else editedDifficultNumb"
-                            [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
-                            <span class="fw-bolder">{{choosedGame.difficolta}}</span>
-                        </p>
-                        <ng-template #editedDifficultNumb>
-                            <p class="text-center fs-3"
-                                [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
-                                <span class="fw-bolder">{{toNumber(editedChoosedGameDifficult)}}</span>
-                            </p>
-                        </ng-template>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-center fs-3 fw-bolder" *ngIf="!editedChoosedGameDifficult else editedDifficult"
-                            [ngClass]="choosedGame.difficolta<=3?'text-success':choosedGame.difficolta<=4?'text-warning':'text-danger'">
-                            {{choosedGame.difficolta<=3?'FACILE':choosedGame.difficolta<=4?'MEDIO':'DIFFICILE'}} </p>
-                                <ng-template #editedDifficult>
-                                    <p class="text-center fs-3 fw-bolder"
-                                        [ngClass]="toNumber(editedChoosedGameDifficult)<=3?'text-success':toNumber(editedChoosedGameDifficult)<=4?'text-warning':'text-danger'">
-                                        {{toNumber(editedChoosedGameDifficult)
-                                        <=3?'FACILE':toNumber(editedChoosedGameDifficult)<=4?'MEDIO':'DIFFICILE'}} </p>
-                                </ng-template>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="fs-2 mt-2">Stato gioco:</p>
-                        <p class="fs-3 fw-bolder text-center"
-                            [ngClass]="choosedGame.active?'text-success':'text-danger'">
-                            {{choosedGame.active?"ATTIVO":"INATTIVO"}}</p>
-                    </div>
+                <div class="col-md-12 mt-5" *ngIf="choosedAction=='edit'">
+                    <button class="btn btn-outline-secondary border mb-3 fs-3"
+                        matTooltip="Modifica {{choosedGame.nomeGioco}}" matTooltipPosition="above"
+                        (click)="modifyGame(choosedGame)">
+                        Modifica definitivamente
+                    </button>
                 </div>
             </div>
         </div>
         <h2>Tutti i giochi</h2>
         <div class="row">
-            <div class="col-sm-6 col-md-4 p-2" *ngFor="let g of giochiArray">
-                <div class="overflow-hidden position-relative">
+            <div class="col-sm-6 col-md-4 p-3 " *ngFor="let g of giochiArray">
+                <div class="overflow-hidden position-relative ">
                     <div class="position-absolute p-2 banner pe-none" [ngClass]="g.active?['active']:['inactive']">
                         {{g.active?'Attivo':'Inattivo'}}
                     </div>
-                    <div class="border shadow rounded">
-                        <p class="rounded-top bg-warning fs-5 p-1 border-bottom shadow-sm">{{g.nomeGioco}}</p>
+                    <div class="border shadow-lg bg-light bg-gradient game-container">
+                        <p class="bg-warning fs-1 p-1 py-4 border-bottom shadow-sm">{{g.nomeGioco}}</p>
                         <div class="col-md-12 p-2 text-center">
                             <div alt="immagine_gioco" class="w-100 to-point"
                                 style.background="url('{{'data:image/png;base64,'+g?.image}}')">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-4 my-3" *ngFor="let c of g.categorie">
-                                <span class="rounded-circle p-1 shadow-sm bg-light border categoria">{{c.nome}}</span>
+                            <div class="col-sm-4 my-3 categoria fs-4 p-2" *ngFor="let c of g?.categorie">
+                                {{c?.nome}}
                             </div>
-                            <div class="col-sm-12 my-3" *ngIf="g.categorie.length==0">
-                                <span class="rounded-circle p-1 shadow-sm bg-light border categoria">Nessuna
-                                    categoria</span>
+                            <div class="col12 my-3 categoria fs-4 p-2" *ngIf="g?.categorie?.length==0 || !g?.categorie">
+                                Nessuna
+                                categoria
                             </div>
                         </div>
                         <hr class="py-2">
@@ -287,7 +297,8 @@
                             <div class="row">
                                 <div class="col-4 text-center" *ngFor="let a of actions"
                                     [ngClass]="((a.action =='edit' || a.action == 'delete') && g.active == false) || (a.action == 'restore' && g.active== true)?'d-none':''">
-                                    <button class="btn my-1" title="{{a.action}}" (click)="manageGame(a.action,g)">
+                                    <button class="btn my-1 action" title="{{a.action}}"
+                                        (click)="manageGame(a.action,g)">
                                         <i class="{{a.class}} h3"></i>
                                     </button>
                                 </div>

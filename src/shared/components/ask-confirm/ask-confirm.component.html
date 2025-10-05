@@ -27,7 +27,7 @@
             </div>
         </div>
         <div *ngIf="giocoName!=null" [style.height]="'100px'">
-            <p class="fs-2">
+            <p class="fs-1">
                 Sei sicuro di voler {{getLowerAction(action)+"re" + " " + giocoName}} ?
             </p>
         </div>
@@ -55,7 +55,7 @@
                 </p>
             </form>
         </div>
-        <div *ngIf="(recensione == null && giocoName == null && categoria == null && torneo == null) || action == 'Elimina'"
+        <div *ngIf="(recensione == null && giocoName == null && categoria == null && torneo == null) ||(recensione == null && giocoName == null  && torneo == null && action == 'Elimina')"
             [style.height]="'100px'">
             <p class="fs-2">
                 Vuoi davvero {{action == 'Accetta' ? ' accettare ': action == 'Rifiuta'? ' rifiutare ' : action ==
@@ -76,7 +76,7 @@
     <mat-dialog-actions class="text-end mt-5">
         <button class="btn m-1 fs-4" matTooltip="{{action}}" [matTooltipPosition]="'above'" s (click)="modifica()"
             [ngClass]="action == 'Elimina'?'btn-outline-danger':'btn-light'">{{action}}</button>
-        <button class="btn btn-secondary m-1 fs-4" matTooltip="'Annulla'" [matTooltipPosition]="'above'"
-            [mat-dialog-close]="false">Annulla</button>
+        <button class="btn btn-secondary m-1 fs-4" matTooltip="Esci" [matTooltipPosition]="'above'"
+            [mat-dialog-close]="false">Esci</button>
     </mat-dialog-actions>
 </div>

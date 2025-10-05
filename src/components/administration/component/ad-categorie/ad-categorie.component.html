@@ -11,7 +11,7 @@
         </div>
         <div class="row" *ngIf="!addCategory">
             <div class="col-md-4 col-sm-6 p-3" *ngFor="let c of categorie">
-                <div class="border shadow p-2 category">
+                <div class="border shadow p-2 category bg-light bg-gradient">
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-outline-secondary" [matTooltip]="'Modifica'"
                             [matTooltipPosition]="'above'" (click)="handleEvent('Modifica',c)">
