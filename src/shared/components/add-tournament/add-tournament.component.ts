@@ -86,7 +86,6 @@ export class AddTournamentComponent implements OnInit {
     }, 5000);
   }
   addClass(state: string) {
-    console.log(state)
     switch (state) {
       case ('ANNUNCIATO'): {
         return 'box-info';

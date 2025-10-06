@@ -55,7 +55,7 @@
                 </p>
             </form>
         </div>
-        <div *ngIf="(recensione == null && giocoName == null && categoria == null && torneo == null) ||(recensione == null && giocoName == null  && torneo == null && action == 'Elimina')"
+        <div *ngIf="(recensione == null && giocoName == null && categoria == null && torneo == null) ||(recensione == null && giocoName == null  && action == 'Elimina')"
             [style.height]="'100px'">
             <p class="fs-2">
                 Vuoi davvero {{action == 'Accetta' ? ' accettare ': action == 'Rifiuta'? ' rifiutare ' : action ==
