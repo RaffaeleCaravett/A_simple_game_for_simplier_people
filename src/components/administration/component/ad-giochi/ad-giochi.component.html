@@ -283,8 +283,8 @@
                                 style.background="url('{{'data:image/png;base64,'+g?.image}}')">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-4 my-3 categoria fs-4 p-2" *ngFor="let c of g?.categorie">
+                        <div class="row overflow-y-scroll">
+                            <div class="col-sm-4 my-3 categoria p-2 fs-4" *ngFor="let c of g?.categorie">
                                 {{c?.nome}}
                             </div>
                             <div class="col12 my-3 categoria fs-4 p-2" *ngIf="g?.categorie?.length==0 || !g?.categorie">

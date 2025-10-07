@@ -1,13 +1,21 @@
  .category {
      transition: 1.5s;
      border-top: 5px solid rgb(220, 41, 41) !important;
+     max-height: 141.56px !important;
+     overflow-y: auto;
+     overflow-x: unset;
+
+     p {
+         word-wrap: break-word;
+
+     }
 
      &:hover {
          box-shadow: 2px 2px 2px 2px rgb(255, 154, 154) !important;
 
          p {
-             scale: 1.2;
-             transition: 1.5s;
+             font-weight: bold;
+             transition: .4s;
          }
      }
  }
