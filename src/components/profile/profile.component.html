@@ -43,10 +43,10 @@
                         <i class="bi bi-list h1" [ngClass]="mode=='light'?'text-dark':'text-light'"></i>
                     </button>
                 </div>
-                <div class="col-6 p-3 position-relative" *ngIf="showMenu">
-                    <div class="ml-5 mt-5 p-3 border rounded"
-                        [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
-                        <ul class="text-start">
+                <div class="col-6 px-5 py-0 my-0 position-relative" *ngIf="showMenu">
+                    <div class="ml-5 p-3 position-absolute top-0 start-0">
+                        <ul class="text-start border shadow p-4 fs-4"
+                            [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
                             <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
                                 <span title="{{v.title}}" *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' +
                                     v.label.toUpperCase()}}</span>
