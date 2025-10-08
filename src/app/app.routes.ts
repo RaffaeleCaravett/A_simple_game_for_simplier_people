@@ -3,7 +3,6 @@ import { HomeComponent } from '../components/home/home.component';
 import { GameFieldComponent } from '../components/game-field/game-field.component';
 import { NotFoundComponent } from '../components/not-found/not-found.component';
 import { AuthGuard } from '../core/auth.guard';
-import { ProfileComponent } from '../components/profile/profile.component';
 
 export const routes: Routes = [
     

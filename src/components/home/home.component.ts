@@ -1,19 +1,21 @@
 import { isPlatformBrowser, NgClass, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, inject, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from '@angular/core';
 import { ModeService } from '../../services/mode.service';
 import { browserRefresh } from '../../app/app.component';
 import { ChartModule } from 'primeng/chart';
 import { HomeService } from '../../services/home.service';
 import { ButtonModule } from 'primeng/button';
+import { AccordionModule } from 'primeng/accordion';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, ChartModule, ButtonModule],
+  imports: [NgIf, NgFor, NgClass, ChartModule, ButtonModule, AccordionModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+
   windowWidth: number = 0;
   starCount: number = 0;
   interval: any;
@@ -24,10 +26,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   platformId = inject(PLATFORM_ID);
   giochi: any = null;
   stars: number[] = [1, 2, 3, 4, 5];
+  tabIsOpen: boolean = true;
   constructor(private modeService: ModeService, private cd: ChangeDetectorRef, private homeService: HomeService) {
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
     })
+  }
+
+  checkTabContainer(): void {
+    if (this.tabIsOpen) {
+      (document.getElementsByClassName('tab-container')[0] as HTMLDivElement).style.width = '100%';
+      (document.getElementsByClassName('tab-container')[0] as HTMLDivElement).style.height = '978px';
+    } else {
+      (document.getElementsByClassName('tab-container')[0] as HTMLDivElement).style.width = '0%';
+      (document.getElementsByClassName('tab-container')[0] as HTMLDivElement).style.height = '0px';
+    }
   }
   sizeScroll(event: any, div: HTMLDivElement) {
     if (event.clientX < this.windowWidth / 2) {

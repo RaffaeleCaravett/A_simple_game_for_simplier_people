@@ -321,6 +321,60 @@
                 </div>
             </div>
         </div>
+        <div class="container my-5 py-5">
+            <div class="my-5 py-5">
+                <p-accordion value="0">
+                    <p-accordion-panel value="0">
+                        <p-accordion-header class="fs-1 bg-light text-dark text-center border">
+                            <h1 class="m-auto">
+                                Lorem ipsum
+                            </h1>
+                        </p-accordion-header>
+                        <p-accordion-content class="fs-2 bg-white border shadow">
+                            <p class="m-0 p-4">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore
+                                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                                eu fugiat nulla
+                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                deserunt mollit anim id est
+                                laborum.
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore
+                                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                                eu fugiat nulla
+                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                deserunt mollit anim id est
+                                laborum.
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore
+                                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                                eu fugiat nulla
+                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                deserunt mollit anim id est
+                                laborum.
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore
+                                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+                                eu fugiat nulla
+                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                deserunt mollit anim id est
+                                laborum.
+                            </p>
+                        </p-accordion-content>
+                    </p-accordion-panel>
+                </p-accordion>
+            </div>
+
+        </div>
         <div class="container py-5 my-5">
             <div class="row dotted-background">
                 <div class="col-md-6 py-5 p-5 text-center six-to-hover">
@@ -695,10 +749,15 @@
                     </div>
                 </div>
                 <div class="col-md-12 text-center">
-                    <div class="row m-auto">
+                    <p class="text-center">
+                        <button class="btn shadow border tab-button rounded-circle p-5 fs-2"
+                            [ngClass]="tabIsOpen?'btn-danger':'btn-success'"
+                            (click)="tabIsOpen = ! tabIsOpen;checkTabContainer()">{{tabIsOpen?'Close':'Open'}}</button>
+                    </p>
+                    <div class="row m-auto tab-container">
                         <div class="col-md-6 p-2">
                             <div class="row">
-                                <div class="col-md-6 p-3">
+                                <div class="col-md-6 p-3 tab-card">
                                     <div class="p-2 border rounded shadow">
                                         <h1>Lorem ipsum</h1>
                                         <p class="fs-2">
@@ -707,7 +766,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-md-6 p-3">
+                                <div class="col-md-6 p-3 tab-card">
                                     <div class="p-2 border rounded shadow">
                                         <h1>Lorem ipsum</h1>
                                         <p class="fs-2">
@@ -720,7 +779,7 @@
                         </div>
                         <div class="col-md-6 p-2">
                             <div class="row">
-                                <div class="col-md-6 p-3">
+                                <div class="col-md-6 p-3 tab-card">
                                     <div class="p-2 border rounded shadow">
                                         <h1>Lorem ipsum</h1>
                                         <p class="fs-2">
@@ -729,7 +788,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-md-6 p-3">
+                                <div class="col-md-6 p-3 tab-card">
                                     <div class="p-2 border rounded shadow">
                                         <h1>Lorem ipsum</h1>
                                         <p class="fs-2">
@@ -740,50 +799,50 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 p-3">
+                        <div class="col-md-6 p-3 tab-card">
                             <div class="p-2 border rounded shadow">
                                 <h1>Lorem ipsum</h1>
                                 <p class="fs-2">
                                     Lorem ipsum dolor sit amet. Questa parte la invento io per scrivere qualcosa in più.
                                 </p>
                                 <p-button label="Click" severity="warn">
-                                    <i class="bi bi-dollar bi-spin"></i>
+                                    <i class="pi pi-dollar pi-spin mx-1" style="font-size: 2rem"></i>
                                 </p-button>
                             </div>
 
                         </div>
-                        <div class="col-md-6 p-3">
+                        <div class="col-md-6 p-3 tab-card">
                             <div class="p-2 border rounded shadow">
                                 <h1>Lorem ipsum</h1>
                                 <p class="fs-2">
                                     Lorem ipsum dolor sit amet. Questa parte la invento io per scrivere qualcosa in più.
                                 </p>
                                 <p-button label="Click" severity="warn">
-                                    <i class="bi bi-dollar bi-spin"></i>
+                                    <i class="pi pi-dollar pi-spin mx-1" style="font-size: 2rem"></i>
                                 </p-button>
                             </div>
 
                         </div>
-                        <div class="col-md-6 p-3">
+                        <div class="col-md-6 p-3 tab-card">
                             <div class="p-2 border rounded shadow">
                                 <h1>Lorem ipsum</h1>
                                 <p class="fs-2">
                                     Lorem ipsum dolor sit amet. Questa parte la invento io per scrivere qualcosa in più.
                                 </p>
                                 <p-button label="Click" severity="warn">
-                                    <i class="bi bi-dollar bi-spin"></i>
+                                    <i class="pi pi-dollar pi-spin mx-1" style="font-size: 2rem"></i>
                                 </p-button>
                             </div>
 
                         </div>
-                        <div class="col-md-6 p-3">
+                        <div class="col-md-6 p-3 tab-card">
                             <div class="p-2 border rounded shadow">
                                 <h1>Lorem ipsum</h1>
                                 <p class="fs-2">
                                     Lorem ipsum dolor sit amet. Questa parte la invento io per scrivere qualcosa in più.
                                 </p>
                                 <p-button label="Click" severity="warn">
-                                    <i class="bi bi-dollar bi-spin"></i>
+                                    <i class="pi pi-dollar pi-spin mx-1" style="font-size: 2rem"></i>
                                 </p-button>
                             </div>
 

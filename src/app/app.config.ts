@@ -12,7 +12,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { provideStore } from '@ngrx/store';
-
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
 export const appConfig: ApplicationConfig = {
   providers: [
     RxStompService,
@@ -22,7 +23,12 @@ export const appConfig: ApplicationConfig = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     [{ provide: DEFAULT_TIMEOUT, useValue: 30000 }],
-    provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(),
-    provideStore()
+    provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(),
+    provideStore(),
+        providePrimeNG({
+            theme: {
+                preset: Aura
+            }
+        })
 ],
 };
