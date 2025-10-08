@@ -63,6 +63,12 @@ export class NavComponent implements OnInit {
         this.getNotifications();
       }
     });
+    this.ws.notificationBehaviorSubject.subscribe((data: Notification | null) => {
+      if (data && data?.receiverIdOnly && data?.receiverIdOnly == this.user?.id) {
+        this.toastr.show("Novità in arrivo!");
+        this.getNotifications();
+      }
+    });
 
     this.authService.closeMenu.subscribe((data: string) => {
       if (data == 'close') {

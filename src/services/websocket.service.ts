@@ -1,5 +1,5 @@
 import { CompatClient, Stomp, StompSubscription } from "@stomp/stompjs";
-import { ConnectionRequestDTO, Message, Messaggio, SocketDTO, User } from "../interfaces/interfaces";
+import { ConnectionRequestDTO, Message, Messaggio, Notification, SocketDTO, User } from "../interfaces/interfaces";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "../core/environment";
 import { BehaviorSubject } from "rxjs";
@@ -20,6 +20,7 @@ export class WebsocketService implements OnDestroy {
     public messageBehaviorSubject: BehaviorSubject<Messaggio | null> = new BehaviorSubject<Messaggio | null>(null);
     public connectionBehaviorSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
     public connectionRequestBehaviorSubject: BehaviorSubject<ConnectionRequestDTO | null> = new BehaviorSubject<ConnectionRequestDTO | null>(null);
+    public notificationBehaviorSubject: BehaviorSubject<Notification | null> = new BehaviorSubject<Notification | null>(null);
 
     constructor() {
         this.connection = Stomp.client(`${environment.SOCKET_URL}/websocket`);
@@ -59,6 +60,11 @@ export class WebsocketService implements OnDestroy {
                         receiverId: JSON.parse(message.body)?.receiverId
                     }
                     this.connectionRequestBehaviorSubject.next(connectionRequestDTO);
+                } else if (response?.notificationType && response?.notificationType == 'TOURNAMENT') {
+                    let notification: Notification =
+                        JSON.parse(message.body)
+
+                    this.notificationBehaviorSubject.next(notification);
                 }
             });
         }

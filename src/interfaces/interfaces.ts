@@ -140,7 +140,8 @@ export interface Notification {
     sender: User,
     state: string,
     createdAt: string,
-    notificationType: string
+    notificationType: string,
+    receiverIdOnly:number
 }
 
 export interface UserConnection {
