@@ -6,11 +6,12 @@ import { ChartModule } from 'primeng/chart';
 import { HomeService } from '../../services/home.service';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, ChartModule, ButtonModule, AccordionModule],
+  imports: [NgIf, NgFor, NgClass, ChartModule, ButtonModule, AccordionModule, DragDropModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -27,12 +28,28 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   giochi: any = null;
   stars: number[] = [1, 2, 3, 4, 5];
   tabIsOpen: boolean = true;
+  drag: string[] = ['ENDS', '!', 'CONTENT'];
+  drop: string[] = ['FINALLY', '😁', 'HERE'];
   constructor(private modeService: ModeService, private cd: ChangeDetectorRef, private homeService: HomeService) {
     this.modeService.mode.subscribe((data: string) => {
       this.mode = data;
     })
   }
-
+  onDrop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      // Reorder items within the same list
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      // Move items between lists
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+  
   checkTabContainer(): void {
     if (this.tabIsOpen) {
       (document.getElementsByClassName('tab-container')[0] as HTMLDivElement).style.width = '100%';
@@ -173,5 +190,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     }
+  }
+  dragstartHandler(ev: any) {
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+
+  dragoverHandler(ev: any) {
+    ev.preventDefault();
+  }
+
+  dropHandler(ev: any) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
   }
 }

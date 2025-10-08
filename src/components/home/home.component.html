@@ -748,7 +748,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12 text-center">
+                <div class="col-12 text-center">
                     <p class="text-center">
                         <button class="btn shadow border tab-button rounded-circle p-5 fs-2"
                             [ngClass]="tabIsOpen?'btn-danger':'btn-success'"
@@ -849,8 +849,28 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div class="col-12 text-center">
+                    <div class="row mt-5 pt-5">
+                        <div class="col-12 pt-5 mt-5">
+                            <h1>Try to order it ... </h1>
+                        </div>
+                        <div class="col-md-5 my-5 py-5" cdkDropList id="drag" [cdkDropListConnectedTo]="['drop']"
+                            [cdkDropListData]="drag" (cdkDropListDropped)="onDrop($event)">
+                            <div class="item" cdkDrag class="p-5 bg-danger my-5 border shadow"
+                                *ngFor="let item of drag">
+                                <h1> {{item}}
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="col-2">
 
-</div>
+                        </div>
+                        <div class="col-md-5 my-5 py-5" cdkDropList id="drop" [cdkDropListConnectedTo]="['drag']"
+                            [cdkDropListData]="drop" (cdkDropListDropped)="onDrop($event)">
+                            <div class="item" cdkDrag class="p-5 bg-light my-5 border shadow" *ngFor="let item of drop">
+                                <h1> {{item}}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
