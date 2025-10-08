@@ -4,11 +4,12 @@ import { ModeService } from '../../services/mode.service';
 import { browserRefresh } from '../../app/app.component';
 import { ChartModule } from 'primeng/chart';
 import { HomeService } from '../../services/home.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, ChartModule],
+  imports: [NgIf, NgFor, NgClass, ChartModule, ButtonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

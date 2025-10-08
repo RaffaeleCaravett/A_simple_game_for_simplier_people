@@ -872,3 +872,35 @@ h1 {
     overflow-y: auto;
   }
 }
+
+.bubble {
+  height: 500px;
+
+  .point {
+    width: 100px;
+    height: 100px;
+    transition: 1s;
+  }
+
+  .text {
+    width: 0%;
+    height: 0%;
+    overflow: hidden;
+    transition: 1s;
+  }
+
+  &:hover {
+    .point {
+      transition: 1s;
+      width: 0px;
+      height: 0px;
+    }
+
+    .text {
+      width: 450px;
+      margin: auto;
+      height: 450px;
+      transition: 1s;
+    }
+  }
+}
