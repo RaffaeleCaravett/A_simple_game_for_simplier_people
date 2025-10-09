@@ -1,5 +1,5 @@
 import { NgIf, NgClass } from '@angular/common';
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { User } from '../../../../interfaces/interfaces';
 import { GamefieldService } from '../../../../services/gamefield.service';
@@ -30,7 +30,7 @@ export class TrisComponent implements OnInit, OnDestroy {
   partite: { userId: number, giocoId: number, esito: string, punteggio: number }[] = [];
   partiteHistory: any = null;
   isLoading: boolean = true;
-  constructor(private authSerice: AuthService, private gamefieldService: GamefieldService) {
+  constructor(private authSerice: AuthService, private gamefieldService: GamefieldService, private cdr: ChangeDetectorRef) {
     this.user = this.authSerice.getUser();
   }
 
@@ -57,7 +57,7 @@ export class TrisComponent implements OnInit, OnDestroy {
     else if (!this.cominciata) return;
     else if (this.isFull) return;
     if (event.target.children[0].textContent == undefined || event.target.children[0].textContent == null || event.target.children[0].textContent == '') {
-      event.target.children[0].textContent=('🟢');
+      event.target.children[0].textContent = ('🟢');
 
       this.usersMoves.push(Number(event?.target?.id));
 
@@ -99,30 +99,32 @@ export class TrisComponent implements OnInit, OnDestroy {
       enemyTris = this.checkTris(this.enemysMoves, this.usersMoves);
 
       if (enemyTris && enemyTris != -1) {
-        div[enemyTris].children[0].textContent=('❌');
+        div[enemyTris].children[0].textContent = ('❌');
         this.isEnemyMoving = false;
         this.enemyWins = true;
         this.partite[this.partite.length - 1].esito = 'PERSA';
         this.enemysMatchesWon += 1;
         this.enemysMoves.push(Number(div[enemyTris].id));
+        this.cdr.markForCheck();
         return;
       };
 
       userTris = this.checkTris(this.usersMoves, this.enemysMoves);
       let randomUserObstacle = Math.random() * 2;
 
-      if (userTris && userTris != -1 && randomUserObstacle > 0.35) {
-        div[userTris].children[0].textContent=('❌');
+      if (userTris && userTris != -1 && randomUserObstacle > 0.20) {
+        div[userTris].children[0].textContent = ('❌');
         this.isEnemyMoving = false;
         this.enemysMoves.push(Number(div[userTris].id));
         if (this.checkIfTris(this.enemysMoves)) {
           this.enemyWins = true;
           this.enemysMatchesWon += 1;
         }
+        this.cdr.markForCheck();
         return;
       };
       let randomIndex: number = Math.round(Math.random() * cleanDiv.length)
-      if (cleanDiv[randomIndex == 0 ? 0 : randomIndex == 1 ? 0 : randomIndex - 1]) cleanDiv[randomIndex == 0 ? 0 : randomIndex == 1 ? 0 : randomIndex - 1].children[0].textContent=('❌');
+      if (cleanDiv[randomIndex == 0 ? 0 : randomIndex == 1 ? 0 : randomIndex - 1]) cleanDiv[randomIndex == 0 ? 0 : randomIndex == 1 ? 0 : randomIndex - 1].children[0].textContent = ('❌');
       this.enemysMoves.push(Number(cleanDiv[randomIndex == 0 ? 0 : randomIndex == 1 ? 0 : randomIndex - 1].id));
       this.isEnemyMoving = false;
       this.isFull = this.checkIfFull();
@@ -185,7 +187,7 @@ export class TrisComponent implements OnInit, OnDestroy {
     let div = document.getElementsByClassName('col-4') as HTMLCollectionOf<HTMLDivElement>;
 
     for (let i = 0; i <= div.length - 1; i++) {
-      if (div[i].children[0].textContent!= '🟢' && div[i].children[0].textContent != '❌') return false;
+      if (div[i].children[0].textContent != '🟢' && div[i].children[0].textContent != '❌') return false;
     }
 
     return true;
@@ -195,7 +197,7 @@ export class TrisComponent implements OnInit, OnDestroy {
     let div = document.getElementsByClassName('col-4') as HTMLCollectionOf<HTMLDivElement>;
 
     for (let i = 0; i <= div.length - 1; i++) {
-      div[i].children[0].textContent= '';
+      div[i].children[0].textContent = '';
     }
     this.userWins = false;
     this.enemyWins = false;
@@ -243,7 +245,7 @@ export class TrisComponent implements OnInit, OnDestroy {
     if (this.partite?.length > 0) localStorage.setItem('partite', JSON.stringify(this.partite));
   }
 
-  associateGiocoToUser(){
-    this.gamefieldService.assignGiocoUser(this.game,this.user!.id).subscribe();
+  associateGiocoToUser() {
+    this.gamefieldService.assignGiocoUser(this.game, this.user!.id).subscribe();
   }
 }
