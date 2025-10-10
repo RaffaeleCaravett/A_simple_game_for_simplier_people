@@ -2,6 +2,17 @@
     <h2>Aggiungi un gioco</h2>
 </div>
 <div mat-dialog-content>
-    <form [formGroup]="aggiungiGiocoForm"></form>
+    <form [formGroup]="aggiungiGiocoForm">
+        <label class="py-3 fs-2">Nome</label>
+        <input type="text" placeholder="Inserisci un nome" formControlName="nomeGioco" class="form-control">
+        <p class="text-danger fs-5 py-1"
+            *ngIf="aggiungiGiocoForm.controls['nomeGioco'].touched && aggiungiGiocoForm.controls['nomeGioco'].invalid">
+            Inserisci il nome
+        </p>
+        <p class="text-success fs-5 py-1"
+            *ngIf="aggiungiGiocoForm.controls['nomeGioco'].touched && aggiungiGiocoForm.controls['nomeGioco'].valid">
+            Nome corretto <i class="pi pi-check" style="color: green"></i>
+        </p>
+    </form>
 </div>
 <div mat-dialog-actions></div>
