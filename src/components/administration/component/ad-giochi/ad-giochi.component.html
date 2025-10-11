@@ -1,5 +1,10 @@
 <div class="row text-center">
-    <div class="col-md-12">
+    <div class="col-12 text-start pt-4">
+        <button class="btn" matTooltip="Aggiungi" matTooltipPosition="above" (click)="addGame()">
+            <i class="pi pi-plus" style="font-size: 2rem"></i>
+        </button>
+    </div>
+    <div class="col-md-12 py-5 border-bottom my-5">
         <h2>Cerca un gioco</h2>
         <div class="w-100 text-start">
             <p><mat-slide-toggle labelPosition="before" [(ngModel)]="isChecked">Cerca giochi {{isChecked? 'attivi' :
@@ -80,7 +85,8 @@
                 </select>
             </div>
             <div class="col-12 p-2">
-                <button class="btn" (click)="this.searchGiochi();">Cerca 🔎</button>
+                <button class="btn my-5" matTooltip="Cerca giochi" matTooltipPosition="above"
+                    (click)="this.searchGiochi();">Cerca 🔎</button>
             </div>
         </form>
     </div>
@@ -269,10 +275,10 @@
                 </div>
             </div>
         </div>
-        <h2>Tutti i giochi</h2>
-        <div class="row">
+        <h2>Giochi</h2>
+        <div class="row my-5">
             <div class="col-sm-6 col-md-4 p-3 " *ngFor="let g of giochiArray">
-                <div class="overflow-hidden position-relative ">
+                <div class="overflow-hidden position-relative gioco-container">
                     <div class="position-absolute p-2 banner pe-none" [ngClass]="g.active?['active']:['inactive']">
                         {{g.active?'Attivo':'Inattivo'}}
                     </div>
@@ -297,7 +303,7 @@
                             <div class="row">
                                 <div class="col-4 text-center" *ngFor="let a of actions"
                                     [ngClass]="((a.action =='edit' || a.action == 'delete') && g.active == false) || (a.action == 'restore' && g.active== true)?'d-none':''">
-                                    <button class="btn my-1 action" title="{{a.action}}"
+                                    <button class="btn my-1 action" matTooltip="{{a.action}}" matTooltipPosition="above"
                                         (click)="manageGame(a.action,g)">
                                         <i class="{{a.class}} h3"></i>
                                     </button>

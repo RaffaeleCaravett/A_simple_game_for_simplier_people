@@ -13,6 +13,7 @@ import { RecensioniComponent } from '../../../../shared/components/recensioni/re
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CreateGameComponent } from '../../../../shared/components/create-game/create-game.component';
 
 
 @Component({
@@ -310,6 +311,13 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
         this.choosedGame = gioco;
         this.searchGiochi();
       }
+    });
+  }
+
+  addGame() {
+    const dialogRef = this.matDialog.open(CreateGameComponent)
+    dialogRef.afterClosed().subscribe((data: any) => {
+      this.toastr.show(data);
     })
   }
 }

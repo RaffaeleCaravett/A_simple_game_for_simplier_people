@@ -8,9 +8,11 @@
   width: 10px;
   height: 10px;
 }
+
 .pi {
   font-family: "primeicons" !important;
 }
+
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -27,8 +29,6 @@
 }
 
 @import 'ngx-toastr/toastr';
-
-
 
 
 html,
