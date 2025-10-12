@@ -6,3 +6,16 @@
     background-position: center !important;
     background-color: whitesmoke;
 }
+
+::ng-deep p-autocomplete {
+    input {
+        background-color: white !important;
+        color: black !important;
+        margin: auto;
+        width: 100%;
+    }
+}
+
+.step-3 {
+    line-height: 1.2;
+}

@@ -31,7 +31,7 @@
                         [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications"
                         (click)="openNotification(n)">
                         <div class="col-2">
-                            <img src="{{n.sender.immagineProfilo}}"
+                            <img src="{{n?.sender?.immagineProfilo || 'assets/utils/avatar.jpg'}}"
                                 class="rounded-circle border shadow notification-pic"
                                 alt="immagine_profilo_notificatore">
                         </div>
@@ -47,6 +47,7 @@
                             <i class="bi bi-person-lines-fill" title="Richiesta di contatto"
                                 *ngIf="n.notificationType=='CONNECTION_REQUEST'"></i>
                             <i class="bi bi-envelope-at" title="Email" *ngIf="n.notificationType=='EMAIL'"></i>
+                            <i class="pi pi-play-circle" title="Torneo" *ngIf="n.notificationType=='TOURNAMENT'"></i>
                         </div>
                     </div>
                 </div>
@@ -141,7 +142,7 @@
                             [style.borderBottom]="'1px solid lightgray'" *ngFor="let n of notifications"
                             (click)="openNotification(n)">
                             <div class="col-2">
-                                <img src="{{n.sender.immagineProfilo}}"
+                                <img src="{{n?.sender?.immagineProfilo || 'assets/utils/avatar.jpg'}}"
                                     class="rounded-circle border shadow notification-pic"
                                     alt="immagine_profilo_notificatore">
                             </div>

@@ -1,5 +1,5 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
 import { Categoria } from '../../../interfaces/interfaces';
@@ -10,11 +10,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MatTooltip } from "@angular/material/tooltip";
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { AdministrationService } from '../../../services/administration.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-create-game',
   standalone: true,
   imports: [MatDialogActions, MatDialogTitle, MatDialogContent, ReactiveFormsModule, NgIf, NgFor, NgClass, FormsModule,
-    Slider, InputTextModule, MatTooltip, AutoComplete],
+    Slider, InputTextModule, MatTooltip, AutoComplete, MatProgressSpinnerModule],
   templateUrl: './create-game.component.html',
   styleUrl: './create-game.component.scss'
 })
@@ -25,12 +26,13 @@ export class CreateGameComponent implements OnInit {
   imageUrl: string = '';
   categorie: Categoria[] = [];
   categorieNames: string[] = [];
-  choosedCategories: Categoria[] = [];
+  choosedCategories: Set<Categoria> = new Set([]);
   value: number = 0;
   stars: number[] = [1, 2, 3, 4, 5];
   difficoltaTouched: boolean = false;
   step: number = 1;
   valueCategory: string = "";
+  isLoading: boolean = false;
   constructor(private dialogRef: MatDialogRef<CreateGameComponent>, private toastr: ToastrService, private giochiService: GiochiService,
     private administrationService: AdministrationService) { }
   number(arg0: string) {
@@ -59,6 +61,7 @@ export class CreateGameComponent implements OnInit {
   cleanImage() {
     this.imageUrl = "";
     this.selectedImage = null;
+    (document.getElementById('image') as HTMLInputElement).value = '';
   }
 
 
@@ -69,5 +72,22 @@ export class CreateGameComponent implements OnInit {
         this.categorieNames = (data as Categoria[]).slice(0, data?.length > 5 ? 5 : data.length).map(c => c.nome);
       }
     });
+  }
+  addCategory(value: string) {
+    let categoria = this.categorie.filter(c => c.nome == value)[0];
+    if (!this.choosedCategories.has(categoria)) {
+      this.choosedCategories.add(categoria);
+    }
+  }
+  removeCategory(value: Categoria) {
+    this.choosedCategories.delete(value);
+  }
+  confirm() {
+    if (this.aggiungiGiocoForm.valid && this.value > 0 && this.value < 6 && this.selectedImage && this.choosedCategories.size > 0) {
+      this.isLoading = true;
+      this.toastr.show("To implement ...");
+    } else {
+      this.toastr.error("Nothing ...");
+    }
   }
 }
