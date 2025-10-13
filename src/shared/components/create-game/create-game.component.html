@@ -2,17 +2,70 @@
     <h2>Aggiungi un gioco</h2>
 </div>
 <div mat-dialog-content>
-    <form [formGroup]="aggiungiGiocoForm">
-        <label class="py-3 fs-2">Nome</label>
-        <input type="text" placeholder="Inserisci un nome" formControlName="nomeGioco" class="form-control">
-        <p class="text-danger fs-5 py-1"
-            *ngIf="aggiungiGiocoForm.controls['nomeGioco'].touched && aggiungiGiocoForm.controls['nomeGioco'].invalid">
-            Inserisci il nome
-        </p>
-        <p class="text-success fs-5 py-1"
-            *ngIf="aggiungiGiocoForm.controls['nomeGioco'].touched && aggiungiGiocoForm.controls['nomeGioco'].valid">
-            Nome corretto <i class="pi pi-check" style="color: green"></i>
-        </p>
-    </form>
+    <div *ngIf="step == 1">
+        <form [formGroup]="aggiungiGiocoForm">
+            <div class="py-3">
+                <label class="py-3 fs-2">Nome</label>
+                <input type="text" placeholder="Inserisci un nome" formControlName="nomeGioco" class="form-control">
+                <p class="text-danger fs-5 py-1"
+                    *ngIf="aggiungiGiocoForm.controls['nomeGioco'].touched && aggiungiGiocoForm.controls['nomeGioco'].invalid">
+                    Inserisci il nome
+                </p>
+                <p class="text-success fs-5 py-1"
+                    *ngIf="aggiungiGiocoForm.controls['nomeGioco'].touched && aggiungiGiocoForm.controls['nomeGioco'].valid">
+                    Corretto <i class="pi pi-check" style="color: green"></i>
+                </p>
+            </div>
+            <div class="py-3">
+                <label class="py-3 fs-2">Descrizione</label>
+                <textarea type="text" placeholder="Inserisci una descrizione" formControlName="descrizione"
+                    class="form-control">
+        </textarea>
+                <p class="text-danger fs-5 py-1"
+                    *ngIf="aggiungiGiocoForm.controls['descrizione'].touched && aggiungiGiocoForm.controls['descrizione'].invalid">
+                    Inserisci una descrizione corretta, massimo 120 caratteri.
+                </p>
+                <p class="text-success fs-5 py-1"
+                    *ngIf="aggiungiGiocoForm.controls['descrizione'].touched && aggiungiGiocoForm.controls['descrizione'].valid">
+                    Corretto <i class="pi pi-check" style="color: green"></i>
+                </p>
+            </div>
+        </form>
+        <div class="py-3">
+            <label class="py-3 fs-2">Livello di difficoltà</label>
+            <div>
+                <input type="number" max="5" #difficolta [(ngModel)]="value" class="form-control mb-4"
+                    (click)="difficoltaTouched = true;" />
+                <p-slider [(ngModel)]="value" max="5" min="0" class="w-full" (onChange)="difficoltaTouched = true;" />
+            </div>
+            <div *ngIf="difficolta.value" class="d-flex justify-content-evenly">
+                <img src="assets/home/star.png" alt="star" [style.width]="'30px'" [style.height]="'30px'"
+                    *ngFor="let s of stars index as i" [ngClass]="i<number(difficolta.value)?'':'d-none'">
+            </div>
+            <p class="text-danger fs-5 py-3"
+                *ngIf="difficoltaTouched&&(number(difficolta.value) > 5 || number(difficolta.value)<=0)">
+                Minimo 1, massimo 5.
+            </p>
+            <p class="text-success fs-5 py-3" *ngIf="number(difficolta.value) <= 5 && number(difficolta.value)>0">
+                Corretto <i class="pi pi-check" style="color: green"></i>
+            </p>
+        </div>
+    </div>
+    <div *ngIf="step == 2">
+        <button class="btn" matTooltip="Seleziona un'immagine" matTooltipPosition="above" (click)="image.click()">
+            <i class="pi pi-plus" style="font-size: 1.5rem;"></i>
+        </button>
+        <input type="file" #image class="d-none">
+
+    </div>
+    <div class="d-flex justify-content-center my-3">
+        <button class="btn mx-1" *ngIf="step>1" (click)="step=step-1">
+            <i class="pi pi-arrow-left" style="font-size: 2rem;"></i>
+        </button>
+        <button class="btn mx-1" *ngIf="(step==1 && aggiungiGiocoForm.valid && value>0 && value<6) ||
+            (step==2 &&selectedImage && choosedCategories.length>0)" (click)="step=step+1">
+            <i class="pi pi-arrow-right" style="font-size: 2rem;"></i>
+        </button>
+    </div>
 </div>
 <div mat-dialog-actions></div>
