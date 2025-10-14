@@ -112,15 +112,13 @@ export class NavComponent implements OnInit {
         this.getNotifications();
         setInterval(() => {
           let currentD = new Date();
-          let startHappyHourD = new Date();
-          startHappyHourD.setHours(9, 26);
-          if (currentD.getHours() == startHappyHourD.getHours() && currentD.getMinutes() == startHappyHourD.getMinutes()) {
-            console.log('yes')
+          let midnight = new Date();
+          midnight.setHours(21, 30);
+          if (currentD.getHours() == midnight.getHours() && currentD.getMinutes() == midnight.getMinutes()) {
+            this.getNotifications();
             return;
           }
-          console.log('false');
-          return;
-        }, 1000*60)
+        }, 1000 * 60)
       } else {
         this.notificationToRead = 0;
       }

@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       );
     }
   }
-  
+
   checkTabContainer(): void {
     if (this.tabIsOpen) {
       (document.getElementsByClassName('tab-container')[0] as HTMLDivElement).style.width = '100%';
@@ -97,7 +97,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (data: any) => {
         if (isPlatformBrowser(this.platformId)) {
           const documentStyle = getComputedStyle(document.documentElement);
-          const textColor = documentStyle.getPropertyValue('--p-text-color');
           const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color');
 
           this.data = {
@@ -117,22 +116,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             labels: ['Categorie disponibili', 'Utenti registrati', 'Numero di tornei', 'Giochi']
           };
 
-          this.options = {
-            plugins: {
-              legend: {
-                labels: {
-                  color: textColor
-                }
-              }
-            },
-            scales: {
-              r: {
-                grid: {
-                  color: surfaceBorder
-                }
-              }
-            }
-          };
           this.cd.markForCheck()
         }
       }
