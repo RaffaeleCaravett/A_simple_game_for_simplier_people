@@ -61,6 +61,7 @@ export class WebsocketService implements OnDestroy {
                     }
                     this.connectionRequestBehaviorSubject.next(connectionRequestDTO);
                 } else if (response?.notificationType && response?.notificationType == 'TOURNAMENT') {
+                    debugger
                     let notification: Notification =
                         JSON.parse(message.body)
 

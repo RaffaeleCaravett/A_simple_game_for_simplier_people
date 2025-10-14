@@ -107,13 +107,25 @@ export class NavComponent implements OnInit {
   }
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
-    if (this.user) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (this.user) {
         this.getNotifications();
-      }, 3000);
-    } else {
-      this.notificationToRead = 0;
-    }
+        setInterval(() => {
+          let currentD = new Date();
+          let startHappyHourD = new Date();
+          startHappyHourD.setHours(9, 26);
+          if (currentD.getHours() == startHappyHourD.getHours() && currentD.getMinutes() == startHappyHourD.getMinutes()) {
+            console.log('yes')
+            return;
+          }
+          console.log('false');
+          return;
+        }, 1000*60)
+      } else {
+        this.notificationToRead = 0;
+      }
+    }, 3000);
+
   }
 
   @HostListener('window:resize', ['$event'])
