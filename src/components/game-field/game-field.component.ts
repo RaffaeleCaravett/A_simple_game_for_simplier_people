@@ -21,7 +21,8 @@ export class GameFieldComponent implements OnInit, OnDestroy {
       params => {
         if (params && params['gioco'])
           this.game = JSON.parse(params['gioco']);
-      })
+      });
+    console.log(this.game)
     if (this.game == undefined || this.game == 0 || this.game == null) {
       this.router.navigate(['/'])
     }

@@ -1,1 +1,67 @@
-<p>scopa works!</p>
+<div class="row text-center">
+    <div class="col-12 my-5">
+        <h1>Scopa</h1>
+    </div>
+    <div class="col-md-3">
+        <p class="fs-3">
+            Seleziona la modalità
+        </p>
+        <form [formGroup]="modalitaForm">
+            <div class="d-flex">
+                <input type="radio" formControlName="modalita" id="computer" value="computer">
+                <label for="computer" class="mx-2">Computer</label>
+            </div>
+            <div class="d-flex">
+                <input type="radio" formControlName="modalita" id="live" value="live">
+                <label for="live" class="mx-2">Live game</label>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-9" *ngIf="modalitaForm.controls['modalita'].value=='computer'">
+        <button class="btn my-5 btn-success p-2" (click)="startComputerGame()" *ngIf="!gameHasStarted"
+            matTooltip="Inizia una partita contro il computer" matTooltipPosition="above">
+            Inizia
+        </button>
+        <div class="row" *ngIf="gameHasStarted">
+            <p class="fs-1 my-5" *ngIf="count!=0">Il gioco sta per iniziare</p>
+            <p class="text-center fs-1" *ngIf="count!=0">
+                {{count}}
+            </p>
+            <div class="row" *ngIf="count==0">
+                <div class="col-12">
+                    <h2>Computer</h2>
+                </div>
+                <div class="col-4 p-3" *ngFor="let c of computerCards">
+                    <div class="border shadow-sm">
+                        <p class="text-end">{{c.group}}</p>
+                        <p class="text-center my-5">
+                            {{c.value}}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <h2>Carte sul tavolo</h2>
+                </div>
+                <div class="col-3 p-3" *ngFor="let c of tableCards">
+                    <div class="border shadow-sm">
+                        <p class="text-end">{{c.group}}</p>
+                        <p class="text-center my-5">
+                            {{c.value}}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <h2>Tu</h2>
+                </div>
+                <div class="col-4 p-3" *ngFor="let c of yourCards">
+                    <div class="border shadow-sm">
+                        <p class="text-end">{{c.group}}</p>
+                        <p class="text-center my-5">
+                            {{c.value}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
