@@ -54,9 +54,26 @@
     <div *ngIf="step == 2">
         <button class="btn" matTooltip="Seleziona un'immagine" matTooltipPosition="above" (click)="image.click()">
             <i class="pi pi-plus" style="font-size: 1.5rem;"></i>
-        </button>
-        <input type="file" #image class="d-none">
-
+        </button> <span class="fs-2">Inserisci un'immagine</span>
+        <input type="file" #image class="d-none" (change)="handleImageEvent($event)">
+        <div *ngIf="!selectedImage" class="w-100 border shadow-sm to-point" [style.height]="'200px'"
+            (click)="image.click()">
+        </div>
+        <div class="text-end" *ngIf="selectedImage ">
+            <button class="btn" matTooltip="Elimina" matTooltipPosition="above">
+                <i class="pi pi-trash" style="font-size: 1.5rem; color: red;"></i>
+            </button>
+        </div>
+        <div id="uploadedImage" *ngIf="selectedImage" [style.height]="'200px'"
+            style.backgroundImage="url('{{imageUrl}}')" class="w-100 border shadow-sm to-point" (click)="image.click()">
+        </div>
+        <div class="py-5">
+            <p class="fs-2">Scegli una categoria</p>
+            <div class="card flex justify-center my-3">
+                <p-autocomplete [(ngModel)]="valueCategory" [suggestions]="categorieNames"
+                    (completeMethod)="searchCategories($event)" />
+            </div>
+        </div>
     </div>
     <div class="d-flex justify-content-center my-3">
         <button class="btn mx-1" *ngIf="step>1" (click)="step=step-1">
