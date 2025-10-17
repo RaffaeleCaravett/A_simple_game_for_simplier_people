@@ -92,6 +92,10 @@
     </div>
     <div class="col-sm-12" *ngIf="giochiArray.length>0">
         <div class="row my-5 p-3 border shadow-lg" *ngIf="choosedGame">
+            <p class="text-end">
+                <button class="btn" matTooltip="Close" matTooltipPosition="above" (click)="choosedGame = null"><i
+                        class="pi pi-times fs-2" style="color:red"></i></button>
+            </p>
             <div class="col-md-12" *ngIf="showModal&&choosedAction=='edit'&& choosedGame">
                 <h2>Modifica le componenti del gioco</h2>
                 <form [formGroup]="editGameForm" class="row">
@@ -312,6 +316,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 my-3">
+                <p class="fs-2">
+                    Elementi {{(giochi.pageable.pageNumber*giochi.pageable.pageSize)+1}} -
+                    {{(giochi.pageable.pageNumber*giochi.pageable.pageSize)+giochi.numberOfElements}} di
+                    {{giochi.totalElements}} in totale
+                </p>
             </div>
         </div>
     </div>

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../core/environment";
 import { TorneoDTO } from "../interfaces/interfaces";
+import { map, switchMap } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -13,9 +14,6 @@ export class AdministrationService {
     private torneo: string = '/tournament';
 
     constructor(private http: HttpClient) { }
-
-
-
 
     getAllCategories() {
         return this.http.get(environment.API_URL + this.categoria);

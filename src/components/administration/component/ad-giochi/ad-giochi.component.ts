@@ -191,6 +191,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
               next: (value: any) => {
                 if (value) {
                   this.toastr.success("Gioco eliminato con successo");
+                  this.choosedGame = null;
                   this.searchGiochi();
                 } else {
                   this.toastr.error("E' successo qualcosa che ha impedito l'eliminazione del gioco.");
@@ -211,6 +212,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
           }
         } else {
           this.toastr.warning(`Non è stato ${action == 'delete' ? 'eliminato' : 'recuperato'} nessun gioco.`);
+          this.choosedGame = null;
         }
       })
     } else {
