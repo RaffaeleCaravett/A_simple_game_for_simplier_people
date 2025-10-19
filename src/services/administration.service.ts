@@ -115,6 +115,6 @@ export class AdministrationService {
         if (giocoImage && giocoImage != null && giocoImage != undefined) {
             formData.append('gioco_image', giocoImage, giocoImage.name);
         }
-        return this.http.put(environment.API_URL + this.gioco, formData, { headers: headers });
+        return this.http.post(environment.API_URL + this.gioco, formData, { headers: headers });
     }
 }

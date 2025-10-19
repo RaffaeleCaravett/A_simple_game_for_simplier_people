@@ -318,6 +318,7 @@ export class AdGiochiComponent implements OnInit, AfterContentChecked {
     const dialogRef = this.matDialog.open(CreateGameComponent)
     dialogRef.afterClosed().subscribe((data: any) => {
       this.toastr.show(data);
+      this.searchGiochi();
     })
   }
 }

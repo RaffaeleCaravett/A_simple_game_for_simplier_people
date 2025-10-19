@@ -83,18 +83,20 @@ export class CreateGameComponent implements OnInit {
     this.choosedCategories.delete(value);
   }
   confirm() {
+    debugger
     if (this.aggiungiGiocoForm.valid && this.value > 0 && this.value < 6 && this.selectedImage && this.choosedCategories.size > 0) {
       this.administrationService.addGioco({
         nomeGioco: this.aggiungiGiocoForm.controls['nome'].value,
-        descrizione: this.aggiungiGiocoForm.controls['descrizione'].value
+        descrizione: this.aggiungiGiocoForm.controls['descrizione'].value,
+        difficolta: this.value,
+        categorie: [...this.choosedCategories].map(c => c.id)
       }, this.selectedImage).subscribe({
         next: (data: any) => {
           this.dialogRef.close("Gioco aggiunto");
         }
       })
-      this.toastr.show("To implement ...");
     } else {
-      this.toastr.error("Nothing ...");
+      this.toastr.error("Assicurati di inserire correttamente i dati richiesti");
     }
   }
 }
