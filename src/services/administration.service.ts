@@ -105,4 +105,16 @@ export class AdministrationService {
     putTorneo(torneoId: number, nome: string, torneo: any) {
         return this.http.put(environment.API_URL + this.torneo + `/${torneoId}/${nome}`, torneo);
     }
+    addGioco(gioco: any, giocoImage: File) {
+        let headers = new HttpHeaders();
+        let formData: FormData = new FormData();
+
+        formData.append('gioco', new Blob([JSON.stringify(gioco)], {
+            type: 'application/json'
+        }));
+        if (giocoImage && giocoImage != null && giocoImage != undefined) {
+            formData.append('gioco_image', giocoImage, giocoImage.name);
+        }
+        return this.http.put(environment.API_URL + this.gioco, formData, { headers: headers });
+    }
 }
