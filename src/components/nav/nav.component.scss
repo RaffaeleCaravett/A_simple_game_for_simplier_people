@@ -37,7 +37,8 @@
 .h1,
 h2,
 * {
-    font-family: "Just Me Again Down Here", cursive;
+    font-family: "Arima", system-ui;
+    font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
 }
@@ -66,8 +67,8 @@ h2,
 }
 
 .notification-pic {
-    width: 30px !important;
-    height: 30px !important;
+    width: 50px !important;
+    height: 50px !important;
 }
 
 .mat-trigger {

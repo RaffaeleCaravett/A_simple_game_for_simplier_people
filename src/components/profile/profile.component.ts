@@ -21,12 +21,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EsitoRichiesta } from '../../enums/enums';
 import { WebsocketService } from '../../services/websocket.service';
 import { AskConfirmComponent } from '../../shared/components/ask-confirm/ask-confirm.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [NgFor, NgIf, NgClass, ImpostazioniComponent, NgStyle, PreferitiComponent, LeafletComponent, GoogleMap, MapMarker,
-    MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent, MatProgressSpinnerModule,
+    MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent, MatProgressSpinnerModule, MatTooltip,
     MatSlideToggleModule, FormsModule
   ],
   templateUrl: './profile.component.html',
@@ -75,7 +76,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
 
   sizes: number[] = [2, 5, 10];
   windowWidth: number = 0;
-  menuVoices: Set<{ label: string, emoji: string, title: string }> = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+  menuVoices: Set<{ label: string, emoji: string, title: string }> = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
   { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
   { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
   ]);
@@ -225,7 +226,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               this.isProfileOpen = this.visitedUser?.open || false;
               this.getCoordinates();
               if (this.user?.id == this.visitedUser?.id) {
-                this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+                this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
                 { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
                 { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
                 ]);
@@ -244,6 +245,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
                 this.switchSection('Richieste');
               } else if (params['email']) {
                 this.switchSection('Dashboard');
+              } else if (params['tournament']) {
+                this.switchSection('Tornei');
               }
               this.getAllDatas();
               this.checkIfFriend();
@@ -260,7 +263,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             this.isProfileOpen = this.visitedUser?.open || false;
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
-              this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+              this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
               { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
               { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
               ]);
@@ -442,7 +445,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
   cleanMenu() {
     if (this.user.id != this.visitedUser!.id) {
-      this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi !' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le classifiche!' }]);
+      this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi !' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le classifiche!' }]);
     }
   }
   getCoordinates() {

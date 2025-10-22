@@ -8,12 +8,16 @@
 }
 
 ::ng-deep p-autocomplete {
-    input {
+    div{
+        width: 100%!important;
+       input {
         background-color: white !important;
         color: black !important;
         margin: auto;
         width: 100%;
+    }   
     }
+  
 }
 
 .step-3 {

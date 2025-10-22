@@ -39,7 +39,8 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Arima", system-ui;
+  font-optical-sizing: auto;
 }
 
 .material-icons {
@@ -75,7 +76,8 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Arima", system-ui;
+  font-optical-sizing: auto;
 }
 
 .bg-light-personal {
@@ -198,4 +200,10 @@ mat-dialog-container {
 
 ::ng-deep .cdk-overlay-pane {
   align-items: center;
+}
+
+.fs-2,
+.fs-1,
+.fs-3 {
+  line-height: 1.21 !important;
 }

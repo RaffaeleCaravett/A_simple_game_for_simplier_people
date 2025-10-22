@@ -1,20 +1,25 @@
 .h1,
 h2,
 * {
-  font-family: "Just Me Again Down Here", cursive;
+  font-family: "Arima", system-ui;
+  font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
-ul{
+
+ul {
   list-style: none;
-  li{
+
+  li {
     font-size: 20px;
-    color:white;
+    color: white;
   }
 }
-.bg-personal{
-  background-image: linear-gradient( white,black);
+
+.bg-personal {
+  background-image: linear-gradient(white, black);
 }
-.bg-personal-opposite{
-  background-image: linear-gradient( gray,black);
+
+.bg-personal-opposite {
+  background-image: linear-gradient(gray, black);
 }

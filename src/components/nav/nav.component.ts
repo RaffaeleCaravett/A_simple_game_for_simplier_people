@@ -113,7 +113,7 @@ export class NavComponent implements OnInit {
         setInterval(() => {
           let currentD = new Date();
           let midnight = new Date();
-          midnight.setHours(21, 30);
+          midnight.setHours(0, 1);
           if (currentD.getHours() == midnight.getHours() && currentD.getMinutes() == midnight.getMinutes()) {
             this.getNotifications();
             return;
@@ -167,6 +167,8 @@ export class NavComponent implements OnInit {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
     } else if (notification.notificationType == 'EMAIL') {
       this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, email: true } })
+    } else if (notification.notificationType == 'TOURNAMENT') {
+      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, tournament: true } })
     } else {
       this.toastr.show("Impossibile stabilire il tipo di notifica");
     }

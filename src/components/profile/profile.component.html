@@ -6,7 +6,7 @@
             </div>
             <div class="col-md-12 d-flex justify-content-end" *ngIf="user?.id!=visitedUser?.id">
                 <button class="btn" (click)="openInfoFriend()">
-                    <i class="bi bi-info-square h2" title="Apri informazioni"></i>
+                    <i class="bi bi-info-square h2" matTooltip="Apri informazioni" matTooltipPosition="left"></i>
                 </button>
             </div>
             <div class="col-md-12 d-flex justify-content-end  pb-5" *ngIf="infoFriend && user?.id!=visitedUser?.id">
@@ -25,10 +25,12 @@
                 *ngIf="((isProfileOpen&&user!=visitedUser) || (user == visitedUser) || (!isProfileOpen && isThisAFriend)) && windowWidth>699 else reducedMenu">
                 <ul class="text-start">
                     <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
-                        <span *ngIf="v.label != 'Impostazioni'" title="{{v.title}}">{{v.emoji + ' ' +
+                        <span *ngIf="v.label != 'Impostazioni'" matTooltip="{{v.title}}"
+                            matTooltipPosition="left">{{v.emoji + ' ' +
                             v.label.toUpperCase()}}</span>
                         <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                            <span title="{{v.title}}">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                            <span matTooltip="{{v.title}}" matTooltipPosition="left">{{v.emoji + ' ' +
+                                v.label.toUpperCase()}}</span>
                             <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
                                 <li *ngFor="let s of sottomenu" class="text-start" (click)="setImpostazioniSection(s)">
                                     {{s.toUpperCase()}}</li>
@@ -48,10 +50,12 @@
                         <ul class="text-start border shadow p-4 fs-4"
                             [ngClass]="mode=='light'?'text-dark bg-light':'text-light bg-secondary'">
                             <li *ngFor="let v of menuVoices" class="p-3" (click)="switchSection(v.label)">
-                                <span title="{{v.title}}" *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' +
+                                <span matTooltip="{{v.title}}" matTooltipPosition="left"
+                                    *ngIf="v.label != 'Impostazioni'">{{v.emoji + ' ' +
                                     v.label.toUpperCase()}}</span>
                                 <div *ngIf="v.label == 'Impostazioni' && authService.getUser()!.id == visitedUser!.id">
-                                    <span title="{{v.title}}">{{v.emoji + ' ' + v.label.toUpperCase()}}</span>
+                                    <span matTooltip="{{v.title}}" matTooltipPosition="left">{{v.emoji + ' ' +
+                                        v.label.toUpperCase()}}</span>
                                     <ul class="personalized-menu text-center" *ngIf="section=='Impostazioni'">
                                         <li *ngFor="let s of sottomenu" class="text-start"
                                             (click)="setImpostazioniSection(s)">
@@ -340,7 +344,8 @@
                                         [ngClass]="g.difficolta<=2?'text-success':g.difficolta<=4?'text-warning':'text-danger'">
                                         VAI AL GIOCO
                                     </p>
-                                    <i class="bi bi-arrow-up-right h3 p-3 " title="Vai al gioco"></i>
+                                    <i class="bi bi-arrow-up-right h3 p-3 " matTooltip="Vai al gioco"
+                                        matTooltipPosition="left"></i>
                                 </div>
                             </div>
                             <div class="col-md-12 py-2 bg-white" *ngIf="giochi == null || giochi?.content?.length == 0">
@@ -389,7 +394,55 @@
                                             {{c?.gioco?.nomeGioco}}
                                         </p>
                                         <p class="text-end p-2">
-                                            <button class="btn" title="Vai alla classifica" (click)="goToRanking(c)">
+                                            <button class="btn" matTooltip="Vai alla classifica"
+                                                matTooltipPosition="left" (click)="goToRanking(c)">
+                                                <i class="bi bi-box-arrow-up-right h4"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn fs-5" *ngIf="!classifiche?.first"
+                                        (click)="classifichePage=0;getClassifiche();">First</button>
+                                    <button class="btn" *ngIf="!classifiche?.first"
+                                        (click)="classifichePage=classifichePage-1;getClassifiche();">
+                                        <i class="bi bi-arrow-left-circle-fill h4"></i>
+                                    </button>
+                                    <button class="btn fs-5" *ngIf="!classifiche?.last"
+                                        (click)="classifichePage=classifichePage+1;getClassifiche();">
+                                        <i class="bi bi-arrow-right-circle-fill h4"></i>
+                                    </button>
+                                    <button class="btn" *ngIf="!classifiche?.last"
+                                        (click)="classifichePage=classifiche?.totalPages-1;getClassifiche();">Last</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="section=='Tornei'">
+                    <div class="row">
+                        <div class="col-md-12"
+                            *ngIf="!classifiche|| !classifiche?.content||classifiche?.content?.length==0">
+                            <h2 *ngIf="authService.getUser()!.id != visitedUser?.id">Al momento,
+                                {{visitedUser?.fullName}}
+                                non partecipa a nessuna classifica.</h2>
+                            <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Al momento non partecipi a nessuna
+                                classifica.</h2>
+                        </div>
+                        <div class="col-md-12"
+                            *ngIf="classifiche&&classifiche?.content&&classifiche?.content?.length>0">
+                            <div class="row">
+                                <div class="col-md-4 p-3" *ngFor="let c of classifiche?.content">
+                                    <div class="border shadow">
+                                        <p class="fs-1 p-3 py-4"
+                                            [ngClass]="mode=='light'?'bg-light':'bg-secondary text-light'">Classifica
+                                        </p>
+                                        <p class="p-4 fs-4">
+                                            {{c?.gioco?.nomeGioco}}
+                                        </p>
+                                        <p class="text-end p-2">
+                                            <button class="btn" matTooltip="Vai alla classifica"
+                                                matTooltipPosition="left" (click)="goToRanking(c)">
                                                 <i class="bi bi-box-arrow-up-right h4"></i>
                                             </button>
                                         </p>
@@ -521,22 +574,25 @@
                                             </div>
                                             <div class="col-sm-6" *ngIf="cr.esitoRichiesta == 'INVIATA'">
                                                 <button class="btn btn-light m-auto"
-                                                    title="Accetta la richiesta di contatto"
-                                                    (click)="acceptRequest(cr.id)">Accetta ✔ </button>
+                                                    matTooltip="Accetta la richiesta di contatto"
+                                                    matTooltipPosition="left" (click)="acceptRequest(cr.id)">Accetta ✔
+                                                </button>
                                             </div>
                                             <div class="col-sm-6" *ngIf="cr.esitoRichiesta == 'INVIATA'">
                                                 <button class="btn btn-secondary m-auto"
-                                                    title="Rifiuta la richiesta di contatto"
-                                                    (click)="refuseRequest(cr.id)"> Rifiuta ❌</button>
+                                                    matTooltip="Rifiuta la richiesta di contatto"
+                                                    matTooltipPosition="left" (click)="refuseRequest(cr.id)"> Rifiuta
+                                                    ❌</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12 d-flex justify-content-center pt-5"
                                         *ngIf="actualRequests?.content?.length > 0">
-                                        <button class="btn" title="indietro" *ngIf="connectionRequestPage > 0"
+                                        <button class="btn" matTooltip="indietro" *ngIf="connectionRequestPage > 0"
+                                            matTooltipPosition="left"
                                             (click)="connectionRequestPage= connectionRequestPage -1;getConnectionRequests();"><i
                                                 class="bi bi-chevron-left h2"></i></button>
-                                        <button class="btn" title="avanti"
+                                        <button class="btn" matTooltip="avanti" matTooltipPosition="left"
                                             *ngIf="(connectionRequestPage+1) < actualRequests?.totalPages"
                                             (click)="connectionRequestPage= connectionRequestPage +1;getConnectionRequests();"><i
                                                 class="bi bi-chevron-right h2"></i></button>
@@ -579,17 +635,19 @@
                                             </div>
                                             <div class="col-sm-6" *ngIf="cr.esitoRichiesta == 'INVIATA'">
                                                 <button class="btn btn-secondary m-auto"
-                                                    title="Rifiuta la richiesta di contatto"
-                                                    (click)="deleteRequest(cr.id)"> Annulla ❌</button>
+                                                    matTooltip="Rifiuta la richiesta di contatto"
+                                                    matTooltipPosition="left" (click)="deleteRequest(cr.id)"> Annulla
+                                                    ❌</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12 d-flex justify-content-center pt-5"
                                         *ngIf="actualRequests?.content?.length > 0">
-                                        <button class="btn" title="indietro" *ngIf="connectionRequestPage > 0"
+                                        <button class="btn" matTooltip="indietro" *ngIf="connectionRequestPage > 0"
+                                            matTooltipPosition="left"
                                             (click)="connectionRequestPage= connectionRequestPage -1;getConnectionRequests();"><i
                                                 class="bi bi-chevron-left h2"></i></button>
-                                        <button class="btn" title="avanti"
+                                        <button class="btn" matTooltip="avanti" matTooltipPosition="left"
                                             *ngIf="(connectionRequestPage+1) < actualRequests?.totalPages"
                                             (click)="connectionRequestPage= connectionRequestPage +1;getConnectionRequests();"><i
                                                 class="bi bi-chevron-right h2"></i></button>
@@ -628,8 +686,8 @@
                     L'utente ha reso il suo profilo privato. Richiedi di avere i permessi per visualizzare il suo
                     profilo.
                 </p>
-                <button class="btn btn-success" title="manda una richiesta per visualizzare il profilo"
-                    (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
+                <button class="btn btn-success" matTooltip="manda una richiesta per visualizzare il profilo"
+                    matTooltipPosition="left" (click)="sendRequest()" *ngIf="!isConnectionRequestLoading">Richiedi
                     permessi</button>
                 <mat-spinner diameter="50" color="warn" strokeWidth="4" class="m-auto"
                     *ngIf="isConnectionRequestLoading"></mat-spinner>
