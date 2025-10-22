@@ -84,7 +84,14 @@ export class CreateGameComponent implements OnInit {
   }
   confirm() {
     if (this.aggiungiGiocoForm.valid && this.value > 0 && this.value < 6 && this.selectedImage && this.choosedCategories.size > 0) {
-      this.isLoading = true;
+      this.administrationService.addGioco({
+        nomeGioco: this.aggiungiGiocoForm.controls['nome'].value,
+        descrizione: this.aggiungiGiocoForm.controls['descrizione'].value
+      }, this.selectedImage).subscribe({
+        next: (data: any) => {
+          this.dialogRef.close("Gioco aggiunto");
+        }
+      })
       this.toastr.show("To implement ...");
     } else {
       this.toastr.error("Nothing ...");
