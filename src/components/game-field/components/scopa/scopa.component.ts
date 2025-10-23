@@ -1,5 +1,5 @@
 import { NgIf, NgForOf, NgClass, NgStyle } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { ToastrService } from 'ngx-toastr';
@@ -30,10 +30,15 @@ export class ScopaComponent implements OnInit {
   selectedCard: any[] = [];
   release: boolean = false;
   lastShot: string = '';
+  windowWidth: number = 0;
+  windowHeight: number = 0;
+  showComputerScopa: boolean = false;
+  showYourScopa: boolean = false;
   constructor(private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.forms();
+    this.takeMisures();
   }
 
   forms() {
@@ -78,10 +83,11 @@ export class ScopaComponent implements OnInit {
         this.tableCards.forEach(c => this.yourCardsTaken.push(c));
       }
       this.tableCards = [];
-      this.calculatePoints();
+      this.tourn = '';
     }
   }
   calculatePoints() {
+    this.tourn = '';
     this.toastr.show("CalculatePoints");
   }
   giveTableCards() {
@@ -112,28 +118,20 @@ export class ScopaComponent implements OnInit {
           this.cleanComputerHand(c);
           this.cleanTable(this.tableCards, 'computer');
           this.computerScopas += 1;
-          if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-            this.giveCards();
-          }
-          this.setLastMove();
-          this.tourn = 'user';
-          return;
+          this.showComputerScopa = true;
+          setTimeout(() => {
+            this.showComputerScopa = false;
+            if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+              this.giveCards();
+            }
+            this.setLastMove();
+            this.tourn = 'user';
+            return;
+          }, 3000);
         }
       }
       for (let c of this.computerCards) {
         for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
-          for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
-            if (c.value == (this.tableCards[tc].value + this.tableCards[itc].value)) {
-              this.cleanComputerHand(c);
-              this.cleanTable([this.tableCards[tc], this.tableCards[itc]], 'computer');
-              if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-                this.giveCards();
-              }
-              this.setLastMove();
-              this.tourn = 'user';
-              return;
-            }
-          }
           if (c.value == this.tableCards[tc].value) {
             this.cleanComputerHand(c);
             this.cleanTable([this.tableCards[tc]], 'computer');
@@ -143,6 +141,22 @@ export class ScopaComponent implements OnInit {
             this.setLastMove();
             this.tourn = 'user';
             return;
+          }
+        }
+      }
+      for (let c of this.computerCards) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
+            if (c.value == (this.tableCards[tc].value + this.tableCards[itc].value) && this.tableCards[tc] != this.tableCards[itc]) {
+              this.cleanComputerHand(c);
+              this.cleanTable([this.tableCards[tc], this.tableCards[itc]], 'computer');
+              if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+                this.giveCards();
+              }
+              this.setLastMove();
+              this.tourn = 'user';
+              return;
+            }
           }
         }
       }
@@ -197,15 +211,20 @@ export class ScopaComponent implements OnInit {
   chooseCard(card: any) {
 
     if (this.release) {
-      this.tableCards.push(card);
-      this.yourCards = this.yourCards.filter(c => c != card);
-      this.tourn = 'computer';
-      this.release = false;
-      if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-        this.giveCards();
+      if (!this.checkForPoints()) {
+        this.tableCards.push(card);
+        this.yourCards = this.yourCards.filter(c => c != card);
+        this.tourn = 'computer';
+        this.release = false;
+        if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+          this.giveCards();
+        }
+        this.calculateComputerMove();
+        return;
+      } else {
+        this.toastr.show("Controlla bene! Hai delle carte da prendere.");
       }
-      this.calculateComputerMove();
-      return;
+
     }
     if (this.selectedCard.length == 0) {
       this.toastr.error("Seleziona prima le carte dal tavolo");
@@ -217,16 +236,46 @@ export class ScopaComponent implements OnInit {
         this.cleanYourHand(card);
         if (this.tableCards.length == 0) {
           this.yourScopas += 1;
+          this.showYourScopa = true;
         }
-        this.selectedCard = [];
-        this.setLastMove();
-        this.tourn = 'computer';
-        if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-          this.giveCards();
-        }
-        this.calculateComputerMove();
+        setTimeout(() => {
+          if (this.showYourScopa) {
+            this.showYourScopa = false;
+          }
+          this.selectedCard = [];
+          this.setLastMove();
+          this.tourn = 'computer';
+          if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+            this.giveCards();
+          }
+          this.calculateComputerMove();
+        }, this.showYourScopa ? 3000 : 0);
       }
     }
+  }
+  checkForPoints(): boolean {
+    for (let c = 0; c <= this.yourCards.length - 1; c++) {
+      if (this.checkForScopa(this.yourCards[c])) {
+        return true;
+      }
+    }
+    for (let c = 0; c <= this.yourCards.length - 1; c++) {
+      for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+        if (this.yourCards[c].value == this.tableCards[tc].value) {
+          return true;
+        }
+      }
+    }
+    for (let c = 0; c <= this.yourCards.length - 1; c++) {
+      for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+        for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
+          if (this.yourCards[c].value == (this.tableCards[tc].value + this.tableCards[itc].value) && this.tableCards[tc] != this.tableCards[itc]) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
   cleanYourHand(card: any) {
     this.yourCards = this.yourCards.filter(c => c != card);
@@ -236,5 +285,14 @@ export class ScopaComponent implements OnInit {
     if (this.allCards.length == 0) {
       this.lastShot = this.tourn;
     }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.takeMisures();
+  }
+  takeMisures() {
+    this.windowWidth = window.innerWidth;
+    this.windowHeight = window.innerHeight;
   }
 }

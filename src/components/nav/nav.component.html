@@ -40,14 +40,14 @@
                             <p>{{n.createdAt}}</p>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-check2-all" title="letta" *ngIf="n.state=='READ'"></i>
-                            <i class="bi bi-check2" title="non letta" *ngIf="n.state=='SENT'"></i>
+                            <i class="bi bi-check2-all h4" title="letta" *ngIf="n.state=='READ'"></i>
+                            <i class="bi bi-check2 h4" title="non letta" *ngIf="n.state=='SENT'"></i>
                             <br>
-                            <i class="bi bi-envelope-fill" *ngIf="n.notificationType=='MESSAGE'" title="Messaggio"></i>
-                            <i class="bi bi-person-lines-fill" title="Richiesta di contatto"
+                            <i class="bi bi-envelope-fill h4" *ngIf="n.notificationType=='MESSAGE'" title="Messaggio"></i>
+                            <i class="bi bi-person-lines-fill h4" title="Richiesta di contatto"
                                 *ngIf="n.notificationType=='CONNECTION_REQUEST'"></i>
-                            <i class="bi bi-envelope-at" title="Email" *ngIf="n.notificationType=='EMAIL'"></i>
-                            <i class="pi pi-play-circle" title="Torneo" *ngIf="n.notificationType=='TOURNAMENT'"></i>
+                            <i class="bi bi-envelope-at h4" title="Email" *ngIf="n.notificationType=='EMAIL'"></i>
+                            <i class="pi pi-play-circle h4" title="Torneo" *ngIf="n.notificationType=='TOURNAMENT'"></i>
                         </div>
                     </div>
                 </div>
@@ -151,13 +151,13 @@
                                 <p>{{n.createdAt}}</p>
                             </div>
                             <div class="col-1">
-                                <i class="bi bi-envelope" *ngIf="n.state=='READ'"></i>
-                                <i class="bi bi-envelope-fill" *ngIf="n.state=='SENT'"></i>
-                                <i class="bi bi-envelope-fill" *ngIf="n.notificationType=='MESSAGE'"
+                                <i class="bi bi-envelope h4" *ngIf="n.state=='READ'"></i>
+                                <i class="bi bi-envelope-fill h4" *ngIf="n.state=='SENT'"></i>
+                                <i class="bi bi-envelope-fill h4" *ngIf="n.notificationType=='MESSAGE'"
                                     title="Messaggio"></i>
-                                <i class="bi bi-person-lines-fill" title="Richiesta di contatto"
+                                <i class="bi bi-person-lines-fill h4" title="Richiesta di contatto"
                                     *ngIf="n.notificationType=='CONNECTION_REQUEST'"></i>
-                                <i class="bi bi-envelope-at" title="Email" *ngIf="n.notificationType=='EMAIL'"></i>
+                                <i class="bi bi-envelope-at h4" title="Email" *ngIf="n.notificationType=='EMAIL'"></i>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,12 @@
-<div class="row text-center">
+<div class="row text-center position-relative">
+    <div class="position-absolute start-25 top-50 bg-light shadow-sm bg-gradient p-4" *ngIf="showComputerScopa"
+        style="font-size: 3rem;" [style.width]="windowWidth">
+        COMPUTER SCOPA!
+    </div>
+    <div class="position-absolute start-25 top-50 bg-light shadow-sm bg-gradient p-4" *ngIf="showYourScopa"
+        style="font-size: 3rem;" [style.width]="windowWidth">
+        YOUR SCOPA!
+    </div>
     <div class="col-12 my-5">
         <h1>Scopa</h1>
     </div>
@@ -33,20 +41,30 @@
                     <p class="text-success fs-1 fw-bold" *ngIf="tourn=='user'">E' IL TUO TURNO</p>
                 </div>
                 <div class="col-12">
-                    <h2>Computer</h2>
+                    <h2>Computer <span *ngIf="computerCardsTaken.length>0" class="fs-5">({{computerCardsTaken.length }}
+                            {{computerCardsTaken.length == 1?'carta presa':'carte prese'}}
+                            {{computerScopas>0?'':')'}}</span>
+                        <span *ngIf="computerScopas>0" class="fs-5"> - {{computerScopas}} 🧹)</span>
+                    </h2>
                 </div>
                 <div class="col-4 p-3" *ngFor="let c of computerCards">
                     <div class="border shadow-sm">
-                        <p class="text-end fs-2">{{c.group}}</p>
-                        <p class="text-center my-5 fs-2"
-                            [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'">
-                            {{c.value}}
+                        <p class="text-end fs-2">
+                            <!--{{c.group}}-->
+                            Scopa
+                        </p>
+                        <p class="text-center my-5 fs-2">
+                            <!--
+                           NgClass of p above 
+                           [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'"
+                            {{c.value}}-->
+                            Scopa
                         </p>
                     </div>
                 </div>
                 <div class="row p-3 bg-success border shadow-sm">
                     <div class="col-3 p-3" *ngFor="let c of tableCards">
-                        <div class="border shadow-sm bg-light" (click)="selectCard(c)"
+                        <div class="border shadow-sm bg-light" (click)="selectCard(c);release=false;"
                             [ngStyle]="selectedCard.includes(c)?{'scale':'1.1'}:{}">
                             <p class="text-end fs-2">{{c.group}}</p>
                             <p class="text-center my-5 fs-2"
@@ -55,18 +73,22 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-3 p-3" >
-                        <div class="border shadow-sm bg-light" (click)="release = !release"
+                    <div class="col-3 p-3">
+                        <div class="border shadow-sm bg-light" (click)="release = !release; selectedCard=[]"
                             [ngStyle]="release?{'scale':'1.1'}:{}">
                             <p class="text-end fs-2"><i class="bi bi-plus h2"></i></p>
                             <p class="text-center my-5 fs-2 text-success">
-                                <i class="bi bi-plus h1"></i>
+                                <i class="bi bi-plus h2"></i>
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class=" col-12">
-                    <h2>Tu</h2>
+                    <h2>Tu <span *ngIf="yourCardsTaken.length>0" class="fs-5">( {{yourCardsTaken.length }}
+                            {{yourCardsTaken.length ==
+                            1?'carta presa':'carte prese'}} {{yourScopas>0?'':')'}}</span>
+                        <span *ngIf="yourScopas>0" class="fs-5"> {{yourScopas}} 🧹)</span>
+                    </h2>
                 </div>
                 <div class="col-4 p-3" *ngFor="let c of yourCards">
                     <div class="border shadow-sm" (click)="chooseCard(c)">
