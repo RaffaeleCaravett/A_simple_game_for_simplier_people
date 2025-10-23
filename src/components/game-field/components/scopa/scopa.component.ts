@@ -183,8 +183,11 @@ export class ScopaComponent implements OnInit {
     this.tableCards.forEach(c => {
       totalTableValue += c.value;
     });
-    if (card.value == totalTableValue) return true;
-    else return false;
+    if (card.value == totalTableValue) {
+      debugger
+      return true;
+    }
+    else { return false; }
   }
 
   cleanComputerHand(card: any) {

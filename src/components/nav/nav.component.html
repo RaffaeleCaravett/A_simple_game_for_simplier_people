@@ -12,7 +12,7 @@
                         class="bi bi-bell h2 text-danger"
                         title="{{notificationToRead>0?'':'0 notifiche da leggere!'}}"></i>
                     <span class="bg-secondary text-white rounded shadow-sm position-absolute new-notification"
-                        *ngIf="notificationToRead>0"
+                        *ngIf="notificationToRead>0" (click)="openNotificationMenu();"
                         title="{{notificationToRead}} {{notificationToRead ==1?'notifica':'notifiche'}} da leggere!">new</span>
                 </span>
             </div>
@@ -123,7 +123,7 @@
                             class="bi bi-bell h2 text-danger"
                             title="{{notificationToRead>0?'':'0 notifiche da leggere!'}}"></i>
                         <span class="bg-secondary text-white rounded shadow-sm position-absolute new-notification"
-                            *ngIf="notificationToRead>0"
+                            *ngIf="notificationToRead>0" (click)="openNotificationMenu();"
                             title="{{notificationToRead}} {{notificationToRead ==1?'notifica':'notifiche'}} da leggere!">new</span>
                     </span>
                 </div>

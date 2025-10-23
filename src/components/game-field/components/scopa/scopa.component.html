@@ -17,11 +17,14 @@
         <form [formGroup]="modalitaForm">
             <div class="d-flex">
                 <input type="radio" formControlName="modalita" id="computer" value="computer">
-                <label for="computer" class="mx-2">Computer</label>
+                <label for="computer" class="mx-2" matTooltip="Gioca contro il computer!"
+                    matTooltipPosition="above">Computer</label>
             </div>
             <div class="d-flex">
                 <input type="radio" formControlName="modalita" id="live" value="live">
-                <label for="live" class="mx-2">Live game</label>
+                <label for="live" class="mx-2" matTooltip="Esplora le richieste di gioco o creane una!"
+                    matTooltipPosition="above">Live
+                    game</label>
             </div>
         </form>
     </div>
