@@ -43,6 +43,11 @@
                     <p class="text-danger fs-1 fw-bold" *ngIf="tourn=='computer'">IL COMPUTER STA GIOCANDO</p>
                     <p class="text-success fs-1 fw-bold" *ngIf="tourn=='user'">E' IL TUO TURNO</p>
                 </div>
+                <div class="col-12 text-end">
+                    <button class="btn" *ngIf="round>0">
+                        <i class="pi pi-plus" style="font-size: 1.5rem;"></i>
+                    </button>
+                </div>
                 <div class="col-12">
                     <h2>Computer <span *ngIf="computerCardsTaken.length>0" class="fs-5">({{computerCardsTaken.length }}
                             {{computerCardsTaken.length == 1?'carta presa':'carte prese'}}

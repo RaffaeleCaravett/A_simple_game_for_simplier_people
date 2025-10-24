@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { ToastrService } from 'ngx-toastr';
+import { ShowScopaPointsComponent } from '../../../../shared/components/show-scopa-points/show-scopa-points.component';
 
 
 @Component({
@@ -38,6 +39,9 @@ export class ScopaComponent implements OnInit {
   pointsChecked: boolean = false;
   enemysScopas: number = 0;
   enemysCardsTaken: any[] = [];
+  round: number = 0;
+  computerPoints: number = 0;
+  yourPoints: number = 0;
   constructor(private toastr: ToastrService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -88,7 +92,7 @@ export class ScopaComponent implements OnInit {
       }
       this.tableCards = [];
       this.tourn = '';
-      this.openPointsDialog();
+      this.openPointsDialog(this.modalitaForm.controls['modalita'].value);
     }
   }
   calculatePoints() {
@@ -116,15 +120,30 @@ export class ScopaComponent implements OnInit {
       }
     }
   }
-  openPointsDialog() {
-    const dialogRef = this.dialog.open(ShowScopaPoints, {
-      data: [this.modalitaForm.controls['modalita'].value == 'computer' ?
-        this.computerScopas :
-        this.enemysScopas,
-      this.modalitaForm.controls['modalita'].value == 'computer' ?
-        this.computerCardsTaken :
-        this.enemysCardsTaken, this.yourScopas, this.yourCardsTaken]
-    })
+  openPointsDialog(mode: string) {
+    const dialogRef = this.dialog.open(ShowScopaPointsComponent, {
+      data: [false,
+        mode,
+        this.modalitaForm.controls['modalita'].value == 'computer' ?
+          this.computerScopas :
+          this.enemysScopas,
+        this.modalitaForm.controls['modalita'].value == 'computer' ?
+          this.computerCardsTaken :
+          this.enemysCardsTaken, this.modalitaForm.controls['modalita'].value == 'computer' ?
+          this.computerPoints : 0, this.yourScopas, this.yourCardsTaken, this.yourPoints]
+    });
+    dialogRef.afterClosed().subscribe((data: any) => {
+      if (data && data?.state == 'game-end') {
+        this.showOptions();
+      } else {
+        this.computerPoints = data?.computerPoints;
+        this.yourPoints = data?.yourPoints;
+        this.round += 1;
+      }
+    });
+  }
+  showOptions() {
+
   }
   calculateComputerMove() {
     setTimeout(() => {
@@ -145,26 +164,12 @@ export class ScopaComponent implements OnInit {
           }, 3000);
         }
       }
-      for (let c of this.computerCards) {
-        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
-          if (c.value == this.tableCards[tc].value) {
-            this.cleanComputerHand(c);
-            this.cleanTable([this.tableCards[tc]], 'computer');
-            if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-              this.giveCards();
-            }
-            this.setLastMove();
-            this.tourn = 'user';
-            return;
-          }
-        }
-      }
-      for (let c of this.computerCards) {
-        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
-          for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
-            if (c.value == (this.tableCards[tc].value + this.tableCards[itc].value) && this.tableCards[tc] != this.tableCards[itc]) {
+      if (!this.showComputerScopa) {
+        for (let c of this.computerCards) {
+          for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+            if (c.value == this.tableCards[tc].value) {
               this.cleanComputerHand(c);
-              this.cleanTable([this.tableCards[tc], this.tableCards[itc]], 'computer');
+              this.cleanTable([this.tableCards[tc]], 'computer');
               if (this.computerCards.length == 0 && this.yourCards.length == 0) {
                 this.giveCards();
               }
@@ -174,14 +179,30 @@ export class ScopaComponent implements OnInit {
             }
           }
         }
+        for (let c of this.computerCards) {
+          for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+            for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
+              if (c.value == (this.tableCards[tc].value + this.tableCards[itc].value) && this.tableCards[tc] != this.tableCards[itc]) {
+                this.cleanComputerHand(c);
+                this.cleanTable([this.tableCards[tc], this.tableCards[itc]], 'computer');
+                if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+                  this.giveCards();
+                }
+                this.setLastMove();
+                this.tourn = 'user';
+                return;
+              }
+            }
+          }
+        }
+        let randomIndex = Math.floor(Math.random() * (this.computerCards.length - 1));
+        this.tableCards.push(this.computerCards[randomIndex]);
+        this.computerCards = this.computerCards.filter(c => c != this.computerCards[randomIndex]);
+        if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+          this.giveCards();
+        }
+        this.tourn = 'user';
       }
-      let randomIndex = Math.floor(Math.random() * (this.computerCards.length - 1));
-      this.tableCards.push(this.computerCards[randomIndex]);
-      this.computerCards = this.computerCards.filter(c => c != this.computerCards[randomIndex]);
-      if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-        this.giveCards();
-      }
-      this.tourn = 'user';
     }, 2000)
   }
   takeCard(cards: any[]) {
