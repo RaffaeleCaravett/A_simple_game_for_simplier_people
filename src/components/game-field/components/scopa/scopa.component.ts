@@ -176,7 +176,10 @@ export class ScopaComponent implements OnInit {
       } else {
         this.yourCardsTaken.push(c);
       }
-    })
+    });
+    if (this.tourn == 'computer') {
+      console.log("COMPUTER CARDS : " + this.show(this.computerCardsTaken))
+    }
   }
   checkForScopa(card: any): boolean {
     let totalTableValue = 0;
@@ -203,6 +206,16 @@ export class ScopaComponent implements OnInit {
         this.yourCardsTaken.push(c);
       }
     }
+    if (who == 'computer') {
+      console.log("COMPUTER CARDS : " + '\n' + this.show(this.computerCardsTaken))
+    }
+  }
+  show(cards: any[]) {
+    let string: string = '';
+    for (let c of cards) {
+      string += c.value + " - " + c.group + (cards.length == cards.indexOf(c) ? '' : '-') + '\n'
+    }
+    return string;
   }
   selectCard(card: any) {
     if (!this.selectedCard.includes(card)) {
