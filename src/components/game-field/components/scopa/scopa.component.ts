@@ -1,6 +1,7 @@
 import { NgIf, NgForOf, NgClass, NgStyle } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { ToastrService } from 'ngx-toastr';
 
@@ -34,7 +35,10 @@ export class ScopaComponent implements OnInit {
   windowHeight: number = 0;
   showComputerScopa: boolean = false;
   showYourScopa: boolean = false;
-  constructor(private toastr: ToastrService) { }
+  pointsChecked: boolean = false;
+  enemysScopas: number = 0;
+  enemysCardsTaken: any[] = [];
+  constructor(private toastr: ToastrService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.forms();
@@ -65,7 +69,7 @@ export class ScopaComponent implements OnInit {
     this.chooseStarter();
   }
   giveCards() {
-    if (this.allCards.length > 0) {
+    if (this.allCards.length > 0 || (this.allCards.length == 0 && this.pointsChecked)) {
       for (let i = 1; i <= 3; i++) {
         let card = this.allCards[Math.floor(Math.random() * this.allCards.length)]
         this.computerCards.push(card);
@@ -84,6 +88,7 @@ export class ScopaComponent implements OnInit {
       }
       this.tableCards = [];
       this.tourn = '';
+      this.openPointsDialog();
     }
   }
   calculatePoints() {
@@ -110,6 +115,16 @@ export class ScopaComponent implements OnInit {
         this.tourn = 'user';
       }
     }
+  }
+  openPointsDialog() {
+    const dialogRef = this.dialog.open(ShowScopaPoints, {
+      data: [this.modalitaForm.controls['modalita'].value == 'computer' ?
+        this.computerScopas :
+        this.enemysScopas,
+      this.modalitaForm.controls['modalita'].value == 'computer' ?
+        this.computerCardsTaken :
+        this.enemysCardsTaken, this.yourScopas, this.yourCardsTaken]
+    })
   }
   calculateComputerMove() {
     setTimeout(() => {
