@@ -65,7 +65,10 @@ export class ScopaComponent implements OnInit {
     }, 1000);
     for (let i = 1; i <= 4; i++) {
       for (let a = 1; a <= 10; a++) {
-        this.allCards.push({ value: a, group: i == 1 ? '🪙' : i == 2 ? '🫖' : i == 3 ? '🪓' : '🗡️' });
+        this.allCards.push({
+          value: a, group: i == 1 ? '🪙' : i == 2 ? '🫖' : i == 3 ? '🪓' : '🗡️', primeraValue: a == 7 ? 21 : a == 6 ? 18 : a == 1 ? 16 : a == 5 ?
+            15 : a == 4 ? 14 : a == 3 ? 13 : a == 2 ? 12 : 10
+        });
       }
     }
     this.giveCards();
@@ -223,7 +226,6 @@ export class ScopaComponent implements OnInit {
       totalTableValue += c.value;
     });
     if (card.value == totalTableValue) {
-      debugger
       return true;
     }
     else { return false; }
@@ -279,7 +281,7 @@ export class ScopaComponent implements OnInit {
 
     }
     if (this.selectedCard.length == 0) {
-      this.toastr.error("Seleziona prima le carte dal tavolo");
+      this.toastr.error("Seleziona prima la mossa dal tavolo");
     } else {
       let selectedValue = 0;
       this.selectedCard.forEach(c => selectedValue += c.value);
