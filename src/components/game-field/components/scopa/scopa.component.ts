@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { ToastrService } from 'ngx-toastr';
 import { ShowScopaPointsComponent } from '../../../../shared/components/show-scopa-points/show-scopa-points.component';
+import { GamefieldService } from '../../../../services/gamefield.service';
 
 
 @Component({
@@ -39,11 +40,44 @@ export class ScopaComponent implements OnInit {
   pointsChecked: boolean = false;
   enemysScopas: number = 0;
   enemysCardsTaken: any[] = [];
-  round: number = 0;
+  round: number = 1;
   computerPoints: number = 0;
   yourPoints: number = 0;
-  constructor(private toastr: ToastrService, private dialog: MatDialog) { }
-
+  userWon: boolean = false;
+  computerWon: boolean = false;
+  enemyWon: boolean = false;
+  dialogRef: any = null;
+  showOptions: boolean = false;
+  constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService) {
+    this.gameField.points.subscribe((data: any) => {
+      console.log("GOT POINTS!" + [data.enemy, data.you]);
+      this.computerPoints = data.enemy;
+      this.yourPoints = data.you;
+      if (data.enemy >= 12 && data.enemy > data.you) {
+        this.computerWon = true;
+        this.gameHasStarted = false;
+        this.count = 3;
+      } else if (data.you >= 12 && data.you > data.enemy) {
+        this.userWon = true;
+        this.gameHasStarted = false;
+        this.count = 3;
+      }
+    });
+  }
+  cleanDatas() {
+    this.computerCards = [];
+    this.yourCards = [];
+    this.allCards = [];
+    this.tableCards = [];
+    this.yourCardsTaken = [];
+    this.computerCardsTaken = [];
+    this.computerScopas = 0;
+    this.yourScopas = 0;
+    this.tourn = '';
+    this.round = 1;
+    this.computerPoints = 0;
+    this.yourPoints = 0;
+  }
   ngOnInit(): void {
     this.forms();
     this.takeMisures();
@@ -56,13 +90,15 @@ export class ScopaComponent implements OnInit {
   }
 
   startComputerGame() {
-    this.gameHasStarted = true;
-    let interval = setInterval(() => {
-      this.count -= 1;
-      if (this.count == 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
+    if (this.round == 1) {
+      this.gameHasStarted = true;
+      let interval = setInterval(() => {
+        this.count -= 1;
+        if (this.count == 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
     for (let i = 1; i <= 4; i++) {
       for (let a = 1; a <= 10; a++) {
         this.allCards.push({
@@ -124,30 +160,35 @@ export class ScopaComponent implements OnInit {
     }
   }
   openPointsDialog(mode: string) {
-    const dialogRef = this.dialog.open(ShowScopaPointsComponent, {
-      data: [false,
-        mode,
-        this.modalitaForm.controls['modalita'].value == 'computer' ?
-          this.computerScopas :
-          this.enemysScopas,
-        this.modalitaForm.controls['modalita'].value == 'computer' ?
-          this.computerCardsTaken :
-          this.enemysCardsTaken, this.modalitaForm.controls['modalita'].value == 'computer' ?
-          this.computerPoints : 0, this.yourScopas, this.yourCardsTaken, this.yourPoints]
-    });
-    dialogRef.afterClosed().subscribe((data: any) => {
-      if (data && data?.state == 'game-end') {
-        this.showOptions();
-      } else {
-        this.computerPoints = data?.computerPoints;
-        this.yourPoints = data?.yourPoints;
-        this.round += 1;
-      }
-    });
-  }
-  showOptions() {
+    if (!this.dialogRef) {
+      this.dialogRef = true;
+      const dialogRef = this.dialog.open(ShowScopaPointsComponent, {
+        data: [false,
+          mode,
+          this.modalitaForm.controls['modalita'].value == 'computer' ?
+            this.computerScopas :
+            this.enemysScopas,
+          this.modalitaForm.controls['modalita'].value == 'computer' ?
+            this.computerCardsTaken :
+            this.enemysCardsTaken, this.modalitaForm.controls['modalita'].value == 'computer' ?
+            this.computerPoints : 0, this.yourScopas, this.yourCardsTaken, this.yourPoints]
+      });
 
+      dialogRef.afterClosed().subscribe((data: any) => {
+        this.dialogRef = null;
+        if (this.computerWon || this.userWon) {
+          this.toastr.show(this.computerWon || this.enemyWon ? "Il computer ha vinto!" : "Hai vinto!");
+          this.cleanDatas();
+        } else {
+          this.round += 1;
+          this.computerCardsTaken = [];
+          this.yourCardsTaken = [];
+          this.startComputerGame();
+        }
+      });
+    }
   }
+
   calculateComputerMove() {
     setTimeout(() => {
       for (let c of this.computerCards) {
@@ -216,9 +257,6 @@ export class ScopaComponent implements OnInit {
         this.yourCardsTaken.push(c);
       }
     });
-    if (this.tourn == 'computer') {
-      console.log("COMPUTER CARDS : " + this.show(this.computerCardsTaken))
-    }
   }
   checkForScopa(card: any): boolean {
     let totalTableValue = 0;
@@ -245,7 +283,6 @@ export class ScopaComponent implements OnInit {
       }
     }
     if (who == 'computer') {
-      console.log("COMPUTER CARDS : " + '\n' + this.show(this.computerCardsTaken))
     }
   }
   show(cards: any[]) {
@@ -256,10 +293,12 @@ export class ScopaComponent implements OnInit {
     return string;
   }
   selectCard(card: any) {
-    if (!this.selectedCard.includes(card)) {
-      this.selectedCard.push(card);
-    } else {
-      this.selectedCard = this.selectedCard.filter(c => c != card);
+    if (this.tourn == 'user') {
+      if (!this.selectedCard.includes(card)) {
+        this.selectedCard.push(card);
+      } else {
+        this.selectedCard = this.selectedCard.filter(c => c != card);
+      }
     }
   }
   chooseCard(card: any) {

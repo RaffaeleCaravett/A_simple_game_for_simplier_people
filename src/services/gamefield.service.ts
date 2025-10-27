@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../core/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,9 @@ export class GamefieldService {
   private byUserAndDate: string = '/userAndDate';
   private byUserAndGioco: string = '/userAndGioco';
   private assignGiocoToUser: string = '/assignGiocoToUser';
-
+  public points: BehaviorSubject<{ enemy: number, you: number }> = new BehaviorSubject<{ enemy: number, you: number }>({ enemy: 0, you: 0 });
+  private enemyPoints: number = 0;
+  private userPoints: number = 0;
   constructor(private http: HttpClient) { }
 
   postPartite(partita: {}[]) {
@@ -57,5 +60,14 @@ export class GamefieldService {
   }
   getGiocoById(giocoId: number) {
     return this.http.get(environment.API_URL + this.byGioco + '/' + giocoId)
+  }
+  updateScopaPoints(points: { enemy: number, user: number }) {
+    this.enemyPoints = points.enemy;
+    this.userPoints = points.user;
+    this.points.next({ enemy: this.enemyPoints, you: this.userPoints });
+  }
+  cleanPoints() {
+    this.enemyPoints = 0;
+    this.userPoints = 0;
   }
 }

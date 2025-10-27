@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { NgForOf, NgIf } from "@angular/common";
+import { GamefieldService } from '../../../services/gamefield.service';
 
 @Component({
   selector: 'app-show-scopa-points',
@@ -19,7 +20,7 @@ export class ShowScopaPointsComponent implements OnInit {
   options: boolean = false;
   detailedComputerPoints: { nome: string, punti: number }[] = []
   detailedUserPoints: { nome: string, punti: number }[] = []
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private matDialogRef: MatDialogRef<ShowScopaPointsComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private gameField: GamefieldService) { }
 
   ngOnInit(): void {
     this.getData();
@@ -39,7 +40,7 @@ export class ShowScopaPointsComponent implements OnInit {
     this.calculatePoints();
   }
   filterCards(group: string, cards: any[]) {
-    return cards.filter(c => c.group == group).sort((c: any, a: any) => c.value < a.value ? -1 : 1);
+    return cards.filter(c => c?.group == group).sort((c: any, a: any) => c.value < a.value ? -1 : 1);
   }
   calculatePoints() {
     let gold: number = 0;
@@ -88,11 +89,12 @@ export class ShowScopaPointsComponent implements OnInit {
     });
     primeraEnemy = cpGoldPoints + cpSwordPoints + cpCupsPoints + cpStickPoints;
     primeraUser = goldPoints + swordPoints + cupsPoints + stickPoints;
-    debugger
     if (primeraEnemy > primeraUser) {
       this.detailedComputerPoints.push({ nome: 'primera', punti: 1 });
+      this.computerPoints += 1;
     } else if (primeraEnemy < primeraUser) {
       this.detailedUserPoints.push({ nome: 'primera', punti: 1 });
+      this.userPoints += 1;
     }
     if (gold != 5) {
       if (gold > 5) {
@@ -119,9 +121,14 @@ export class ShowScopaPointsComponent implements OnInit {
     }
     if (this.computerScopas != 0) {
       this.detailedComputerPoints.push({ nome: 'scopa', punti: this.computerScopas });
+      this.computerPoints += this.computerScopas;
     }
     if (this.userScopa != 0) {
       this.detailedUserPoints.push({ nome: 'scopa', punti: this.userScopa });
+      this.userPoints += this.userScopa;
     }
+    console.log("NEXTING : " + [this.computerPoints, this.userPoints])
+    this.gameField.updateScopaPoints({ enemy: this.computerPoints, user: this.userPoints });
   }
+
 }
