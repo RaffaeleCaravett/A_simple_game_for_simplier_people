@@ -6,6 +6,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { ToastrService } from 'ngx-toastr';
 import { ShowScopaPointsComponent } from '../../../../shared/components/show-scopa-points/show-scopa-points.component';
 import { GamefieldService } from '../../../../services/gamefield.service';
+import { AuthService } from '../../../../services/auth.service';
+import { User } from '../../../../interfaces/interfaces';
 
 
 @Component({
@@ -48,9 +50,10 @@ export class ScopaComponent implements OnInit {
   enemyWon: boolean = false;
   dialogRef: any = null;
   showOptions: boolean = false;
-  constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService) {
+  user: User | null = null;
+  partita: any = null;
+  constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService) {
     this.gameField.points.subscribe((data: any) => {
-      console.log("GOT POINTS!" + [data.enemy, data.you]);
       this.computerPoints = data.enemy;
       this.yourPoints = data.you;
       if (data.enemy >= 12 && data.enemy > data.you) {
@@ -63,6 +66,7 @@ export class ScopaComponent implements OnInit {
         this.count = 3;
       }
     });
+    this.user = this.authService.getUser();
   }
   cleanDatas() {
     this.computerCards = [];
@@ -91,6 +95,16 @@ export class ScopaComponent implements OnInit {
 
   startComputerGame() {
     if (this.round == 1) {
+      this.gameField.postPartite([{
+        userId: this.user!.id,
+        giocoId: this.game,
+        esito: "PERSA",
+        punteggio: 0
+      }]).subscribe({
+        next: (data: any) => {
+          this.partita = data[0];
+        }
+      })
       this.gameHasStarted = true;
       let interval = setInterval(() => {
         this.count -= 1;
@@ -178,11 +192,24 @@ export class ScopaComponent implements OnInit {
         this.dialogRef = null;
         if (this.computerWon || this.userWon) {
           this.toastr.show(this.computerWon || this.enemyWon ? "Il computer ha vinto!" : "Hai vinto!");
+          console.log(this.user)
+          this.gameField.putPartita(this.partita.id, {
+            userId: this.user!.id,
+            giocoId: this.game,
+            esito: this.computerWon ? "PERSA" : "VINTA",
+            punteggio: this.computerWon ? 0 : this.yourPoints
+          }).subscribe({
+            next: (data: any) => {
+
+            }
+          });
           this.cleanDatas();
         } else {
           this.round += 1;
           this.computerCardsTaken = [];
           this.yourCardsTaken = [];
+          this.computerScopas = 0;
+          this.yourScopas = 0;
           this.startComputerGame();
         }
       });
@@ -211,20 +238,6 @@ export class ScopaComponent implements OnInit {
       if (!this.showComputerScopa) {
         for (let c of this.computerCards) {
           for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
-            if (c.value == this.tableCards[tc].value) {
-              this.cleanComputerHand(c);
-              this.cleanTable([this.tableCards[tc]], 'computer');
-              if (this.computerCards.length == 0 && this.yourCards.length == 0) {
-                this.giveCards();
-              }
-              this.setLastMove();
-              this.tourn = 'user';
-              return;
-            }
-          }
-        }
-        for (let c of this.computerCards) {
-          for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
             for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
               if (c.value == (this.tableCards[tc].value + this.tableCards[itc].value) && this.tableCards[tc] != this.tableCards[itc]) {
                 this.cleanComputerHand(c);
@@ -239,6 +252,21 @@ export class ScopaComponent implements OnInit {
             }
           }
         }
+        for (let c of this.computerCards) {
+          for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+            if (c.value == this.tableCards[tc].value) {
+              this.cleanComputerHand(c);
+              this.cleanTable([this.tableCards[tc]], 'computer');
+              if (this.computerCards.length == 0 && this.yourCards.length == 0) {
+                this.giveCards();
+              }
+              this.setLastMove();
+              this.tourn = 'user';
+              return;
+            }
+          }
+        }
+
         let randomIndex = Math.floor(Math.random() * (this.computerCards.length - 1));
         this.tableCards.push(this.computerCards[randomIndex]);
         this.computerCards = this.computerCards.filter(c => c != this.computerCards[randomIndex]);
