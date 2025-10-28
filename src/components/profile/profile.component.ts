@@ -83,9 +83,10 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   section: string = 'Profilo';
   circles: number[] = [1, 2, 3, 4, 5];
   partitePage: number = 0;
-  partiteSize: number = 20;
+  partiteSize: number = 21;
   partiteOrderBy: string = 'id';
   partiteSortOrder: string = 'ASC';
+  selectedGame: number = 0;
   partite: any = null;
   classifichePage: number = 0;
   classificheSize: number = 6;
@@ -127,6 +128,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   requestToShowArray: { value: string, label: string }[] = [{ value: 'RICEVUTE', label: 'Ricevute' }, { value: 'EFFETTUATE', label: 'Effettuate' }];
   infoFriend: boolean = false;
   amici: any = null;
+  giochiIdsAndNames: { id: number, name: string }[] = [];
+  partiteForm: FormGroup = new FormGroup({});
   constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
     public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
     private websocketService: WebsocketService) {
@@ -216,7 +219,11 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   ngOnInit(): void {
     this.descrizioneForm = new FormGroup({
       descrizione: new FormControl('', [Validators.required, Validators.maxLength(5000)])
-    })
+    });
+    this.partiteForm = new FormGroup({
+      gioco: new FormControl(''),
+      sort: new FormControl('')
+    });
     this.route.queryParams.subscribe(
       params => {
         if (params && params['user']) {
@@ -306,10 +313,17 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       this.getClassifiche();
       this.getTrofei();
       this.getRecensioni();
+      this.getGiochiIdsAndNames();
     }
     this.onResize();
   }
-
+  getGiochiIdsAndNames() {
+    this.gamefieldService.getGiochi().subscribe({
+      next: (data: any) => {
+        this.giochiIdsAndNames = data;
+      }
+    });
+  }
   getRecensioni() {
     this.profiloService.getRecensioniByUserId(this.visitedUser!.id, this.recePage, this.receSize, this.receOrderBy, this.receSortOrder).subscribe({
       next: (reces: any) => {
@@ -325,11 +339,11 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     })
   }
   getPartite() {
-    this.gamefieldService.getPartitaByUser(this.visitedUser!.id, this.partitePage, this.partiteSize, this.partiteOrderBy, this.partiteSortOrder).subscribe({
+    this.gamefieldService.getPartitaByUser(this.visitedUser!.id, this.partitePage, this.partiteSize, this.partiteOrderBy, this.partiteSortOrder, this.selectedGame).subscribe({
       next: (partite: any) => {
         this.partite = partite;
       }
-    })
+    });
   }
   getClassifiche() {
     this.gamefieldService.getClassificheByUser(this.visitedUser!.id, this.classifichePage, this.classificheSize, this.classificheOrderBy, this.classificheSortOrder).subscribe({
@@ -406,13 +420,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
         return "text-warning"
       }
       case ("PERSA"): {
-        return "text-danger"
+        return "text-danger-emphasis"
       }
       case ("VALIDA"): {
         return "text-success"
       }
       case ("NON_VALIDA"): {
-        return "text-danger"
+        return "text-danger-emphasis"
       }
       default: {
         return "";

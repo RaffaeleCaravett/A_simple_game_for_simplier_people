@@ -29,8 +29,8 @@ export class GamefieldService {
     return this.http.put(environment.API_URL + this.partita + '/' + partitaId, partita)
   }
 
-  getPartitaByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
-    return this.http.get(environment.API_URL + this.partita + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`)
+  getPartitaByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string, gioco: number) {
+    return this.http.get(environment.API_URL + this.partita + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}${gioco != 0 && gioco != null && gioco != undefined ? ('&gioco=' + gioco) : ''}`)
   }
   getClassificheByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
     return this.http.get(environment.API_URL + this.classifiche + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`)
@@ -60,6 +60,9 @@ export class GamefieldService {
   }
   getGiocoById(giocoId: number) {
     return this.http.get(environment.API_URL + this.byGioco + '/' + giocoId)
+  }
+  getGiochi() {
+    return this.http.get(environment.API_URL + this.byGioco + '/idAndName')
   }
   updateScopaPoints(points: { enemy: number, user: number }) {
     this.enemyPoints = points.enemy;

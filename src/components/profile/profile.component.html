@@ -477,17 +477,35 @@
                                 giocato!</h2>
                             <h2 *ngIf="authService.getUser()!.id == visitedUser?.id">Non hai ancora giocato!</h2>
                         </div>
-                        <div class="col-md-6"></div>
-                        <div class="col-md-6" *ngIf="partite&&partite?.content&&partite?.content?.length>0">
-                            <label for="sort">Ordina per : </label>
-                            <select name="sort" id="sort" #sort class="form-select" (change)="partiteSortOrder = sort.value.substring(sort.value.indexOf(',')+1);
+                        <form [formGroup]="partiteForm" class="row">
+                            <div class="col-md-6" *ngIf="partite&&partite?.content&&partite?.content?.length>0">
+                                <label for="sort">Gioco : </label>
+                                <select formControlName="gioco" id="gioco" #gioco class="form-select"
+                                    (change)="selectedGame = toNumber(gioco.value)">
+                                    <option value="0"></option>
+                                    <option value="{{g.id}}" *ngFor="let g of giochiIdsAndNames">{{g.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6" *ngIf="partite&&partite?.content&&partite?.content?.length>0">
+                                <label for="sort">Ordina per : </label>
+                                <select formControlName="sort" id="sort" #sort class="form-select" (change)="partiteSortOrder = sort.value.substring(sort.value.indexOf(',')+1);
                     partiteOrderBy = sort.value.substring(0,sort.value.indexOf(',')); getPartite()"
-                                (mousedown)="sort.size=5;" (change)="sort.blur();" (blur)="sort.size=1;">
-                                <option value="{{o.values}}" *ngFor="let o of ordinaPartiteArray">{{o.label}}</option>
-                            </select>
+                                    (mousedown)="sort.size=5;" (change)="sort.blur();" (blur)="sort.size=1;">
+                                    <option value=""></option>
+                                    <option value="{{o.values}}" *ngFor="let o of ordinaPartiteArray">{{o.label}}
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                        <div class="col-12 d-flex justify-content-center my-3">
+                            <button class="btn btn-outline-primary" (click)="getPartite()">Cerca</button>
+                            <button class="btn btn-outline-danger" (click)="partiteForm.controls['gioco'].setValue(0);partiteForm.controls['sort'].setValue('id');
+                            partiteForm.updateValueAndValidity();
+                                selectedGame = 0;partiteSortOrder ='ASC';partiteOrderBy = 'id';getPartite()">Azzera
+                                filtri</button>
                         </div>
-                        <div class="col-md-6 p-3" *ngFor="let p of partite?.content">
-                            <div class="border shadow">
+                        <div class="col-md-4 p-3" *ngFor="let p of partite?.content">
+                            <div class="border shadow partita-card overflow-auto">
                                 <p [ngClass]="mode=='light'?'bg-light p-2':'bg-secondary text-light p-2'">{{p.id + " - "
                                     + p.createdAt}}</p>
                                 <div class="d-flex justify-content-around p-2">
@@ -564,7 +582,7 @@
                                                 <p>{{cr?.createdAt}}</p>
                                             </div>
                                             <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
-                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':'text-danger'">
+                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger-emphasis':'text-danger-emphasis'">
                                                 <u *ngIf="cr.esitoRichiesta == 'ANNULLATA'">
                                                     RICHIESTA ANNULLATA
                                                 </u>
@@ -625,7 +643,7 @@
                                                 <p>{{cr?.createdAt}}</p>
                                             </div>
                                             <div class="col-12 py-5" [ngClass]="cr.esitoRichiesta == 'INVIATA' ? 'text-info':cr.esitoRichiesta == 'ACCETTATA'? 'text-success' :
-                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger':'text-danger'">
+                                cr.esitoRichiesta == 'RIFIUTATA'? 'text-danger-emphasis':'text-danger-emphasis'">
                                                 <u *ngIf="cr.esitoRichiesta == 'ANNULLATA'">
                                                     RICHIESTA ANNULLATA
                                                 </u>
