@@ -19,6 +19,7 @@ export class GamefieldService {
   public points: BehaviorSubject<{ enemy: number, you: number }> = new BehaviorSubject<{ enemy: number, you: number }>({ enemy: 0, you: 0 });
   private enemyPoints: number = 0;
   private userPoints: number = 0;
+  private invito: string = '/invito';
   constructor(private http: HttpClient) { }
 
   postPartite(partita: {}[]) {
@@ -72,5 +73,14 @@ export class GamefieldService {
   cleanPoints() {
     this.enemyPoints = 0;
     this.userPoints = 0;
+  }
+  getInvites(game: number, page: number, size: number) {
+    return this.http.get(environment.API_URL + this.invito + '/params' + `?page=${page}&size=${size}&gioco=${game}`);
+  }
+  createInvite(game: number) {
+    let invito = {
+      giocoId: game
+    }
+    return this.http.post(environment.API_URL + this.invito, invito);
   }
 }

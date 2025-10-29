@@ -481,7 +481,7 @@
                             <div class="col-md-6" *ngIf="partite&&partite?.content&&partite?.content?.length>0">
                                 <label for="sort">Gioco : </label>
                                 <select formControlName="gioco" id="gioco" #gioco class="form-select"
-                                    (change)="selectedGame = toNumber(gioco.value)">
+                                    (change)="selectedGame = toNumber(gioco.value);partitePage=0">
                                     <option value="0"></option>
                                     <option value="{{g.id}}" *ngFor="let g of giochiIdsAndNames">{{g.name}}</option>
                                 </select>
@@ -499,9 +499,7 @@
                         </form>
                         <div class="col-12 d-flex justify-content-center my-3">
                             <button class="btn btn-outline-primary" (click)="getPartite()">Cerca</button>
-                            <button class="btn btn-outline-danger" (click)="partiteForm.controls['gioco'].setValue(0);partiteForm.controls['sort'].setValue('id');
-                            partiteForm.updateValueAndValidity();
-                                selectedGame = 0;partiteSortOrder ='ASC';partiteOrderBy = 'id';getPartite()">Azzera
+                            <button class="btn btn-outline-danger" (click)="resetPartite();getPartite()">Azzera
                                 filtri</button>
                         </div>
                         <div class="col-md-4 p-3" *ngFor="let p of partite?.content">

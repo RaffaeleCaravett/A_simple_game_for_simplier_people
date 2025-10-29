@@ -127,7 +127,6 @@ export class ShowScopaPointsComponent implements OnInit {
       this.detailedUserPoints.push({ nome: 'scopa', punti: this.userScopa });
       this.userPoints += this.userScopa;
     }
-    console.log("NEXTING : " + [this.computerPoints, this.userPoints])
     this.gameField.updateScopaPoints({ enemy: this.computerPoints, user: this.userPoints });
   }
 

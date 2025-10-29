@@ -1,4 +1,4 @@
-import { NgIf, NgForOf, NgClass, NgStyle } from '@angular/common';
+import { NgIf, NgForOf, NgClass, NgStyle, DatePipe } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
@@ -8,12 +8,13 @@ import { ShowScopaPointsComponent } from '../../../../shared/components/show-sco
 import { GamefieldService } from '../../../../services/gamefield.service';
 import { AuthService } from '../../../../services/auth.service';
 import { User } from '../../../../interfaces/interfaces';
-
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-scopa',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf, MatTooltipModule, NgForOf, NgClass, NgStyle],
+  imports: [FormsModule, ReactiveFormsModule, NgIf, MatTooltipModule, NgForOf, NgClass, NgStyle, ButtonModule, TableModule, DatePipe],
   templateUrl: './scopa.component.html',
   styleUrl: './scopa.component.scss'
 })
@@ -53,6 +54,13 @@ export class ScopaComponent implements OnInit {
   user: User | null = null;
   partita: any = null;
   partite: any = null;
+  inviti: any = null
+  first = 0;
+  rows = 10;
+  invitiPage: number = 0;
+  invitiSize: number = 10;
+  selectedInvite: any = null;
+  metaKey: boolean = true;
   constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService) {
     this.gameField.points.subscribe((data: any) => {
       this.computerPoints = data.enemy;
@@ -90,7 +98,8 @@ export class ScopaComponent implements OnInit {
 
   forms() {
     this.modalitaForm = new FormGroup({
-      modalita: new FormControl('', Validators.required)
+      modalita: new FormControl('', Validators.required),
+      liveAction: new FormControl('')
     });
   }
   getPartite() {
@@ -440,5 +449,71 @@ export class ScopaComponent implements OnInit {
   takeMisures() {
     this.windowWidth = window.innerWidth;
     this.windowHeight = window.innerHeight;
+  }
+  manageLiveAction() {
+    let value = this.modalitaForm.controls['liveAction'];
+    if (value.value == 'liveHall') {
+      this.getInviti();
+    } else {
+      this.inviti = [];
+    }
+  }
+
+  getInviti() {
+    this.gameField.getInvites(this.game, this.invitiPage, this.invitiSize).subscribe({
+      next: (data: any) => {
+        this.inviti = data;
+      }
+    });
+  }
+  createInvite() {
+    this.gameField.createInvite(this.game).subscribe({
+      next: (data: any) => {
+        this.toastr.success("Invito creato! Resta in attesa!");
+      }
+    });
+  }
+
+  manageInvite(action: string) {
+
+  }
+  fullRight() {
+    this.invitiPage = this.inviti?.totalPages-1;
+    this.getInviti();
+  }
+  fullLeft() {
+    this.invitiPage = 0;
+    this.getInviti();
+  }
+  next() {
+    if (this.inviti?.totalPages > this.invitiPage+1) {
+      this.invitiPage += 1;
+      this.getInviti();
+    }
+  }
+
+  prev() {
+    if (this.invitiPage > 0) {
+      this.invitiPage -= 1;
+      this.getInviti();
+    }
+  }
+
+  reset() {
+    this.invitiPage = 0;
+    this.getInviti();
+  }
+
+  pageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+  }
+
+  isLastPage(): boolean {
+    return this.inviti ? this.invitiPage == this.inviti.totalPages-1 : false;
+  }
+
+  isFirstPage(): boolean {
+    return this.inviti ? this.invitiPage == 0 : false;
   }
 }

@@ -216,6 +216,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       }
     });
   }
+  resetPartite() {
+    this.partiteForm.reset();
+    this.partiteForm.updateValueAndValidity();
+    this.selectedGame = 0;
+    this.partiteSortOrder = 'ASC';
+    this.partiteOrderBy = 'id';
+  }
   ngOnInit(): void {
     this.descrizioneForm = new FormGroup({
       descrizione: new FormControl('', [Validators.required, Validators.maxLength(5000)])
