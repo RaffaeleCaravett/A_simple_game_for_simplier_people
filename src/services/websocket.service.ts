@@ -1,5 +1,5 @@
 import { CompatClient, Stomp, StompSubscription } from "@stomp/stompjs";
-import { ConnectionRequestDTO, Message, Messaggio, Notification, SocketDTO, User } from "../interfaces/interfaces";
+import { ConnectionRequestDTO, Message, Messaggio, Notification, PartitaDouble, SocketDTO, User } from "../interfaces/interfaces";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "../core/environment";
 import { BehaviorSubject } from "rxjs";
@@ -21,6 +21,7 @@ export class WebsocketService implements OnDestroy {
     public connectionBehaviorSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
     public connectionRequestBehaviorSubject: BehaviorSubject<ConnectionRequestDTO | null> = new BehaviorSubject<ConnectionRequestDTO | null>(null);
     public notificationBehaviorSubject: BehaviorSubject<Notification | null> = new BehaviorSubject<Notification | null>(null);
+    public partitaDoubleBehaviorSubject: BehaviorSubject<PartitaDouble | null> = new BehaviorSubject<PartitaDouble | null>(null);
 
     constructor() {
         this.connection = Stomp.client(`${environment.SOCKET_URL}/websocket`);
@@ -58,14 +59,16 @@ export class WebsocketService implements OnDestroy {
                 } else if (response?.inviteState && response?.inviteState == "CONNECTION_REQUEST") { //richiesta di connessione (amicizia)
                     let connectionRequestDTO: ConnectionRequestDTO = {
                         receiverId: JSON.parse(message.body)?.receiverId
-                    }
+                    };
                     this.connectionRequestBehaviorSubject.next(connectionRequestDTO);
                 } else if (response?.notificationType && response?.notificationType == 'TOURNAMENT') {
-                    debugger
                     let notification: Notification =
-                        JSON.parse(message.body)
-
+                        JSON.parse(message.body);
                     this.notificationBehaviorSubject.next(notification);
+                } else if (response?.invito && response?.partecipanti?.length == 2) {
+                    let partitaDouble: PartitaDouble =
+                        JSON.parse(message.body);
+                    this.partitaDoubleBehaviorSubject.next(partitaDouble);
                 }
             });
         }

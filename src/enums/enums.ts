@@ -10,3 +10,6 @@ export enum EsitoRichiesta {
 export enum NotificationType {
     MESSAGE, EMAIL, REQUEST
 }
+export enum InviteState {
+    SENT, ACCEPTED, REFUSED, EXPIRED, CANCELED, START, END, MOVE, CONNECTION_REQUEST
+}

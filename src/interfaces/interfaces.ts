@@ -1,4 +1,4 @@
-import { MoveType, NotificationType } from "../enums/enums"
+import { InviteState, MoveType, NotificationType } from "../enums/enums"
 
 export interface SignupUser {
     email: string,
@@ -141,7 +141,7 @@ export interface Notification {
     state: string,
     createdAt: string,
     notificationType: string,
-    receiverIdOnly:number
+    receiverIdOnly: number
 }
 
 export interface UserConnection {
@@ -180,4 +180,26 @@ export interface MoveDTO {
 
 export interface ConnectionRequestDTO {
     receiverId: number
+}
+export interface PartitaDouble {
+    id: number,
+    gioco: Gioco,
+    partecipanti: User[],
+    vincitori: User[],
+    invito: any,
+    tournament: any,
+    createdAt: string,
+    createdAtDate: string,
+    isActive: boolean,
+    deletedAt: string,
+    modifiedAt: string,
+    punteggioVincenti: any,
+    punteggioPerdenti: string
+}
+export interface Invito {
+    id: number,
+    createdAt: number
+    gioco: Gioco,
+    sender: User,
+    inviteState: InviteState
 }

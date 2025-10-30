@@ -200,8 +200,9 @@
                             class="pi pi-angle-left"></i>
                     </button>
                     <div>
-                        <p matTooltip="page" matTooltipPosition="above">Pagina
-                                {{invitiPage+1}} of {{inviti?.totalPages}} | Elementi {{(((invitiPage+1)*inviti?.size) -inviti?.size)+1 + " - " +
+                        <p class="pt-2" matTooltip="page" matTooltipPosition="above">Pagina
+                            {{invitiPage+1}} di {{inviti?.totalPages}} | Elementi {{(((invitiPage+1)*inviti?.size)
+                            -inviti?.size)+1 + " - " +
                             ((((invitiPage+1)*inviti?.size) -inviti?.size) + inviti.numberOfElements)}} di
                             {{inviti?.totalElements}} </p>
                     </div>
