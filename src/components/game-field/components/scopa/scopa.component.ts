@@ -1,5 +1,5 @@
 import { NgIf, NgForOf, NgClass, NgStyle, DatePipe } from '@angular/common';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -7,9 +7,10 @@ import { ToastrService } from 'ngx-toastr';
 import { ShowScopaPointsComponent } from '../../../../shared/components/show-scopa-points/show-scopa-points.component';
 import { GamefieldService } from '../../../../services/gamefield.service';
 import { AuthService } from '../../../../services/auth.service';
-import { User } from '../../../../interfaces/interfaces';
+import { Invito, PartitaDouble, ScopaHand, SocketDTO, User } from '../../../../interfaces/interfaces';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { WebsocketService } from '../../../../services/websocket.service';
 
 @Component({
   selector: 'app-scopa',
@@ -18,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './scopa.component.html',
   styleUrl: './scopa.component.scss'
 })
-export class ScopaComponent implements OnInit {
+export class ScopaComponent implements OnInit, OnChanges {
   @Input() game: number = 0;
 
   modalitaForm: FormGroup = new FormGroup({});
@@ -41,8 +42,10 @@ export class ScopaComponent implements OnInit {
   showComputerScopa: boolean = false;
   showYourScopa: boolean = false;
   pointsChecked: boolean = false;
+  enemysCards: any[] = [];
   enemysScopas: number = 0;
   enemysCardsTaken: any[] = [];
+  enemysPoints: number = 0;
   round: number = 1;
   computerPoints: number = 0;
   yourPoints: number = 0;
@@ -61,7 +64,11 @@ export class ScopaComponent implements OnInit {
   invitiSize: number = 10;
   selectedInvite: any = null;
   metaKey: boolean = true;
-  constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService) {
+  tournament: any = null;
+  @Input() partitaDouble: PartitaDouble | null = null;
+  constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService,
+    private ws: WebsocketService
+  ) {
     this.gameField.points.subscribe((data: any) => {
       this.computerPoints = data.enemy;
       this.yourPoints = data.you;
@@ -76,6 +83,29 @@ export class ScopaComponent implements OnInit {
       }
     });
     this.user = this.authService.getUser();
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    let pt = changes['partitaDouble'];
+    if (pt != null) {
+      if (pt.currentValue?.invito.sender.id == this.user!.id) {
+        let cards: ScopaHand = this.startLiveGame();
+
+        let socketDTO: SocketDTO = {
+          messageDTO: null,
+          connectionDTO: null,
+          gameConnectionDTO: null,
+          moveDTO: null,
+          connectionRequestDTO: null,
+          invitoDTO: null,
+          scopaHand: cards
+        }
+        this.ws.send(socketDTO);
+      }
+    }
+  }
+  startLiveGame(): ScopaHand {
+    let a: any;
+    return a;
   }
   cleanDatas() {
     this.computerCards = [];
@@ -110,7 +140,7 @@ export class ScopaComponent implements OnInit {
     })
   }
   startComputerGame() {
-    if (this.round == 1) {
+    if (this.round == 1 && !this.partitaDouble) {
       this.getPartite();
       this.gameField.postPartite([{
         userId: this.user!.id,
@@ -146,7 +176,11 @@ export class ScopaComponent implements OnInit {
     if (this.allCards.length > 0 || (this.allCards.length == 0 && this.pointsChecked)) {
       for (let i = 1; i <= 3; i++) {
         let card = this.allCards[Math.floor(Math.random() * this.allCards.length)]
-        this.computerCards.push(card);
+        if (!this.partitaDouble) {
+          this.computerCards.push(card);
+        } else {
+          this.enemysCards.push(card);
+        }
         this.allCards = this.allCards.filter(c => c != card);
       }
       for (let i = 1; i <= 3; i++) {
@@ -157,6 +191,8 @@ export class ScopaComponent implements OnInit {
     } else {
       if (this.lastShot == 'computer') {
         this.tableCards.forEach(c => this.computerCardsTaken.push(c));
+      } else if (this.lastShot == 'enemy') {
+        this.tableCards.forEach(c => this.enemysCardsTaken.push(c));
       } else {
         this.tableCards.forEach(c => this.yourCardsTaken.push(c));
       }
@@ -178,16 +214,14 @@ export class ScopaComponent implements OnInit {
   }
 
   chooseStarter() {
-    if (this.modalitaForm.controls['modalita'].value == 'computer') {
-      let number = Math.floor(Math.random() * 2);
-      if (number == 1) {
-        this.tourn = 'computer';
-        setTimeout(() => {
-          this.calculateComputerMove();
-        }, 4000)
-      } else {
-        this.tourn = 'user';
-      }
+    let number = Math.floor(Math.random() * 2);
+    if (number == 1) {
+      this.tourn = this.modalitaForm.controls['modalita'].value == 'computer' ? 'computer' : 'enemy';
+      setTimeout(() => {
+        this.modalitaForm.controls['modalita'].value == 'computer' ? this.calculateComputerMove() : '';
+      }, 4000)
+    } else {
+      this.tourn = 'user';
     }
   }
   openPointsDialog(mode: string) {
@@ -474,11 +508,29 @@ export class ScopaComponent implements OnInit {
     });
   }
 
-  manageInvite(action: string) {
-
+  manageInvite(action: string, invito: Invito) {
+    if (action == 'Accetta') {
+      let socketDTO: SocketDTO = {
+        messageDTO: null,
+        connectionDTO: null,
+        gameConnectionDTO: null,
+        moveDTO: null,
+        connectionRequestDTO: null,
+        invitoDTO: {
+          giocoId: this.game,
+          status: "ACCETTATO",
+          accepterId: this.user!.id,
+          torneo: this.tournament ? this.tournament.id : null,
+          senderId: invito?.sender?.id,
+          invitoId: invito?.id
+        },
+        scopaHand: null
+      }
+      this.ws.send(socketDTO);
+    }
   }
   fullRight() {
-    this.invitiPage = this.inviti?.totalPages-1;
+    this.invitiPage = this.inviti?.totalPages - 1;
     this.getInviti();
   }
   fullLeft() {
@@ -486,7 +538,7 @@ export class ScopaComponent implements OnInit {
     this.getInviti();
   }
   next() {
-    if (this.inviti?.totalPages > this.invitiPage+1) {
+    if (this.inviti?.totalPages > this.invitiPage + 1) {
       this.invitiPage += 1;
       this.getInviti();
     }
@@ -510,7 +562,7 @@ export class ScopaComponent implements OnInit {
   }
 
   isLastPage(): boolean {
-    return this.inviti ? this.invitiPage == this.inviti.totalPages-1 : false;
+    return this.inviti ? this.invitiPage == this.inviti.totalPages - 1 : false;
   }
 
   isFirstPage(): boolean {

@@ -148,14 +148,42 @@ export interface UserConnection {
     id: number,
     connected: boolean
 }
-
+export interface Invito {
+    id: number,
+    createdAt: string,
+    gioco: Gioco,
+    sender: User,
+    inviteState: InviteState
+}
 export interface SocketDTO {
     connectionRequestDTO: ConnectionRequestDTO | null | {},
     messageDTO: Message | null | {},
     moveDTO: MoveDTO | null | {},
     gameConnectionDTO: GameConnectionDTO | null | {},
-    connectionDTO: ConnectionDTO | null | {}
+    connectionDTO: ConnectionDTO | null | {},
+    invitoDTO: InvitoDTO | null | {},
+    scopaHand: ScopaHand | null | {}
 }
+export interface InvitoDTO {
+    giocoId: number,
+    status: string,
+    accepterId: number,
+    torneo: number,
+    senderId: number,
+    invitoId: number,
+}
+export interface ScopaHand {
+    enemysCards: any[],
+    yourCards: any[],
+    tableCards: any[],
+    enemysCardsTaken: any[],
+    yourCardsTaken: any[],
+    enemysScopas: number,
+    yourScopas: number,
+    enemysPoints: number,
+    yourPoints: number
+}
+
 export interface ConnectionDTO {
     userId: number
 }
@@ -198,7 +226,7 @@ export interface PartitaDouble {
 }
 export interface Invito {
     id: number,
-    createdAt: number
+    createdAt: string
     gioco: Gioco,
     sender: User,
     inviteState: InviteState

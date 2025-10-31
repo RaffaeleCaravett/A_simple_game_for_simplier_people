@@ -8,20 +8,6 @@ td {
     color: black !important;
     background-color: white !important;
 }
-
-tr {
-    td {
-        transition: 1s;
-    }
-
-    &:hover {
-        td {
-            transition: 1s;
-            background-color: lightblue;
-        }
-    }
-}
-
 p-paginator {
     div {
         color: black !important;

@@ -1,16 +1,17 @@
-import { ChangeDetectorRef, Component, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ModeService } from '../../services/mode.service';
-import { ConnectionRequestDTO, Message, Messaggio, Notification, User } from '../../interfaces/interfaces';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { ConnectionRequestDTO, Messaggio, Notification, PartitaDouble, User } from '../../interfaces/interfaces';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from '../../shared/modules/shared.module';
 import { WebsocketService } from '../../services/websocket.service';
 import { ChatService } from '../../services/chat.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProfileServive } from '../../services/profile.service';
+import { GamefieldService } from '../../services/gamefield.service';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class NavComponent implements OnInit {
   @ViewChild('pTrigger') pTrigger: any;
   @ViewChild('p1Trigger') p1Trigger: any;
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService, private profileService: ProfileServive, private cdr: ChangeDetectorRef
+    private toastr: ToastrService, private profileService: ProfileServive, private gfs: GamefieldService
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
@@ -69,7 +70,13 @@ export class NavComponent implements OnInit {
         this.getNotifications();
       }
     });
-
+    this.ws.partitaDoubleBehaviorSubject.subscribe((data: PartitaDouble | null) => {
+      if (!this.router.url.startsWith('/game-field')) {
+        this.goToRoute('game-field', data);
+      } else {
+        this.gfs.partitaDouble.next(data);
+      }
+    });
     this.authService.closeMenu.subscribe((data: string) => {
       if (data == 'close') {
         this.notificationMenuOpen = false;
@@ -97,12 +104,16 @@ export class NavComponent implements OnInit {
     this.modeService.updateMode(value);
   }
 
-  goToRoute(route: string) {
+  goToRoute(route: string, params?: any) {
     this.isLoadingLogoutOrRoute = true;
     setTimeout(() => {
       this.isLoadingLogoutOrRoute = false;
       this.notificationMenuOpen = false;
-      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
+      if (route.includes('gioco') && params && params != undefined) {
+        this.router.navigate([`/${route}`], { queryParams: { gioco: localStorage.getItem('game'), partita: params } })
+      } else {
+        this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
+      }
     }, 1000)
   }
   ngOnInit(): void {

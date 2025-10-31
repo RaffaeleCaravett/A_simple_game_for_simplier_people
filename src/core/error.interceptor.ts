@@ -73,7 +73,9 @@ export class ErrorInterceptor implements HttpInterceptor {
                                     connectionDTO: { userId: value.id },
                                     gameConnectionDTO: null,
                                     moveDTO: null,
-                                    connectionRequestDTO: null
+                                    connectionRequestDTO: null,
+                                    invitoDTO: null,
+                                    scopaHand: null
                                   }
                                   setTimeout(() => {
                                     this.webSocketService.send(socketDTO);

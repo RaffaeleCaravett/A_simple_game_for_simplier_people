@@ -40,7 +40,7 @@
             </div>
         </form>
     </div>
-    <div class="col-md-9" *ngIf="modalitaForm.controls['modalita'].value=='computer'">
+    <div class="col-md-9" *ngIf="modalitaForm.controls['modalita'].value=='computer' && ! partitaDouble">
         <button class="btn my-5 btn-success p-2" (click)="startComputerGame()" *ngIf="!gameHasStarted"
             matTooltip="Inizia una partita contro il computer" matTooltipPosition="above">
             Inizia
@@ -137,7 +137,7 @@
         </div>
     </div>
     <div class="col-md-9" *ngIf="modalitaForm.controls['modalita'].value=='live'">
-        <div class="row" *ngIf="modalitaForm.controls['liveAction'].value=='liveHall'">
+        <div class="row" *ngIf="modalitaForm.controls['liveAction'].value=='liveHall' && !partitaDouble">
             <div class="col-12" *ngIf="inviti?.content?.length !=0 && inviti != null">
                 <p class="fs-4">Accetta qualche invito.</p>
             </div>
@@ -182,7 +182,7 @@
                             </td>
                             <td class="fw-bold">
                                 <p class="p-2 rounded"
-                                    (click)="manageInvite(invito?.sender?.id != user!.id?'Accetta':'Elimina')"
+                                    (click)="manageInvite(invito?.sender?.id != user!.id?'Accetta':'Elimina',invito)"
                                     matTooltip="{{invito?.sender?.id != user!.id?'Accetta':'Elimina'}}"
                                     matTooltipPosition="above"
                                     [ngClass]="invito?.sender?.id != user!.id?['text-success-emphasis','bg-success-subtle']:['text-danger-emphasis','bg-danger-subtle']">
@@ -216,10 +216,15 @@
                 </div>
             </div>
             <div class="col-12" *ngIf="inviti?.content?.length ==0 || inviti == null">
+
                 <p class="fs-5">Sembra che non ci siano ancora inviti ...</p>
+                <p>
+                    <p-button type="button" icon="pi pi-refresh text-dark" matTooltip="refresh"
+                        matTooltipPosition="above" (click)="reset()" text />
+                </p>
             </div>
         </div>
-        <div class="row" *ngIf="modalitaForm.controls['liveAction'].value=='invito'">
+        <div class="row" *ngIf="modalitaForm.controls['liveAction'].value=='invito' && !partitaDouble">
             <div class="col-12 my-5 text-center">
                 <p class="fs-4">L'invito ha una durata minima di 5 minuti, entro i quali non puoi creare altri inviti.
                     La durata massima di un invito
@@ -229,6 +234,15 @@
                 </p>
                 <button class="btn my-2 btn-outline-primary" (click)="createInvite()">Crea invito</button>
             </div>
+        </div>
+        <div class="row" *ngIf="partitaDouble">
+            <p class="text-end">
+                <button class="btn" matTooltip="Chiudi partita" matTooltipPosition="above"
+                    (click)="partitaDouble = null;">
+                    <i class="pi pi-close"></i>
+                </button>
+            </p>
+            <h1>Partita double!</h1>
         </div>
     </div>
 </div>

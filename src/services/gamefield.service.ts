@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../core/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PartitaDouble } from '../interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class GamefieldService {
   private enemyPoints: number = 0;
   private userPoints: number = 0;
   private invito: string = '/invito';
+  public partitaDouble: BehaviorSubject<PartitaDouble | null> = new BehaviorSubject<PartitaDouble | null>(null);
   constructor(private http: HttpClient) { }
 
   postPartite(partita: {}[]) {
