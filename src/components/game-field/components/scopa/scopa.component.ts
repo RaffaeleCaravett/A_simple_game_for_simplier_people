@@ -140,7 +140,6 @@ export class ScopaComponent implements OnInit, OnChanges {
       liveAction: new FormControl('')
     });
     setTimeout(() => {
-      debugger
       if (this.partitaDouble) {
         this.modalitaForm.controls['modalita'].setValue('live')
         this.modalitaForm.updateValueAndValidity();

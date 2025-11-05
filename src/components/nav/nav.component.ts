@@ -75,7 +75,7 @@ export class NavComponent implements OnInit {
         if (!this.router.url.startsWith('/game-field')) {
           this.toastr.toastrConfig.disableTimeOut = true;
           this.toastr.toastrConfig.autoDismiss = false;
-          this.toastr.show("La partita a " + data.gioco.nomeGioco + " è iniziata!").onTap.subscribe((datas: any) => {
+          this.toastr.info("La partita a " + data.gioco.nomeGioco + " è iniziata!").onTap.subscribe((datas: any) => {
             this.goToRoute('/game-field', data);
           });
         }
@@ -110,7 +110,6 @@ export class NavComponent implements OnInit {
   }
 
   goToRoute(route: string, params?: any) {
-    debugger
     this.isLoadingLogoutOrRoute = true;
     setTimeout(() => {
       this.isLoadingLogoutOrRoute = false;
