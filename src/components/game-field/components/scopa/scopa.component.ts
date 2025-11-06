@@ -11,6 +11,7 @@ import { Invito, PartitaDouble, ScopaHand, SocketDTO, User } from '../../../../i
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { WebsocketService } from '../../../../services/websocket.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-scopa',
@@ -67,7 +68,7 @@ export class ScopaComponent implements OnInit, OnChanges {
   tournament: any = null;
   @Input() partitaDouble: PartitaDouble | null = null;
   constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService,
-    private ws: WebsocketService
+    private ws: WebsocketService, private activatedRoute: ActivatedRoute
   ) {
     this.gameField.points.subscribe((data: any) => {
       this.computerPoints = data.enemy;
@@ -89,7 +90,10 @@ export class ScopaComponent implements OnInit, OnChanges {
     if (pt != null) {
       if (pt.currentValue?.invito.sender.id == this.user!.id) {
         let cards: ScopaHand = this.startLiveGame();
-
+        //TODO
+        // sending this, the server gives back the stats for everyone (enemyscards, yourcards ecc.) When we have those datas
+        // the game starts. So the counter starts, and when the counter finish the user that corresponds to the tourn plays.
+        //then send again the stats to the server that gives back again the stats updates and so on .. 
         let socketDTO: SocketDTO = {
           messageDTO: null,
           connectionDTO: null,
@@ -109,19 +113,26 @@ export class ScopaComponent implements OnInit, OnChanges {
   }
   cleanDatas() {
     this.computerCards = [];
+    this.enemysCards = [];
     this.yourCards = [];
     this.allCards = [];
     this.tableCards = [];
     this.yourCardsTaken = [];
     this.computerCardsTaken = [];
+    this.enemysCardsTaken = [];
     this.computerScopas = 0;
     this.yourScopas = 0;
+    this.enemysScopas = 0;
     this.tourn = '';
     this.round = 1;
     this.computerPoints = 0;
     this.yourPoints = 0;
+    this.enemysPoints = 0;
   }
   ngOnInit(): void {
+    this.activatedRoute.params.forEach(v => {
+      console.log(v);
+    });
     this.forms();
     this.takeMisures();
   }
@@ -242,24 +253,44 @@ export class ScopaComponent implements OnInit, OnChanges {
       dialogRef.afterClosed().subscribe((data: any) => {
         this.dialogRef = null;
         if (this.computerWon || this.userWon) {
-          this.toastr.show(this.computerWon || this.enemyWon ? "Il computer ha vinto!" : "Hai vinto!");
-          this.gameField.putPartita(this.partita.id, {
-            userId: this.user!.id,
-            giocoId: this.game,
-            esito: this.computerWon ? "PERSA" : "VINTA",
-            punteggio: this.computerWon ? 0 : this.yourPoints
-          }).subscribe({
-            next: (data: any) => {
-              this.getPartite();
-            }
-          });
+          this.toastr.show(this.computerWon || this.enemyWon ? "L'avversario ha vinto!" : "Hai vinto!");
+          if (!this.partitaDouble) {
+            this.gameField.putPartita(this.partita.id, {
+              userId: this.user!.id,
+              giocoId: this.game,
+              esito: this.computerWon ? "PERSA" : "VINTA",
+              punteggio: this.computerWon ? 0 : this.yourPoints
+            }).subscribe({
+              next: (data: any) => {
+                this.getPartite();
+              }
+            });
+          } else {
+            this.gameField.putPartitaDouble(this.partitaDouble.id,
+              {
+                gioco: this.partitaDouble.gioco.id,
+                invito: this.partitaDouble.invito.id,
+                partecipanti: this.partitaDouble.partecipanti.map(c => c.id),
+                torneo: this.partitaDouble?.tournament?.id || null,
+                punteggioVincenti: this.enemyWon ? this.enemysPoints : this.yourPoints,
+                punteggioPerdenti: this.enemyWon ? this.yourPoints : this.enemysPoints,
+                vincitori: this.enemyWon ? this.partitaDouble.partecipanti.map(u => u.id).filter(id => id != this.partitaDouble?.invito?.sender?.id)[0] : this.partitaDouble?.invito?.sender?.id
+              }
+            ).subscribe({
+              next: (data: any) => {
+                this.partitaDouble = data;
+              }
+            })
+          }
           this.cleanDatas();
         } else {
           this.round += 1;
           this.computerCardsTaken = [];
+          this.enemysCardsTaken = []
           this.yourCardsTaken = [];
           this.computerScopas = 0;
           this.yourScopas = 0;
+          this.enemysScopas = 0;
           this.startComputerGame();
         }
       });

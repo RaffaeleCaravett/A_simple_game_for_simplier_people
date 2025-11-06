@@ -10,6 +10,7 @@ import { PartitaDouble } from '../interfaces/interfaces';
 export class GamefieldService {
 
   private partita: string = '/partita';
+  private partitaDoubleUrl: string = '/partitaDouble';
   private classifiche: string = '/classifiche';
   private trofeo: string = '/trofeo';
   private byUser: string = '/user';
@@ -30,6 +31,10 @@ export class GamefieldService {
 
   putPartita(partitaId: number, partita: {}) {
     return this.http.put(environment.API_URL + this.partita + '/' + partitaId, partita)
+  }
+
+  putPartitaDouble(partitaId: number, partita: {}) {
+    return this.http.put(environment.API_URL + this.partitaDoubleUrl + '/' + partitaId, partita)
   }
 
   getPartitaByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string, gioco: number) {
