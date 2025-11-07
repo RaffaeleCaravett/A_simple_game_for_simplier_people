@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
@@ -33,7 +33,7 @@ export class NavComponent implements OnInit {
   @ViewChild('pTrigger') pTrigger: any;
   @ViewChild('p1Trigger') p1Trigger: any;
   constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService, private profileService: ProfileServive, private gfs: GamefieldService
+    private toastr: ToastrService, private profileService: ProfileServive, private gfs: GamefieldService, private ngZone: NgZone
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
@@ -73,11 +73,11 @@ export class NavComponent implements OnInit {
     this.ws.partitaDoubleBehaviorSubject.subscribe((data: PartitaDouble | null) => {
       if (data) {
         if (!this.router.url.startsWith('/game-field')) {
-          this.toastr.show("La partita a " + data.gioco.nomeGioco + " è iniziata!").onAction.subscribe((data: any) => {
-            debugger
-            this.goToRoute('/gamefield');
-          });
           this.toastr.toastrConfig.disableTimeOut = true;
+          this.toastr.toastrConfig.autoDismiss = false;
+          this.toastr.show("La partita a " + data.gioco.nomeGioco + " è iniziata!").onTap.subscribe((datas: any) => {
+            this.goToRoute('/game-field', data);
+          });
         }
         this.gfs.partitaDouble.next(data);
       }
@@ -110,12 +110,15 @@ export class NavComponent implements OnInit {
   }
 
   goToRoute(route: string, params?: any) {
+    debugger
     this.isLoadingLogoutOrRoute = true;
     setTimeout(() => {
       this.isLoadingLogoutOrRoute = false;
       this.notificationMenuOpen = false;
       if (route.includes('game-field') && params && params != undefined) {
-        this.router.navigate([`/${route}`], { queryParams: { gioco: localStorage.getItem('game'), partita: params } })
+        this.ngZone.run(() => {
+          this.router.navigate([`/${route}`], { queryParams: { gioco: JSON.stringify(params?.gioco?.id), partita: JSON.stringify(params) } });
+        });
       } else {
         this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
       }

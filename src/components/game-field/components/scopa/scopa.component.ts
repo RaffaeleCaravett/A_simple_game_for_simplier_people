@@ -130,9 +130,6 @@ export class ScopaComponent implements OnInit, OnChanges {
     this.enemysPoints = 0;
   }
   ngOnInit(): void {
-    this.activatedRoute.params.forEach(v => {
-      console.log(v);
-    });
     this.forms();
     this.takeMisures();
   }
@@ -142,6 +139,13 @@ export class ScopaComponent implements OnInit, OnChanges {
       modalita: new FormControl('', Validators.required),
       liveAction: new FormControl('')
     });
+    setTimeout(() => {
+      debugger
+      if (this.partitaDouble) {
+        this.modalitaForm.controls['modalita'].setValue('live')
+        this.modalitaForm.updateValueAndValidity();
+      }
+    }, 1000);
   }
   getPartite() {
     this.gameField.getPartitaByUserAndGioco(this.user!.id, this.game).subscribe({
