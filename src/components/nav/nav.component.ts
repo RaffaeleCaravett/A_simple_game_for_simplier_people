@@ -71,9 +71,14 @@ export class NavComponent implements OnInit {
       }
     });
     this.ws.partitaDoubleBehaviorSubject.subscribe((data: PartitaDouble | null) => {
-      if (!this.router.url.startsWith('/game-field')) {
-        this.goToRoute('game-field', data);
-      } else {
+      if (data) {
+        if (!this.router.url.startsWith('/game-field')) {
+          this.toastr.show("La partita a " + data.gioco.nomeGioco + " è iniziata!").onAction.subscribe((data: any) => {
+            debugger
+            this.goToRoute('/gamefield');
+          });
+          this.toastr.toastrConfig.disableTimeOut = true;
+        }
         this.gfs.partitaDouble.next(data);
       }
     });
@@ -98,7 +103,7 @@ export class NavComponent implements OnInit {
           this.router.navigate(['']);
         }
       });
-    }, 1000)
+    }, 1000);
   }
   updateMode(value: string) {
     this.modeService.updateMode(value);
@@ -109,7 +114,7 @@ export class NavComponent implements OnInit {
     setTimeout(() => {
       this.isLoadingLogoutOrRoute = false;
       this.notificationMenuOpen = false;
-      if (route.includes('gioco') && params && params != undefined) {
+      if (route.includes('game-field') && params && params != undefined) {
         this.router.navigate([`/${route}`], { queryParams: { gioco: localStorage.getItem('game'), partita: params } })
       } else {
         this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
