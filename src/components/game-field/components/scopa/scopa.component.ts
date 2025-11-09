@@ -12,6 +12,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { WebsocketService } from '../../../../services/websocket.service';
 import { ActivatedRoute } from '@angular/router';
+import { OrganizationChartTokenSections } from '@primeuix/themes/types/organizationchart';
 
 @Component({
   selector: 'app-scopa',
@@ -66,6 +67,7 @@ export class ScopaComponent implements OnInit, OnChanges {
   selectedInvite: any = null;
   metaKey: boolean = true;
   tournament: any = null;
+  partitaDoubleHasStarted: boolean = false;
   @Input() partitaDouble: PartitaDouble | null = null;
   constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService,
     private ws: WebsocketService, private activatedRoute: ActivatedRoute
@@ -89,27 +91,51 @@ export class ScopaComponent implements OnInit, OnChanges {
     let pt = changes['partitaDouble'];
     if (pt != null) {
       if (pt.currentValue?.invito.sender.id == this.user!.id) {
-        let cards: ScopaHand = this.startLiveGame();
-        //TODO
-        // sending this, the server gives back the stats for everyone (enemyscards, yourcards ecc.) When we have those datas
-        // the game starts. So the counter starts, and when the counter finish the user that corresponds to the tourn plays.
-        //then send again the stats to the server that gives back again the stats updates and so on .. 
-        let socketDTO: SocketDTO = {
-          messageDTO: null,
-          connectionDTO: null,
-          gameConnectionDTO: null,
-          moveDTO: null,
-          connectionRequestDTO: null,
-          invitoDTO: null,
-          scopaHand: cards
+        if (!this.partitaDoubleHasStarted) {
+          let cards: ScopaHand = this.startLiveGame();
+          //TODO
+          // sending this, the server gives back the stats for everyone (enemyscards, yourcards ecc.) When we have those datas
+          // the game starts. So the counter starts, and when the counter finish the user that corresponds to the tourn plays.
+          //then send again the stats to the server that gives back again the stats updates and so on .. 
+          let socketDTO: SocketDTO = {
+            messageDTO: null,
+            connectionDTO: null,
+            gameConnectionDTO: null,
+            moveDTO: null,
+            connectionRequestDTO: null,
+            invitoDTO: null,
+            scopaHand: cards
+          }
+          this.ws.send(socketDTO);
         }
-        this.ws.send(socketDTO);
       }
     }
   }
   startLiveGame(): ScopaHand {
-    let a: any;
-    return a;
+    this.giveCards();
+    this.giveTableCards();
+    this.chooseStarter();
+
+    let scopaHand: ScopaHand = this.organizeScopaHand();
+    return scopaHand;
+  }
+
+  organizeScopaHand(): ScopaHand {
+    let scopaHand: ScopaHand = {
+      enemysCards: this.enemysCards,
+      yourCards: this.yourCards,
+      tableCards: this.tableCards,
+      enemysCardsTaken: this.enemysCardsTaken,
+      yourCardsTaken: this.yourCardsTaken,
+      enemysScopas: this.enemysScopas,
+      yourScopas: this.yourScopas,
+      enemysPoints: this.enemysPoints,
+      yourPoints: this.yourPoints,
+      isItStart: this.partitaDoubleHasStarted ? false : true,
+      tourn: this.tourn,
+      partitaId: this.partitaDouble?.id || null
+    }
+    return scopaHand;
   }
   cleanDatas() {
     this.computerCards = [];

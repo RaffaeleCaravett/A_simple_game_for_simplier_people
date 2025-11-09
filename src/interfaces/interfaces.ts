@@ -181,7 +181,10 @@ export interface ScopaHand {
     enemysScopas: number,
     yourScopas: number,
     enemysPoints: number,
-    yourPoints: number
+    yourPoints: number,
+    isItStart: boolean,
+    tourn: string,
+    partitaId: number | null
 }
 
 export interface ConnectionDTO {
