@@ -69,6 +69,7 @@ export class ScopaComponent implements OnInit, OnChanges {
   tournament: any = null;
   partitaDoubleHasStarted: boolean = false;
   @Input() partitaDouble: PartitaDouble | null = null;
+  liveGameCounter: number = 3;
   constructor(private toastr: ToastrService, private dialog: MatDialog, private gameField: GamefieldService, private authService: AuthService,
     private ws: WebsocketService, private activatedRoute: ActivatedRoute
   ) {
@@ -86,6 +87,22 @@ export class ScopaComponent implements OnInit, OnChanges {
       }
     });
     this.user = this.authService.getUser();
+    this.ws.scopaHandBehaviorSubject.subscribe((data: ScopaHand | null) => {
+      if (data) {
+        if (data && data.isItStart == true) {
+          this.liveGameCounterStarts();
+        }
+      }
+    });
+  }
+  liveGameCounterStarts() {
+    const interval = setInterval(() => {
+      this.liveGameCounter--;
+      if (this.liveGameCounter == 0) {
+        this.partitaDoubleHasStarted = true;
+        clearInterval(interval);
+      }
+    }, 3000);
   }
   ngOnChanges(changes: SimpleChanges): void {
     let pt = changes['partitaDouble'];
@@ -131,7 +148,7 @@ export class ScopaComponent implements OnInit, OnChanges {
       yourScopas: this.yourScopas,
       enemysPoints: this.enemysPoints,
       yourPoints: this.yourPoints,
-      isItStart: this.partitaDoubleHasStarted ? false : true,
+      isItStart: !this.partitaDoubleHasStarted,
       tourn: this.tourn,
       partitaId: this.partitaDouble?.id || null
     }
