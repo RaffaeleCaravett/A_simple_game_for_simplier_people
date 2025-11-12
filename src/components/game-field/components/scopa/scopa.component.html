@@ -236,13 +236,115 @@
             </div>
         </div>
         <div class="row" *ngIf="partitaDouble">
-            <p class="text-end">
-                <button class="btn" matTooltip="Chiudi partita" matTooltipPosition="above"
-                    (click)="partitaDouble = null;">
-                    <i class="pi pi-trash"></i>
-                </button>
-            </p>
-            <h1>Partita double!</h1>
+            <div class="col-12">
+                <p class="text-end">
+                    <button class="btn" matTooltip="Chiudi partita" matTooltipPosition="above"
+                        (click)="partitaDouble = null;">
+                        <i class="pi pi-trash"></i>
+                    </button>
+                </p>
+            </div>
+            <div class="col-12">
+                <h1>Live scopa!</h1>
+            </div>
+            <div class="col-12 py-5 d-flex justify-content-center align-items-center" *ngIf="liveGameCounter != 0">
+                {{liveGameCounter}}
+            </div>
+            <div class="col-12 py-5 text-center" *ngIf="liveGameCounter == 0 && partitaDoubleHasStarted">
+                <div class="row">
+                    <div class="col-12" *ngIf="user!.id == partitaDouble.invito.sender?.id">
+                        <h2>Avversario</h2>
+                        <div class="row">
+                            <div class="col-4 p-3" *ngFor="let c of enemysCards">
+                                <div class="border shadow-sm">
+                                    <p class="text-end fs-2">
+                                        <!--{{c.group}}-->
+                                        Scopa
+                                    </p>
+                                    <p class="text-center my-5 fs-2">
+                                        <!--
+                           NgClass of p above 
+                           [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'"
+                            {{c.value}}-->
+                                        Scopa
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" *ngIf="user!.id != partitaDouble.invito.sender?.id">
+                        <h2>Avversario</h2>
+                        <div class="row">
+                            <div class="col-4 p-3" *ngFor="let c of yourCards">
+                                <div class="border shadow-sm">
+                                    <p class="text-end fs-2">
+                                        <!--{{c.group}}-->
+                                        Scopa
+                                    </p>
+                                    <p class="text-center my-5 fs-2">
+                                        <!--
+                           NgClass of p above 
+                           [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'"
+                            {{c.value}}-->
+                                        Scopa
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h2>Tavolo</h2>
+                        <div class="row">
+                            <div class="col-3 p-3" *ngFor="let c of yourCards">
+                                <div class="border shadow-sm" (click)="selectCard(c)">
+                                    <p class="text-end fs-2">
+                                        {{c.group}}
+                                    </p>
+                                    <p class="text-center my-5 fs-2"
+                                        [ngClass]="c.group
+                                    =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'">
+                                        {{c.value}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" *ngIf="user!.id == partitaDouble.invito.sender?.id">
+                        <h2>Tu</h2>
+                        <div class="row">
+                            <div class="col-4 p-3" *ngFor="let c of yourCards">
+                                <div class="border shadow-sm" (click)="selectCard(c)">
+                                    <p class="text-end fs-2">
+                                        {{c.group}}
+                                    </p>
+                                    <p class="text-center my-5 fs-2"
+                                        [ngClass]="c.group
+                                    =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'">
+                                        {{c.value}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" *ngIf="user!.id != partitaDouble.invito.sender?.id">
+                        <h2>Tu</h2>
+                        <div class="row">
+                            <div class="col-4 p-3" *ngFor="let c of enemysCards">
+                                <div class="border shadow-sm">
+                                    <p class="text-end fs-2">
+                                        {{c.group}}
+                                    </p>
+                                    <p class="text-center my-5 fs-2"
+                                        [ngClass]="c.group
+                                    =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'">
+                                        {{c.value}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
