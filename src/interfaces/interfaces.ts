@@ -162,7 +162,14 @@ export interface SocketDTO {
     gameConnectionDTO: GameConnectionDTO | null | {},
     connectionDTO: ConnectionDTO | null | {},
     invitoDTO: InvitoDTO | null | {},
-    scopaHand: ScopaHand | null | {}
+    scopaHand: ScopaHand | null | {},
+    gameEnd: GameEnd | null | {}
+}
+export interface GameEnd {
+    gameId: number,
+    partitaDoubleId: number,
+    winner: number,
+    punteggio: string
 }
 export interface InvitoDTO {
     giocoId: number,
