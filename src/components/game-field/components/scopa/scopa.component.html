@@ -251,7 +251,7 @@
                 {{liveGameCounter}}
             </div>
             <div class="col-12 py-5 text-center" *ngIf="liveGameCounter == 0 && partitaDoubleHasStarted">
-                <div class="row">
+                <div class="row" *ngIf="!userWon && !enemyWon else showWinner">
                     <div class="col-12" *ngIf="user!.id == partitaDouble.invito.sender?.id">
                         <h2>Avversario</h2>
                         <div class="row">
@@ -294,16 +294,23 @@
                     </div>
                     <div class="col-12">
                         <h2>Tavolo</h2>
-                        <div class="row">
-                            <div class="col-3 p-3" *ngFor="let c of yourCards">
-                                <div class="border shadow-sm" (click)="selectCard(c)">
-                                    <p class="text-end fs-2">
-                                        {{c.group}}
-                                    </p>
+                        <div class="row p-3 bg-success border shadow-sm">
+                            <div class="col-3 p-3" *ngFor="let c of tableCards">
+                                <div class="border shadow-sm bg-light" (click)="selectCard(c);release=false;"
+                                    [ngStyle]="selectedCard.includes(c)?{'scale':'1.1'}:{}">
+                                    <p class="text-end fs-2">{{c.group}}</p>
                                     <p class="text-center my-5 fs-2"
-                                        [ngClass]="c.group
-                                    =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'">
+                                        [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'">
                                         {{c.value}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-3 p-3">
+                                <div class="border shadow-sm bg-light" (click)="release = !release; selectedCard=[]"
+                                    [ngStyle]="release?{'scale':'1.1'}:{}">
+                                    <p class="text-end fs-2"><i class="bi bi-plus h2"></i></p>
+                                    <p class="text-center my-5 fs-2 text-success">
+                                        <i class="bi bi-plus h2"></i>
                                     </p>
                                 </div>
                             </div>
@@ -313,7 +320,7 @@
                         <h2>Tu</h2>
                         <div class="row">
                             <div class="col-4 p-3" *ngFor="let c of yourCards">
-                                <div class="border shadow-sm" (click)="selectCard(c)">
+                                <div class="border shadow-sm" (click)="chooseCard(c)">
                                     <p class="text-end fs-2">
                                         {{c.group}}
                                     </p>
@@ -329,7 +336,7 @@
                     <div class="col-12" *ngIf="user!.id != partitaDouble.invito.sender?.id">
                         <h2>Tu</h2>
                         <div class="row">
-                            <div class="col-4 p-3" *ngFor="let c of enemysCards">
+                            <div class="col-4 p-3" *ngFor="let c of enemysCards" (click)="chooseCard(c)">
                                 <div class="border shadow-sm">
                                     <p class="text-end fs-2">
                                         {{c.group}}
@@ -344,6 +351,29 @@
                         </div>
                     </div>
                 </div>
+                <ng-template #showWinner>
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="fs-3 py-5" *ngIf="(user!.id == partitaDouble.invito?.sender?.id && userWon) || 
+                            (user!.id != partitaDouble.invito?.sender?.id && enemyWon)">
+                                Hai vinto!
+                            </p>
+                            <p class="fs-3 py-5" *ngIf="user!.id == partitaDouble.invito?.sender?.id && enemyWon">
+                                Hai perso!
+                            </p>
+                            <p class="fs-3 py-5" *ngIf="user!.id != partitaDouble.invito?.sender?.id && userWon">
+                                Hai perso!
+                            </p>
+                        </div>
+                        <div class="col-12 py-5">
+                            <button class="btn" (click)="playAgain()">
+                                Gioca di nuovo
+                                <i class="pi pi-replay">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>

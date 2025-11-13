@@ -1,5 +1,5 @@
 import { NgIf, NgForOf, NgClass, NgStyle, DatePipe } from '@angular/common';
-import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -20,7 +20,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './scopa.component.html',
   styleUrl: './scopa.component.scss'
 })
-export class ScopaComponent implements OnInit, OnChanges {
+export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
   @Input() game: number = 0;
 
   modalitaForm: FormGroup = new FormGroup({});
@@ -175,8 +175,29 @@ export class ScopaComponent implements OnInit, OnChanges {
         }
       }
     });
+    this.ws.gameEndBehaviorSubject.subscribe((data: GameEnd | null) => {
+      if (data && data.gameId == this.game && data.partitaDoubleId == this.partitaDouble?.id) {
+        this.toastr.info("Il gioco è terminato!");
+        if (data?.punteggio == "0") {
+          this.partitaDouble.vincitori.map(u => u.id).includes(this.user!.id) ? this.toastr.info("Hai vinto per abbandono!") : "";
+        }
+        if (this.partitaDouble?.invito?.sender?.id == this.user!.id && this.partitaDouble.vincitori.map(u => u.id).includes(this.user!.id)) {
+          this.userWon;
+        } else {
+          this.enemyWon;
+        }
+      }
+    })
   }
-
+  playAgain() {
+    this.partitaDouble = null;
+    this.liveGameCounter = 3;
+    this.partitaDoubleHasStarted = false;
+    this.enemyWon = false;
+    this.userWon = false;
+    this.modalitaForm.controls['liveAction'].setValue('liveHall');
+    this.modalitaForm.updateValueAndValidity();
+  }
   setScopaDatas(data: ScopaHand) {
     this.enemysCards = data.enemysCards;
     this.enemysCardsTaken = data.enemysCardsTaken;
@@ -839,5 +860,41 @@ export class ScopaComponent implements OnInit, OnChanges {
 
   isFirstPage(): boolean {
     return this.inviti ? this.invitiPage == 0 : false;
+  }
+
+  ngOnDestroy(): void {
+    if (this.partitaDouble) {
+      this.gameField.putPartitaDouble(this.partitaDouble.id,
+        {
+          gioco: this.partitaDouble.gioco.id,
+          invito: this.partitaDouble.invito.id,
+          partecipanti: this.partitaDouble.partecipanti.map(c => c.id),
+          torneo: this.partitaDouble?.tournament?.id || null,
+          punteggioVincenti: 0,
+          punteggioPerdenti: 0,
+          vincitori: this.partitaDouble?.partecipanti?.map(c => c.id).filter(id => id != this.user!.id)
+        }
+      ).subscribe({
+        next: (data: any) => {
+          let gameEnd: GameEnd = {
+            gameId: this.game,
+            partitaDoubleId: data?.id,
+            winner: this.partitaDouble?.vincitori[0].id!,
+            punteggio: "0"
+          }
+          let socketDTO: SocketDTO = {
+            messageDTO: null,
+            connectionDTO: null,
+            gameConnectionDTO: null,
+            moveDTO: null,
+            connectionRequestDTO: null,
+            invitoDTO: null,
+            scopaHand: null,
+            gameEnd: gameEnd
+          }
+          this.ws.send(socketDTO);
+        }
+      });
+    }
   }
 }
