@@ -363,7 +363,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     this.partitaDoubleHasStarted = true;
     this.tourn = data.tourn;
     if (this.user!.id == this.partitaDouble?.invito?.sender?.id) {
-      let scopaHand: ScopaHand = this.startLiveGame();
+      let scopaHand: ScopaHand = this.startLiveGame(data);
       let socketDTO: SocketDTO = {
         messageDTO: null,
         connectionDTO: null,
@@ -409,7 +409,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
   }
-  startLiveGame(): ScopaHand {
+  startLiveGame(data?: any): ScopaHand {
     for (let i = 1; i <= 4; i++) {
       for (let a = 1; a <= 10; a++) {
         this.allCards.push({
@@ -418,8 +418,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     }
-    this.giveCards();
-    this.giveTableCards();
+    if (!data || !data?.isItStart) {
+      this.giveCards();
+      this.giveTableCards();
+    }
     this.chooseStarter();
 
     let scopaHand: ScopaHand = this.organizeScopaHand();
