@@ -541,7 +541,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             gameConnectionDTO: null,
             connectionRequestDTO: { receiverId: this.visitedUser!.id },
             invitoDTO: null,
-            scopaHand: null
+            scopaHand: null,
+            gameEnd:null
           }
           this.websocketService.send(socketDTO);
         }

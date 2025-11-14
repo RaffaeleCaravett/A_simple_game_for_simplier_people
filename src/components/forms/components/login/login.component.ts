@@ -117,7 +117,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                     moveDTO: null,
                     connectionRequestDTO: null,
                     invitoDTO: null,
-                    scopaHand: null
+                    scopaHand: null,
+                    gameEnd: null
                   }
                   setTimeout(() => {
                     this.webSocketService.send(socketDTO);

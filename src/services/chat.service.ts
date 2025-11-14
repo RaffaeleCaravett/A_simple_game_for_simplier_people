@@ -27,7 +27,8 @@ export class ChatService {
             connectionDTO: null,
             connectionRequestDTO: null,
             invitoDTO: null,
-            scopaHand: null
+            scopaHand: null,
+            gameEnd: null
         }
         this.ws.send(socketDTO);
 

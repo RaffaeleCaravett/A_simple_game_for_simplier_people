@@ -239,7 +239,7 @@
             <div class="col-12">
                 <p class="text-end">
                     <button class="btn" matTooltip="Chiudi partita" matTooltipPosition="above"
-                        (click)="partitaDouble = null;">
+                        (click)="exitPartitaDouble()">
                         <i class="pi pi-trash"></i>
                     </button>
                 </p>
@@ -247,7 +247,7 @@
             <div class="col-12">
                 <h1>Live scopa!</h1>
             </div>
-            <div class="col-12 py-5 d-flex justify-content-center align-items-center" *ngIf="liveGameCounter != 0">
+            <div class="col-12 py-5 d-flex justify-content-center align-items-center fs-1" *ngIf="liveGameCounter != 0">
                 {{liveGameCounter}}
             </div>
             <div class="col-12 py-5 text-center" *ngIf="liveGameCounter == 0 && partitaDoubleHasStarted">

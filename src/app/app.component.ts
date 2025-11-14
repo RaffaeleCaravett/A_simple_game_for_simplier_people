@@ -76,7 +76,8 @@ export class AppComponent implements OnInit {
                   moveDTO: null,
                   connectionRequestDTO: null,
                   invitoDTO:null,
-                  scopaHand:null
+                  scopaHand:null,
+                  gameEnd:null
                 }
                 setTimeout(() => {
                   this.webSocketService.send(socketDTO);

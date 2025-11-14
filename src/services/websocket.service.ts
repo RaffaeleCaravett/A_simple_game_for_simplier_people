@@ -1,5 +1,5 @@
 import { CompatClient, Stomp, StompSubscription } from "@stomp/stompjs";
-import { ConnectionRequestDTO, Message, Messaggio, Notification, PartitaDouble, ScopaHand, SocketDTO, User } from "../interfaces/interfaces";
+import { ConnectionRequestDTO, GameEnd, Message, Messaggio, Notification, PartitaDouble, ScopaHand, SocketDTO, User } from "../interfaces/interfaces";
 import { Injectable, OnDestroy } from "@angular/core";
 import { environment } from "../core/environment";
 import { BehaviorSubject } from "rxjs";
@@ -23,6 +23,7 @@ export class WebsocketService implements OnDestroy {
     public notificationBehaviorSubject: BehaviorSubject<Notification | null> = new BehaviorSubject<Notification | null>(null);
     public partitaDoubleBehaviorSubject: BehaviorSubject<PartitaDouble | null> = new BehaviorSubject<PartitaDouble | null>(null);
     public scopaHandBehaviorSubject: BehaviorSubject<ScopaHand | null> = new BehaviorSubject<ScopaHand | null>(null);
+    public gameEndBehaviorSubject: BehaviorSubject<GameEnd | null> = new BehaviorSubject<GameEnd | null>(null);
     constructor() {
         this.connection = Stomp.client(`${environment.SOCKET_URL}/websocket`);
 
@@ -73,6 +74,10 @@ export class WebsocketService implements OnDestroy {
                     let scopaHand: ScopaHand =
                         JSON.parse(message.body);
                     this.scopaHandBehaviorSubject.next(scopaHand);
+                } else if (response?.partitaDoubleId) {
+                    let gameEnd: GameEnd =
+                        JSON.parse(message.body);
+                    this.gameEndBehaviorSubject.next(gameEnd);
                 }
             });
         }
