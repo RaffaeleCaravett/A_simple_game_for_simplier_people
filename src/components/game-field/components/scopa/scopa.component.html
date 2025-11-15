@@ -308,13 +308,18 @@
                                 </div>
                             </div>
                             <div class="col-3 p-3">
-                                <div class="border shadow-sm bg-light" (click)="release = !release; selectedCard=[]"
+                                <div class="border shadow-sm bg-light" (click)="setRelease()"
                                     [ngStyle]="release?{'scale':'1.1'}:{}">
                                     <p class="text-end fs-2"><i class="bi bi-plus h2"></i></p>
                                     <p class="text-center my-5 fs-2 text-success">
                                         <i class="bi bi-plus h2"></i>
                                     </p>
                                 </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="fs-2">
+                                    E' il turno di : {{getTournUserName()}}
+                                </p>
                             </div>
                         </div>
                     </div>
