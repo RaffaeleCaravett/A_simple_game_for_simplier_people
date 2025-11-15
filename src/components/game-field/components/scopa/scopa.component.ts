@@ -25,6 +25,7 @@ import {
   GameEnd,
   Invito,
   PartitaDouble,
+  ScopaDone,
   ScopaHand,
   SocketDTO,
   User,
@@ -169,6 +170,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                   invitoDTO: null,
                   scopaHand: null,
                   gameEnd: gameEnd,
+                  scopaDone: null,
                 };
                 this.ws.send(socketDTO);
               },
@@ -227,6 +229,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                   invitoDTO: null,
                   scopaHand: null,
                   gameEnd: gameEnd,
+                  scopaDone: null,
                 };
                 this.ws.send(socketDTO);
               },
@@ -351,6 +354,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 invitoDTO: null,
                 scopaHand: scopaHand,
                 gameEnd: null,
+                scopaDone: null,
               };
               this.ws.send(socketDTO);
             } else {
@@ -456,6 +460,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                   invitoDTO: null,
                   scopaHand: scopaHand,
                   gameEnd: null,
+                  scopaDone: null,
                 };
                 this.ws.send(socketDTO);
               }
@@ -522,6 +527,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     //     invitoDTO: null,
     //     scopaHand: scopaHand,
     //     gameEnd: null,
+    //scopaDone: null,
     //   };
     //   this.ws.send(socketDTO);
     // }
@@ -553,6 +559,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             invitoDTO: null,
             scopaHand: cards,
             gameEnd: null,
+            scopaDone: null,
           };
           this.ws.send(socketDTO);
         }
@@ -1044,9 +1051,15 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     ) {
       if (!this.checkForPoints()) {
         this.tableCards.push(card);
-        this.yourCards = this.yourCards.filter((c) => c != card);
         if (!this.partitaDouble) {
+          this.yourCards = this.yourCards.filter((c) => c != card);
           this.tourn = 'computer';
+        } else {
+          if (this.tourn == 'user') {
+            this.yourCards = this.yourCards.filter((c) => c != card);
+          } else {
+            this.enemysCards = this.enemysCards.filter((c) => c != card);
+          }
         }
         this.release = false;
         if (
@@ -1122,6 +1135,24 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 this.enemysScopas += 1;
                 this.showEnemysScopa = true;
               }
+              if (this.partitaDouble) {
+                let scopa: ScopaDone = {
+                  userId: this.user!.id,
+                  partitaDoubleId: this.partitaDouble!.id,
+                };
+                let socketDTO: SocketDTO = {
+                  messageDTO: null,
+                  connectionDTO: null,
+                  gameConnectionDTO: null,
+                  moveDTO: null,
+                  connectionRequestDTO: null,
+                  invitoDTO: null,
+                  scopaHand: null,
+                  gameEnd: null,
+                  scopaDone: scopa,
+                };
+                this.ws.send(socketDTO);
+              }
             }
             setTimeout(
               () => {
@@ -1157,6 +1188,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                       invitoDTO: null,
                       scopaHand: cards,
                       gameEnd: null,
+                      scopaDone: null,
                     };
                     this.ws.send(socketDTO);
                   }
@@ -1300,6 +1332,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         },
         scopaHand: null,
         gameEnd: null,
+        scopaDone: null,
       };
       this.ws.send(socketDTO);
     }
@@ -1403,6 +1436,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               invitoDTO: null,
               scopaHand: null,
               gameEnd: gameEnd,
+              scopaDone: null,
             };
             this.ws.send(socketDTO);
           },

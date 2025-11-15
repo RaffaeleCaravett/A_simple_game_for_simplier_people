@@ -1,6 +1,16 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import {
+  AfterContentChecked,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConnectionRequestDTO, SocketDTO, User } from '../../interfaces/interfaces';
+import {
+  ConnectionRequestDTO,
+  SocketDTO,
+  User,
+} from '../../interfaces/interfaces';
 import { ProfileServive } from '../../services/profile.service';
 import { JsonPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { GamefieldService } from '../../services/gamefield.service';
@@ -13,7 +23,13 @@ import { LeafletComponent } from '../../shared/components/leaflet/leaflet.compon
 import { HttpClient } from '@angular/common/http';
 import { GoogleMap, MapAdvancedMarker, MapMarker } from '@angular/google-maps';
 import { ToastrService } from 'ngx-toastr';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { DescrizioneComponent } from './components/descrizione/descrizione.component';
 import { PreferitiComponent } from '../lobby/components/preferiti/preferiti.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -26,12 +42,26 @@ import { MatTooltip } from '@angular/material/tooltip';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, ImpostazioniComponent, NgStyle, PreferitiComponent, LeafletComponent, GoogleMap, MapMarker,
-    MapAdvancedMarker, ReactiveFormsModule, DescrizioneComponent, MatProgressSpinnerModule, MatTooltip,
-    MatSlideToggleModule, FormsModule
+  imports: [
+    NgFor,
+    NgIf,
+    NgClass,
+    ImpostazioniComponent,
+    NgStyle,
+    PreferitiComponent,
+    LeafletComponent,
+    GoogleMap,
+    MapMarker,
+    MapAdvancedMarker,
+    ReactiveFormsModule,
+    DescrizioneComponent,
+    MatProgressSpinnerModule,
+    MatTooltip,
+    MatSlideToggleModule,
+    FormsModule,
   ],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit, AfterContentChecked {
   id: number = 0;
@@ -47,19 +77,21 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   giochiOrderBy: string = 'id';
   giochiSortOrder: string = 'ASC';
   giochi: any = null;
-  validationPoints: number[] = [1, 2, 3, 4, 5]
+  validationPoints: number[] = [1, 2, 3, 4, 5];
   gioco: any = null;
-  ordinaArray: { label: string, values: string[] }[] = [
+  ordinaArray: { label: string; values: string[] }[] = [
     { label: 'Punteggio migliore', values: ['punteggio', 'DESC'] },
     { label: 'Punteggio peggiore', values: ['punteggio', 'ASC'] },
     { label: 'Più recente', values: ['createdAt', 'DESC'] },
-    { label: 'Meno recente', values: ['createdAt', 'ASC'] }];
-  ordinaGiocoArray: { label: string, values: string[] }[] = [
+    { label: 'Meno recente', values: ['createdAt', 'ASC'] },
+  ];
+  ordinaGiocoArray: { label: string; values: string[] }[] = [
     { label: 'Nome discendente', values: ['nomeGioco', 'DESC'] },
     { label: 'Nome ascendente', values: ['nomeGioco', 'ASC'] },
     { label: 'Difficoltà minore', values: ['difficolta', 'ASC'] },
-    { label: 'Difficoltà maggiore', values: ['difficolta', 'DESC'] }];
-  ordinaPartiteArray: { label: string, values: string[] }[] = [
+    { label: 'Difficoltà maggiore', values: ['difficolta', 'DESC'] },
+  ];
+  ordinaPartiteArray: { label: string; values: string[] }[] = [
     { label: 'Id ascendente', values: ['id', 'ASC'] },
     { label: 'Id discendente', values: ['id', 'DESC'] },
     { label: 'Punteggio migliore', values: ['punteggio.punteggio', 'DESC'] },
@@ -71,14 +103,39 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     { label: 'Più recente', values: ['createdAt', 'DESC'] },
     { label: 'Meno recente', values: ['createdAt', 'ASC'] },
     { label: 'Esito partita discendente', values: ['esito', 'DESC'] },
-    { label: 'Esito partita ascendente', values: ['esito', 'ASC'] }];
-
+    { label: 'Esito partita ascendente', values: ['esito', 'ASC'] },
+  ];
 
   sizes: number[] = [2, 5, 10];
   windowWidth: number = 0;
-  menuVoices: Set<{ label: string, emoji: string, title: string }> = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
-  { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
-  { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+  menuVoices: Set<{ label: string; emoji: string; title: string }> = new Set([
+    { label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' },
+    {
+      label: 'Recensioni',
+      emoji: '✅',
+      title: 'Controlla le recensioni che hai lasciato!',
+    },
+    {
+      label: 'Giochi',
+      emoji: '🕹️',
+      title: 'Controlla i giochi a cui hai giocato!',
+    },
+    { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' },
+    { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' },
+    {
+      label: 'Classifiche',
+      emoji: '📋',
+      title: 'Controlla le tue classifiche!',
+    },
+    { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' },
+    { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
+    {
+      label: 'Richieste',
+      emoji: '🫂',
+      title: 'Controlla le richieste di contatto!',
+    },
+    { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' },
+    { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' },
   ]);
   section: string = 'Profilo';
   circles: number[] = [1, 2, 3, 4, 5];
@@ -99,7 +156,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   trofeiSortOrder: string = 'ASC';
   trofei: any = null;
   firstTimeReces: number = 0;
-  sottomenu: string[] = ['🖼️Cambia immagine del profilo', '🔒 Cambia la password', 'ℹ️ Cambia altre informazioni', '📞 Richiedi assistenza', '📨 Monitora le tue richieste'];
+  sottomenu: string[] = [
+    '🖼️Cambia immagine del profilo',
+    '🔒 Cambia la password',
+    'ℹ️ Cambia altre informazioni',
+    '📞 Richiedi assistenza',
+    '📨 Monitora le tue richieste',
+  ];
   impostazioniSection: string = 'Richiedi assistenza';
   mode: string = 'light';
   cityX: number = 0;
@@ -107,7 +170,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   mapOptions!: google.maps.MapOptions;
   markers = [
     { lat: 40.73061, lng: -73.935242 },
-    { lat: 40.74988, lng: -73.968285 }
+    { lat: 40.74988, lng: -73.968285 },
   ];
   descrizioneForm: FormGroup = new FormGroup({});
   showMenu: boolean = false;
@@ -119,20 +182,36 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   arp: number[] = [];
   actualRequestsSent: any = null;
   arps: number[] = [];
-  requestStatus: string = "INVIATA";
-  requestStatusArray: { value: EsitoRichiesta, label: string }[] = [{ value: EsitoRichiesta.INVIATA, label: 'Inviata' }, { value: EsitoRichiesta.ACCETTATA, label: 'Accettata' }, { value: EsitoRichiesta.RIFIUTATA, label: 'Rifiutata' },
-  { value: EsitoRichiesta.ANNULLATA, label: 'Annullata' }
+  requestStatus: string = 'INVIATA';
+  requestStatusArray: { value: EsitoRichiesta; label: string }[] = [
+    { value: EsitoRichiesta.INVIATA, label: 'Inviata' },
+    { value: EsitoRichiesta.ACCETTATA, label: 'Accettata' },
+    { value: EsitoRichiesta.RIFIUTATA, label: 'Rifiutata' },
+    { value: EsitoRichiesta.ANNULLATA, label: 'Annullata' },
   ];
   isRequestLoading: boolean = false;
   requestToShow: string = 'RICEVUTE';
-  requestToShowArray: { value: string, label: string }[] = [{ value: 'RICEVUTE', label: 'Ricevute' }, { value: 'EFFETTUATE', label: 'Effettuate' }];
+  requestToShowArray: { value: string; label: string }[] = [
+    { value: 'RICEVUTE', label: 'Ricevute' },
+    { value: 'EFFETTUATE', label: 'Effettuate' },
+  ];
   infoFriend: boolean = false;
   amici: any = null;
-  giochiIdsAndNames: { id: number, name: string }[] = [];
+  giochiIdsAndNames: { id: number; name: string }[] = [];
   partiteForm: FormGroup = new FormGroup({});
-  constructor(private route: ActivatedRoute, private router: Router, private profiloService: ProfileServive, private gamefieldService: GamefieldService, private matDialog: MatDialog,
-    public authService: AuthService, private modeService: ModeService, private httpClient: HttpClient, private toastr: ToastrService, private cdr: ChangeDetectorRef,
-    private websocketService: WebsocketService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private profiloService: ProfileServive,
+    private gamefieldService: GamefieldService,
+    private matDialog: MatDialog,
+    public authService: AuthService,
+    private modeService: ModeService,
+    private httpClient: HttpClient,
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef,
+    private websocketService: WebsocketService
+  ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.user = this.authService.getUser()!;
       this.getAllDatas();
@@ -146,8 +225,17 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             yesImpostazioni = true;
           }
         });
-        if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
-        this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
+        if (!yesImpostazioni)
+          this.menuVoices.add({
+            label: 'Impostazioni',
+            emoji: '⚙️',
+            title: 'Vai alle impostazioni',
+          });
+        this.menuVoices.delete({
+          label: 'Preferiti',
+          emoji: '❤️',
+          title: 'Controlla i tuoi preferiti!',
+        });
         localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
       }
     });
@@ -164,7 +252,11 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
   acceptRequest(requestId: number) {
     let proceed: boolean = false;
-    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Accetta'], width: '60%', height: '300px' });
+    const dialogRef = this.matDialog.open(AskConfirmComponent, {
+      data: [null, null, 'Accetta'],
+      width: '60%',
+      height: '300px',
+    });
 
     dialogRef.afterClosed().subscribe((data: boolean) => {
       if (data) {
@@ -172,17 +264,21 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
         this.profiloService.acceptRequest(requestId).subscribe({
           next: (data: any) => {
             this.getConnectionRequests();
-            this.toastr.show("Richiesta accettata!");
-          }
+            this.toastr.show('Richiesta accettata!');
+          },
         });
       } else {
-        this.toastr.show("Non è stata accettata nessuna modifica!");
+        this.toastr.show('Non è stata accettata nessuna modifica!');
       }
     });
   }
   refuseRequest(requestId: number) {
     let proceed: boolean = false;
-    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Rifiuta'], width: '60%', height: '300px' });
+    const dialogRef = this.matDialog.open(AskConfirmComponent, {
+      data: [null, null, 'Rifiuta'],
+      width: '60%',
+      height: '300px',
+    });
 
     dialogRef.afterClosed().subscribe((data: boolean) => {
       if (data) {
@@ -190,17 +286,21 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
         this.profiloService.refuseRequest(requestId).subscribe({
           next: (data: any) => {
             this.getConnectionRequests();
-            this.toastr.show("Richiesta rifiutata!");
-          }
+            this.toastr.show('Richiesta rifiutata!');
+          },
         });
       } else {
-        this.toastr.show("Non è stata rifiutata nessuna modifica!");
+        this.toastr.show('Non è stata rifiutata nessuna modifica!');
       }
     });
   }
   deleteRequest(requestId: number) {
     let proceed: boolean = false;
-    const dialogRef = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Annulla'], width: '60%', height: '300px' });
+    const dialogRef = this.matDialog.open(AskConfirmComponent, {
+      data: [null, null, 'Annulla'],
+      width: '60%',
+      height: '300px',
+    });
 
     dialogRef.afterClosed().subscribe((data: boolean) => {
       if (data) {
@@ -208,11 +308,11 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
         this.profiloService.deleteRequest(requestId).subscribe({
           next: (data: any) => {
             this.getConnectionRequests();
-            this.toastr.show("Richiesta modificata!");
-          }
+            this.toastr.show('Richiesta modificata!');
+          },
         });
       } else {
-        this.toastr.show("Non è stata annulata nessuna richiesta!");
+        this.toastr.show('Non è stata annulata nessuna richiesta!');
       }
     });
   }
@@ -225,61 +325,71 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
   ngOnInit(): void {
     this.descrizioneForm = new FormGroup({
-      descrizione: new FormControl('', [Validators.required, Validators.maxLength(5000)])
+      descrizione: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(5000),
+      ]),
     });
     this.partiteForm = new FormGroup({
       gioco: new FormControl(''),
-      sort: new FormControl('')
+      sort: new FormControl(''),
     });
-    this.route.queryParams.subscribe(
-      params => {
-        if (params && params['user']) {
-          this.authService.getUserById(params['user']).subscribe({
-            next: (data: any) => {
-              this.visitedUser = data;
-              this.isProfileOpen = this.visitedUser?.open || false;
-              this.getCoordinates();
-              if (this.user?.id == this.visitedUser?.id) {
-                this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
-                { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
-                { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
-                ]);
-                let yesImpostazioni: boolean = false;
-                this.menuVoices.forEach((d) => {
-                  if (d.label == 'Impostazioni') {
-                    yesImpostazioni = true;
-                  }
-                });
-                if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
-                this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
-              } else {
-                this.cleanMenu();
-              }
-              if (params['request']) {
-                this.switchSection('Richieste');
-              } else if (params['email']) {
-                this.switchSection('Dashboard');
-              } else if (params['tournament']) {
-                this.switchSection('Tornei');
-              }
-              this.getAllDatas();
-              this.checkIfFriend();
-              this.getConnectionRequests();
-
-              if (this.visitedUser != null && this.visitedUser != undefined) localStorage.setItem('visitedUser', JSON.stringify(this.visitedUser));
-              else this.router.navigate(['/lobby']);
-            }
-          });
-        } else {
-          if (!localStorage.getItem('visitedUser')) this.router.navigate(['/lobby']);
-          else {
-            this.visitedUser = JSON.parse(localStorage.getItem('visitedUser')!);
+    this.route.queryParams.subscribe((params) => {
+      if (params && params['user']) {
+        this.authService.getUserById(params['user']).subscribe({
+          next: (data: any) => {
+            this.visitedUser = data;
             this.isProfileOpen = this.visitedUser?.open || false;
             this.getCoordinates();
             if (this.user?.id == this.visitedUser?.id) {
-              this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il tuo profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni che hai lasciato!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi a cui hai giocato!' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le tue classifiche!' }, { label: 'Partite', emoji: '🥅', title: 'Controlla le tue partite!' }, { label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' },
-              { label: 'Richieste', emoji: '🫂', title: 'Controlla le richieste di contatto!' },
-              { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' }, { label: 'Dashboard', emoji: '📊', title: 'Controlla la tua dashboard!' }
+              this.menuVoices = new Set([
+                {
+                  label: 'Profilo',
+                  emoji: '🪪',
+                  title: 'Controlla il tuo profilo!',
+                },
+                {
+                  label: 'Recensioni',
+                  emoji: '✅',
+                  title: 'Controlla le recensioni che hai lasciato!',
+                },
+                {
+                  label: 'Giochi',
+                  emoji: '🕹️',
+                  title: 'Controlla i giochi a cui hai giocato!',
+                },
+                {
+                  label: 'Trofei',
+                  emoji: '🏅',
+                  title: 'Controlla i trofei vinti!',
+                },
+                { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' },
+                {
+                  label: 'Classifiche',
+                  emoji: '📋',
+                  title: 'Controlla le tue classifiche!',
+                },
+                {
+                  label: 'Partite',
+                  emoji: '🥅',
+                  title: 'Controlla le tue partite!',
+                },
+                {
+                  label: 'Preferiti',
+                  emoji: '❤️',
+                  title: 'Controlla i tuoi preferiti!',
+                },
+                {
+                  label: 'Richieste',
+                  emoji: '🫂',
+                  title: 'Controlla le richieste di contatto!',
+                },
+                { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' },
+                {
+                  label: 'Dashboard',
+                  emoji: '📊',
+                  title: 'Controlla la tua dashboard!',
+                },
               ]);
               let yesImpostazioni: boolean = false;
               this.menuVoices.forEach((d) => {
@@ -287,28 +397,134 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
                   yesImpostazioni = true;
                 }
               });
-              if (!yesImpostazioni) this.menuVoices.add({ label: 'Impostazioni', emoji: '⚙️', title: 'Vai alle impostazioni' });
-              this.menuVoices.delete({ label: 'Preferiti', emoji: '❤️', title: 'Controlla i tuoi preferiti!' });
+              if (!yesImpostazioni)
+                this.menuVoices.add({
+                  label: 'Impostazioni',
+                  emoji: '⚙️',
+                  title: 'Vai alle impostazioni',
+                });
+              this.menuVoices.delete({
+                label: 'Preferiti',
+                emoji: '❤️',
+                title: 'Controlla i tuoi preferiti!',
+              });
             } else {
               this.cleanMenu();
+            }
+            if (params['request']) {
+              this.switchSection('Richieste');
+            } else if (params['email']) {
+              this.switchSection('Dashboard');
+            } else if (params['tournament']) {
+              this.switchSection('Tornei');
             }
             this.getAllDatas();
             this.checkIfFriend();
             this.getConnectionRequests();
+
+            if (this.visitedUser != null && this.visitedUser != undefined)
+              localStorage.setItem(
+                'visitedUser',
+                JSON.stringify(this.visitedUser)
+              );
+            else this.router.navigate(['/lobby']);
+          },
+        });
+      } else {
+        if (!localStorage.getItem('visitedUser'))
+          this.router.navigate(['/lobby']);
+        else {
+          this.visitedUser = JSON.parse(localStorage.getItem('visitedUser')!);
+          this.isProfileOpen = this.visitedUser?.open || false;
+          this.getCoordinates();
+          if (this.user?.id == this.visitedUser?.id) {
+            this.menuVoices = new Set([
+              {
+                label: 'Profilo',
+                emoji: '🪪',
+                title: 'Controlla il tuo profilo!',
+              },
+              {
+                label: 'Recensioni',
+                emoji: '✅',
+                title: 'Controlla le recensioni che hai lasciato!',
+              },
+              {
+                label: 'Giochi',
+                emoji: '🕹️',
+                title: 'Controlla i giochi a cui hai giocato!',
+              },
+              {
+                label: 'Trofei',
+                emoji: '🏅',
+                title: 'Controlla i trofei vinti!',
+              },
+              { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' },
+              {
+                label: 'Classifiche',
+                emoji: '📋',
+                title: 'Controlla le tue classifiche!',
+              },
+              {
+                label: 'Partite',
+                emoji: '🥅',
+                title: 'Controlla le tue partite!',
+              },
+              {
+                label: 'Preferiti',
+                emoji: '❤️',
+                title: 'Controlla i tuoi preferiti!',
+              },
+              {
+                label: 'Richieste',
+                emoji: '🫂',
+                title: 'Controlla le richieste di contatto!',
+              },
+              { label: 'Amici', emoji: '👥', title: 'Esplora i tuoi amici' },
+              {
+                label: 'Dashboard',
+                emoji: '📊',
+                title: 'Controlla la tua dashboard!',
+              },
+            ]);
+            let yesImpostazioni: boolean = false;
+            this.menuVoices.forEach((d) => {
+              if (d.label == 'Impostazioni') {
+                yesImpostazioni = true;
+              }
+            });
+            if (!yesImpostazioni)
+              this.menuVoices.add({
+                label: 'Impostazioni',
+                emoji: '⚙️',
+                title: 'Vai alle impostazioni',
+              });
+            this.menuVoices.delete({
+              label: 'Preferiti',
+              emoji: '❤️',
+              title: 'Controlla i tuoi preferiti!',
+            });
+          } else {
+            this.cleanMenu();
           }
+          this.getAllDatas();
+          this.checkIfFriend();
+          this.getConnectionRequests();
         }
       }
-    )
-    localStorage.setItem('location', 'lobby/profile')
+    });
+    localStorage.setItem('location', 'lobby/profile');
   }
 
   checkIfFriend() {
     if (this.user != this.visitedUser) {
-      this.profiloService.checkIfFriend(this.user?.id, this.visitedUser!.id).subscribe({
-        next: (value: any) => {
-          this.isThisAFriend = value;
-        }
-      });
+      this.profiloService
+        .checkIfFriend(this.user?.id, this.visitedUser!.id)
+        .subscribe({
+          next: (value: any) => {
+            this.isThisAFriend = value;
+          },
+        });
     } else {
       this.isThisAFriend = true;
     }
@@ -328,43 +544,84 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
     this.gamefieldService.getGiochi().subscribe({
       next: (data: any) => {
         this.giochiIdsAndNames = data;
-      }
+      },
     });
   }
   getRecensioni() {
-    this.profiloService.getRecensioniByUserId(this.visitedUser!.id, this.recePage, this.receSize, this.receOrderBy, this.receSortOrder).subscribe({
-      next: (reces: any) => {
-        this.recensioni = reces;
-      }
-    })
+    this.profiloService
+      .getRecensioniByUserId(
+        this.visitedUser!.id,
+        this.recePage,
+        this.receSize,
+        this.receOrderBy,
+        this.receSortOrder
+      )
+      .subscribe({
+        next: (reces: any) => {
+          this.recensioni = reces;
+        },
+      });
   }
   getGiochi() {
-    this.profiloService.getGiochiByUserId(this.visitedUser!.id, this.giochiPage, this.giochiSize, this.giochiOrderBy, this.giochiSortOrder).subscribe({
-      next: (games: any) => {
-        this.giochi = games;
-      }
-    })
+    this.profiloService
+      .getGiochiByUserId(
+        this.visitedUser!.id,
+        this.giochiPage,
+        this.giochiSize,
+        this.giochiOrderBy,
+        this.giochiSortOrder
+      )
+      .subscribe({
+        next: (games: any) => {
+          this.giochi = games;
+        },
+      });
   }
   getPartite() {
-    this.gamefieldService.getPartitaByUser(this.visitedUser!.id, this.partitePage, this.partiteSize, this.partiteOrderBy, this.partiteSortOrder, this.selectedGame).subscribe({
-      next: (partite: any) => {
-        this.partite = partite;
-      }
-    });
+    this.gamefieldService
+      .getPartitaByUser(
+        this.visitedUser!.id,
+        this.partitePage,
+        this.partiteSize,
+        this.partiteOrderBy,
+        this.partiteSortOrder,
+        this.selectedGame
+      )
+      .subscribe({
+        next: (partite: any) => {
+          this.partite = partite;
+        },
+      });
   }
   getClassifiche() {
-    this.gamefieldService.getClassificheByUser(this.visitedUser!.id, this.classifichePage, this.classificheSize, this.classificheOrderBy, this.classificheSortOrder).subscribe({
-      next: (classifiche: any) => {
-        this.classifiche = classifiche;
-      }
-    })
+    this.gamefieldService
+      .getClassificheByUser(
+        this.visitedUser!.id,
+        this.classifichePage,
+        this.classificheSize,
+        this.classificheOrderBy,
+        this.classificheSortOrder
+      )
+      .subscribe({
+        next: (classifiche: any) => {
+          this.classifiche = classifiche;
+        },
+      });
   }
   getTrofei() {
-    this.gamefieldService.getTrofeiByUser(this.visitedUser!.id, this.trofeiPage, this.trofeiSize, this.trofeiOrderBy, this.trofeiSortOrder).subscribe({
-      next: (trofei: any) => {
-        this.trofei = trofei;
-      }
-    })
+    this.gamefieldService
+      .getTrofeiByUser(
+        this.visitedUser!.id,
+        this.trofeiPage,
+        this.trofeiSize,
+        this.trofeiOrderBy,
+        this.trofeiSortOrder
+      )
+      .subscribe({
+        next: (trofei: any) => {
+          this.trofei = trofei;
+        },
+      });
   }
   toNumber(element: string) {
     return Number(element);
@@ -372,42 +629,65 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   getConnectionRequests() {
     if (this.user.id == this.visitedUser!.id) {
       this.isRequestLoading = true;
-      this.profiloService.getConnectionRequest(this.connectionRequestPage, null, this.user.id, null, this.user.fullName, this.requestStatus).subscribe((datas: any) => {
-        setTimeout(() => {
-          this.actualRequests = datas;
-          for (let i = 1; i <= datas?.totalPages; i++) {
-            this.arp.push(i);
-          }
-          this.isRequestLoading = false;
-          this.checkIfFriend();
-        }, 2000);
-      });
-      this.profiloService.getConnectionRequest(this.connectionRequestPage, this.user.id, null, this.user.fullName, null, this.requestStatus).subscribe((datas: any) => {
-        setTimeout(() => {
-          this.actualRequestsSent = datas;
-          for (let i = 1; i <= datas?.totalPages; i++) {
-            this.arps.push(i);
-          }
-          this.isRequestLoading = false;
-          this.checkIfFriend();
-        }, 2000);
-      });
-    };
+      this.profiloService
+        .getConnectionRequest(
+          this.connectionRequestPage,
+          null,
+          this.user.id,
+          null,
+          this.user.fullName,
+          this.requestStatus
+        )
+        .subscribe((datas: any) => {
+          setTimeout(() => {
+            this.actualRequests = datas;
+            for (let i = 1; i <= datas?.totalPages; i++) {
+              this.arp.push(i);
+            }
+            this.isRequestLoading = false;
+            this.checkIfFriend();
+          }, 2000);
+        });
+      this.profiloService
+        .getConnectionRequest(
+          this.connectionRequestPage,
+          this.user.id,
+          null,
+          this.user.fullName,
+          null,
+          this.requestStatus
+        )
+        .subscribe((datas: any) => {
+          setTimeout(() => {
+            this.actualRequestsSent = datas;
+            for (let i = 1; i <= datas?.totalPages; i++) {
+              this.arps.push(i);
+            }
+            this.isRequestLoading = false;
+            this.checkIfFriend();
+          }, 2000);
+        });
+    }
   }
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.windowWidth = window.innerWidth;
-    if (this.windowWidth > 699) this.showMenu = false
+    if (this.windowWidth > 699) this.showMenu = false;
   }
 
   openGameDialog(gioco: any) {
     const dialogRef = this.matDialog.open(GiocoPreviewComponent, {
       data: gioco,
       width: '50%',
-      height: '90%'
-    })
-    dialogRef.afterClosed().subscribe((data: any) => { if (data) this.router.navigate(['/game-field'], { queryParams: { gioco: gioco.id } }); })
+      height: '90%',
+    });
+    dialogRef.afterClosed().subscribe((data: any) => {
+      if (data)
+        this.router.navigate(['/game-field'], {
+          queryParams: { gioco: gioco.id },
+        });
+    });
   }
 
   switchSection(value: string) {
@@ -420,43 +700,49 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
 
   calculateEsito(esito: string): string {
     switch (esito) {
-      case ("VINTA"): {
-        return "text-success"
+      case 'VINTA': {
+        return 'text-success';
       }
-      case ("PAREGGIATA"): {
-        return "text-warning"
+      case 'PAREGGIATA': {
+        return 'text-warning';
       }
-      case ("PERSA"): {
-        return "text-danger-emphasis"
+      case 'PERSA': {
+        return 'text-danger-emphasis';
       }
-      case ("VALIDA"): {
-        return "text-success"
+      case 'VALIDA': {
+        return 'text-success';
       }
-      case ("NON_VALIDA"): {
-        return "text-danger-emphasis"
+      case 'NON_VALIDA': {
+        return 'text-danger-emphasis';
       }
       default: {
-        return "";
+        return '';
       }
     }
   }
 
   goToRanking(c: any) {
-    this.router.navigate(['/lobby'], { queryParams: { classificaId: c?.id, section: 'classifiche' } });
+    this.router.navigate(['/lobby'], {
+      queryParams: { classificaId: c?.id, section: 'classifiche' },
+    });
   }
   goToProfile(user: User | any) {
     if (user && user?.id) {
       localStorage.setItem('visitedUser', JSON.stringify(user));
       this.section = 'Profilo';
-      this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
+      this.router.navigate([`/lobby/profile`], {
+        queryParams: { user: user.id },
+      });
     } else {
       this.authService.getUserById(user).subscribe({
         next: (data: any) => {
           var user = data;
           localStorage.setItem('visitedUser', JSON.stringify(user));
           this.section = 'Profilo';
-          this.router.navigate([`/lobby/profile`], { queryParams: { user: user.id } });
-        }
+          this.router.navigate([`/lobby/profile`], {
+            queryParams: { user: user.id },
+          });
+        },
       });
     }
   }
@@ -466,7 +752,18 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   }
   cleanMenu() {
     if (this.user.id != this.visitedUser!.id) {
-      this.menuVoices = new Set([{ label: 'Profilo', emoji: '🪪', title: 'Controlla il profilo!' }, { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni!' }, { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi !' }, { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' }, { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' }, { label: 'Classifiche', emoji: '📋', title: 'Controlla le classifiche!' }]);
+      this.menuVoices = new Set([
+        { label: 'Profilo', emoji: '🪪', title: 'Controlla il profilo!' },
+        { label: 'Recensioni', emoji: '✅', title: 'Controlla le recensioni!' },
+        { label: 'Giochi', emoji: '🕹️', title: 'Controlla i giochi !' },
+        { label: 'Trofei', emoji: '🏅', title: 'Controlla i trofei vinti!' },
+        { label: 'Tornei', emoji: '🏎️', title: 'Vai ai tornei!' },
+        {
+          label: 'Classifiche',
+          emoji: '📋',
+          title: 'Controlla le classifiche!',
+        },
+      ]);
     }
   }
   getCoordinates() {
@@ -486,21 +783,22 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
               this.cityX = lat;
               this.cityY = lng;
               this.mapOptions = {
-                mapId: "DEMO_MAP_ID",
+                mapId: 'DEMO_MAP_ID',
                 center: { lat: this.cityX, lng: this.cityY },
-                zoom: 7
+                zoom: 7,
               };
             }
-          }
-        })
+          },
+        });
       } catch (error: any) {
-        this.toastr.warning("Non siamo riusciti a recuperare le tue coordinate.");
+        this.toastr.warning(
+          'Non siamo riusciti a recuperare le tue coordinate.'
+        );
         this.mapOptions = {
-          mapId: "DEMO_MAP_ID",
-          zoom: 7
+          mapId: 'DEMO_MAP_ID',
+          zoom: 7,
         };
       }
-
     }
   }
   returnDescrizione: number = 0;
@@ -509,7 +807,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
       let div = document.createElement('div') as HTMLDivElement;
       div.innerHTML = descrizione;
       this.returnDescrizione += 1;
-      return descr.innerHTML += div.outerHTML;
+      return (descr.innerHTML += div.outerHTML);
     }
     return;
   }
@@ -519,20 +817,31 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
   formatDate(date: string | undefined) {
     if (date) {
       let newDate = new Date(date);
-      return newDate.getDate() + '/' + newDate.getMonth() + 1 + '/' + newDate.getFullYear();
+      return (
+        newDate.getDate() +
+        '/' +
+        newDate.getMonth() +
+        1 +
+        '/' +
+        newDate.getFullYear()
+      );
     } else {
-      return "";
+      return '';
     }
   }
   sendRequest() {
     this.isConnectionRequestLoading = true;
     let request: ConnectionRequestDTO = {
-      receiverId: this.visitedUser!.id
-    }
+      receiverId: this.visitedUser!.id,
+    };
     if (!this.isThisAFriend) {
       this.profiloService.sendConnectionRequest(request).subscribe({
         next: (data: any) => {
-          this.toastr.show("E' stata mandata la richiesta verso " + this.visitedUser?.fullName + ". ");
+          this.toastr.show(
+            "E' stata mandata la richiesta verso " +
+              this.visitedUser?.fullName +
+              '. '
+          );
           this.isConnectionRequestLoading = false;
           let socketDTO: SocketDTO = {
             messageDTO: null,
@@ -542,25 +851,34 @@ export class ProfileComponent implements OnInit, AfterContentChecked {
             connectionRequestDTO: { receiverId: this.visitedUser!.id },
             invitoDTO: null,
             scopaHand: null,
-            gameEnd:null
-          }
+            gameEnd: null,
+            scopaDone: null,
+          };
           this.websocketService.send(socketDTO);
-        }
+        },
       });
     } else {
-      const dialog = this.matDialog.open(AskConfirmComponent, { data: [null, null, 'Elimina'], });
+      const dialog = this.matDialog.open(AskConfirmComponent, {
+        data: [null, null, 'Elimina'],
+      });
       dialog.afterClosed().subscribe((data: any) => {
         if (data) {
-          this.profiloService.deleteRequestByIds(this.visitedUser!.id).subscribe({
-            next: (data: any) => {
-              if (data) {
-                this.toastr.show("E' stato annullato il collegamento con " + this.visitedUser?.fullName + ". ");
-                this.isConnectionRequestLoading = false;
-                this.getConnectionRequests();
-                this.openInfoFriend();
-              }
-            }
-          });
+          this.profiloService
+            .deleteRequestByIds(this.visitedUser!.id)
+            .subscribe({
+              next: (data: any) => {
+                if (data) {
+                  this.toastr.show(
+                    "E' stato annullato il collegamento con " +
+                      this.visitedUser?.fullName +
+                      '. '
+                  );
+                  this.isConnectionRequestLoading = false;
+                  this.getConnectionRequests();
+                  this.openInfoFriend();
+                }
+              },
+            });
         }
       });
     }

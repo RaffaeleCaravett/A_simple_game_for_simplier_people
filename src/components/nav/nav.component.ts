@@ -1,9 +1,21 @@
-import { Component, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ModeService } from '../../services/mode.service';
-import { ConnectionRequestDTO, Messaggio, Notification, PartitaDouble, User } from '../../interfaces/interfaces';
+import {
+  ConnectionRequestDTO,
+  Messaggio,
+  Notification,
+  PartitaDouble,
+  User,
+} from '../../interfaces/interfaces';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from '../../shared/modules/shared.module';
@@ -13,13 +25,20 @@ import { ToastrService } from 'ngx-toastr';
 import { ProfileServive } from '../../services/profile.service';
 import { GamefieldService } from '../../services/gamefield.service';
 
-
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [NgIf, NgClass, RouterLink, MatMenuModule, SharedModule, NgFor, MatProgressSpinnerModule],
+  imports: [
+    NgIf,
+    NgClass,
+    RouterLink,
+    MatMenuModule,
+    SharedModule,
+    NgFor,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './nav.component.html',
-  styleUrl: './nav.component.scss'
+  styleUrl: './nav.component.scss',
 })
 export class NavComponent implements OnInit {
   innerWidth: number = 0;
@@ -32,8 +51,16 @@ export class NavComponent implements OnInit {
   notifications: Notification[] = [];
   @ViewChild('pTrigger') pTrigger: any;
   @ViewChild('p1Trigger') p1Trigger: any;
-  constructor(private authService: AuthService, private router: Router, private modeService: ModeService, private ws: WebsocketService, private chatService: ChatService,
-    private toastr: ToastrService, private profileService: ProfileServive, private gfs: GamefieldService, private ngZone: NgZone
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private modeService: ModeService,
+    private ws: WebsocketService,
+    private chatService: ChatService,
+    private toastr: ToastrService,
+    private profileService: ProfileServive,
+    private gfs: GamefieldService,
+    private ngZone: NgZone
   ) {
     this.authService.isAuthenticatedUser.subscribe((bool: boolean) => {
       this.isAuthenticatedUser = bool;
@@ -46,10 +73,17 @@ export class NavComponent implements OnInit {
       this.mode = mood;
     });
     this.ws.messageBehaviorSubject.subscribe((value: Messaggio | null) => {
-      if ((this.chatService.getSelectedChat() == null || (this.chatService.getSelectedChat() != null && this.chatService.getSelectedChat()?.id != value?.settedChatId))
-        && (this.user?.id != value?.sender.id) && value?.receivers.includes(this.user!.id)) {
+      if (
+        (this.chatService.getSelectedChat() == null ||
+          (this.chatService.getSelectedChat() != null &&
+            this.chatService.getSelectedChat()?.id != value?.settedChatId)) &&
+        this.user?.id != value?.sender.id &&
+        value?.receivers.includes(this.user!.id)
+      ) {
         let toast: any = new Object();
-        toast = this.toastr.show("Ti è arrivato un messaggio da " + value!.sender.nome);
+        toast = this.toastr.show(
+          'Ti è arrivato un messaggio da ' + value!.sender.nome
+        );
         toast.chatId = value.settedChatId;
         toast.onTap.subscribe((action: any) => {
           if (toast && toast?.chatId) {
@@ -58,37 +92,48 @@ export class NavComponent implements OnInit {
         });
       }
     });
-    this.ws.connectionRequestBehaviorSubject.subscribe((data: ConnectionRequestDTO | null) => {
-      if (data && data?.receiverId && data?.receiverId == this.user?.id) {
-        this.toastr.show("Hai ricevuto una nuova richiesta di contatto!");
-        this.getNotifications();
-      }
-    });
-    this.ws.notificationBehaviorSubject.subscribe((data: Notification | null) => {
-      if (data && data?.receiverIdOnly && data?.receiverIdOnly == this.user?.id) {
-        this.toastr.show("Novità in arrivo!");
-        this.getNotifications();
-      }
-    });
-    this.ws.partitaDoubleBehaviorSubject.subscribe((data: PartitaDouble | null) => {
-      if (data) {
-        if (!this.router.url.startsWith('/game-field')) {
-          this.toastr.toastrConfig.disableTimeOut = true;
-          this.toastr.toastrConfig.autoDismiss = false;
-          this.toastr.info("La partita a " + data.gioco.nomeGioco + " è iniziata!").onTap.subscribe((datas: any) => {
-            this.goToRoute('/game-field', data);
-          });
+    this.ws.connectionRequestBehaviorSubject.subscribe(
+      (data: ConnectionRequestDTO | null) => {
+        if (data && data?.receiverId && data?.receiverId == this.user?.id) {
+          this.toastr.show('Hai ricevuto una nuova richiesta di contatto!');
+          this.getNotifications();
         }
-        this.gfs.partitaDouble.next(data);
       }
-    });
+    );
+    this.ws.notificationBehaviorSubject.subscribe(
+      (data: Notification | null) => {
+        if (
+          data &&
+          data?.receiverIdOnly &&
+          data?.receiverIdOnly == this.user?.id
+        ) {
+          this.toastr.show('Novità in arrivo!');
+          this.getNotifications();
+        }
+      }
+    );
+    this.ws.partitaDoubleBehaviorSubject.subscribe(
+      (data: PartitaDouble | null) => {
+        if (data) {
+          if (!this.router.url.startsWith('/game-field')) {
+            this.toastr.toastrConfig.disableTimeOut = true;
+            this.toastr.toastrConfig.autoDismiss = false;
+            this.toastr
+              .info('La partita a ' + data.gioco.nomeGioco + ' è iniziata!')
+              .onTap.subscribe((datas: any) => {
+                this.goToRoute('/game-field', data);
+              });
+          }
+          this.gfs.partitaDouble.next(data);
+        }
+      }
+    );
     this.authService.closeMenu.subscribe((data: string) => {
       if (data == 'close') {
         this.notificationMenuOpen = false;
       }
-    })
+    });
   }
-
 
   logout() {
     this.isLoadingLogoutOrRoute = true;
@@ -101,7 +146,7 @@ export class NavComponent implements OnInit {
           this.isLoadingLogoutOrRoute = false;
           this.notificationMenuOpen = false;
           this.router.navigate(['']);
-        }
+        },
       });
     }, 1000);
   }
@@ -116,12 +161,19 @@ export class NavComponent implements OnInit {
       this.notificationMenuOpen = false;
       if (route.includes('game-field') && params && params != undefined) {
         this.ngZone.run(() => {
-          this.router.navigate([`/${route}`], { queryParams: { gioco: JSON.stringify(params?.gioco?.id), partita: JSON.stringify(params) } });
+          this.router.navigate([`/${route}`], {
+            queryParams: {
+              gioco: JSON.stringify(params?.gioco?.id),
+              partita: JSON.stringify(params),
+            },
+          });
         });
       } else {
-        this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id } })
+        this.router.navigate([`/${route}`], {
+          queryParams: { user: this.user!.id },
+        });
       }
-    }, 1000)
+    }, 1000);
   }
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
@@ -132,16 +184,18 @@ export class NavComponent implements OnInit {
           let currentD = new Date();
           let midnight = new Date();
           midnight.setHours(0, 1);
-          if (currentD.getHours() == midnight.getHours() && currentD.getMinutes() == midnight.getMinutes()) {
+          if (
+            currentD.getHours() == midnight.getHours() &&
+            currentD.getMinutes() == midnight.getMinutes()
+          ) {
             this.getNotifications();
             return;
           }
-        }, 1000 * 60)
+        }, 1000 * 60);
       } else {
         this.notificationToRead = 0;
       }
     }, 3000);
-
   }
 
   @HostListener('window:resize', ['$event'])
@@ -151,7 +205,7 @@ export class NavComponent implements OnInit {
   openNotificationMenu() {
     this.notificationMenuOpen = !this.notificationMenuOpen;
     if (!this.notificationMenuOpen) {
-      let toRead: number[] = []
+      let toRead: number[] = [];
       this.notifications.forEach((n: Notification) => {
         if (n.state == 'SENT') {
           toRead.push(n.id);
@@ -168,7 +222,7 @@ export class NavComponent implements OnInit {
                 }
               });
             }
-          }
+          },
         });
       }
     }
@@ -178,17 +232,27 @@ export class NavComponent implements OnInit {
     let route = 'lobby/profile';
     this.openNotificationMenu();
     if (notification.notificationType == 'MESSAGE') {
-      this.router.navigate(['/lobby/chat'], { queryParams: { chat: JSON.stringify(notification.chat) } });
+      this.router.navigate(['/lobby/chat'], {
+        queryParams: { chat: JSON.stringify(notification.chat) },
+      });
     } else if (notification.notificationType == 'CONNECTION_REQUEST') {
-      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
+      this.router.navigate([`/${route}`], {
+        queryParams: { user: this.user!.id, request: true },
+      });
     } else if (notification.notificationType == 'REQUEST') {
-      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, request: true } })
+      this.router.navigate([`/${route}`], {
+        queryParams: { user: this.user!.id, request: true },
+      });
     } else if (notification.notificationType == 'EMAIL') {
-      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, email: true } })
+      this.router.navigate([`/${route}`], {
+        queryParams: { user: this.user!.id, email: true },
+      });
     } else if (notification.notificationType == 'TOURNAMENT') {
-      this.router.navigate([`/${route}`], { queryParams: { user: this.user!.id, tournament: true } })
+      this.router.navigate([`/${route}`], {
+        queryParams: { user: this.user!.id, tournament: true },
+      });
     } else {
-      this.toastr.show("Impossibile stabilire il tipo di notifica");
+      this.toastr.show('Impossibile stabilire il tipo di notifica');
     }
   }
   getNotifications() {
@@ -196,8 +260,10 @@ export class NavComponent implements OnInit {
       this.profileService.getNotificationsByReceiverId().subscribe({
         next: (values: any) => {
           this.notifications = values;
-          this.notificationToRead = this.notifications.filter((n: Notification) => n.state == 'SENT').length;
-        }
+          this.notificationToRead = this.notifications.filter(
+            (n: Notification) => n.state == 'SENT'
+          ).length;
+        },
       });
     }
   }
@@ -210,5 +276,4 @@ export class NavComponent implements OnInit {
       this.pTrigger?.closeMenu();
     }
   }
-
 }

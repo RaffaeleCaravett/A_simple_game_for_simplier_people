@@ -163,6 +163,7 @@ export interface SocketDTO {
   invitoDTO: InvitoDTO | null | {};
   scopaHand: ScopaHand | null | {};
   gameEnd: GameEnd | null | {};
+  scopaDone: GameEnd | null | {};
 }
 export interface GameEnd {
   gameId: number;

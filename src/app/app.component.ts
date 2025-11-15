@@ -17,7 +17,7 @@ import { WebsocketService } from '../services/websocket.service';
   standalone: true,
   imports: [RouterOutlet, NavComponent, FootComponent, NgIf, NgClass],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   title = 'game-front';
@@ -28,7 +28,11 @@ export class AppComponent implements OnInit {
   selectedChat: Chat | null = null;
   chats: Chat[] = [];
   socketMap: Map<number, RxStompService> = new Map<number, RxStompService>();
-  constructor(private modeService: ModeService, private authService: AuthService, private router: Router, private webSocketService: WebsocketService
+  constructor(
+    private modeService: ModeService,
+    private authService: AuthService,
+    private router: Router,
+    private webSocketService: WebsocketService
   ) {
     this.subscription = router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -40,7 +44,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-
   /*
 
   WEBSOCKET UTILIZED AND APPLIED FROM 
@@ -48,14 +51,13 @@ export class AppComponent implements OnInit {
   https://github.com/bnacheva/ichat/blob/master/frontend/ichat-client/src/app/layout/users-list/users-list.component.ts
 */
 
-
   @HostListener('window:scroll', ['$event']) private onScroll(): void {
     if (window.scrollY > 500) {
       this.showGoTop = true;
     } else {
       this.showGoTop = false;
     }
-  };
+  }
 
   ngOnInit(): void {
     let accessToken: string = localStorage.getItem('accessToken')!;
@@ -75,47 +77,50 @@ export class AppComponent implements OnInit {
                   gameConnectionDTO: null,
                   moveDTO: null,
                   connectionRequestDTO: null,
-                  invitoDTO:null,
-                  scopaHand:null,
-                  gameEnd:null
-                }
+                  invitoDTO: null,
+                  scopaHand: null,
+                  gameEnd: null,
+                  scopaDone: null,
+                };
                 setTimeout(() => {
                   this.webSocketService.send(socketDTO);
                 }, 2000);
                 this.authService.setUser(value);
                 this.authService.authenticateUser(true);
-              }
+              },
             });
             setTimeout(() => {
-              if (location && location == 'game-field') this.router.navigate([`/${location}`], { queryParams: { gioco: gioco } });
+              if (location && location == 'game-field')
+                this.router.navigate([`/${location}`], {
+                  queryParams: { gioco: gioco },
+                });
               else this.router.navigate([`/${location || 'home'}`]);
-            }, 1500)
+            }, 1500);
           }
-        }
-      })
-    }
-    else {
-      localStorage.clear()
+        },
+      });
+    } else {
+      localStorage.clear();
     }
     if (mode) {
       this.modeService.updateMode(mode);
     }
     setTimeout(() => {
-      this.webSocketService.listen((message: any) => { });
-    }, 5000)
+      this.webSocketService.listen((message: any) => {});
+    }, 5000);
   }
 
   goUp() {
     window.scroll({
       top: 0,
       left: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }
   @HostListener('window:click', ['$event'])
   onWindowClick(event: any) {
     if (event?.srcElement?.className != 'bi bi-bell h2 text-danger') {
-      this.authService.closeMenuF("close");
+      this.authService.closeMenuF('close');
     }
   }
 }
