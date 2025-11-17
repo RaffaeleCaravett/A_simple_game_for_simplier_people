@@ -1,243 +1,246 @@
-import { InviteState, MoveType, NotificationType } from "../enums/enums"
+import { InviteState, MoveType, NotificationType } from '../enums/enums';
 
 export interface SignupUser {
-    email: string,
-    password: string,
-    citta_id: number,
-    nome: string,
-    cognome: string,
-    immagine_profilo: File
+  email: string;
+  password: string;
+  citta_id: number;
+  nome: string;
+  cognome: string;
+  immagine_profilo: File;
 }
 
 export interface LoginUser {
-    email: string,
-    password: string
+  email: string;
+  password: string;
 }
 
 export interface User {
-    accountNonExpired: boolean
-    accountNonLocked: boolean
-    active: boolean
-    authorities: { authorities: string }[]
-    changePasswordCode: string | null
-    citta: { id: number, nome: string }
-    cognome: string
-    createdAt: string
-    createdAtDate: string | null
-    credentialsNonExpired: boolean
-    deletedAt: string | null
-    email: string
-    enabled: boolean
-    id: number
-    immagineProfilo: string
-    nome: string
-    password: string
-    role: string,
-    username: string
-    fullName: string,
-    preferiti: {
-        id: number,
-        gioco: any[any],
-        isActive: boolean,
-        createdAt: String,
-        createdAtDate: string,
-        modifiedAt: string,
-        deletedAt: string
-    }[],
-    completed: boolean,
-    descrizione: {
-        id: number,
-        textAlignment: string,
-        innerHTML: string
-    },
-    isConnected: boolean,
-    open: boolean,
-    availableUsers: User[],
-    blockeds: User[]
+  accountNonExpired: boolean;
+  accountNonLocked: boolean;
+  active: boolean;
+  authorities: { authorities: string }[];
+  changePasswordCode: string | null;
+  citta: { id: number; nome: string };
+  cognome: string;
+  createdAt: string;
+  createdAtDate: string | null;
+  credentialsNonExpired: boolean;
+  deletedAt: string | null;
+  email: string;
+  enabled: boolean;
+  id: number;
+  immagineProfilo: string;
+  nome: string;
+  password: string;
+  role: string;
+  username: string;
+  fullName: string;
+  preferiti: {
+    id: number;
+    gioco: any[any];
+    isActive: boolean;
+    createdAt: String;
+    createdAtDate: string;
+    modifiedAt: string;
+    deletedAt: string;
+  }[];
+  completed: boolean;
+  descrizione: {
+    id: number;
+    textAlignment: string;
+    innerHTML: string;
+  };
+  isConnected: boolean;
+  open: boolean;
+  availableUsers: User[];
+  blockeds: User[];
 }
 export interface Categoria {
-    id: number,
-    nome: string
+  id: number;
+  nome: string;
 }
 export interface BlockedDTO {
-    utente_id: number
+  utente_id: number;
 }
 export interface TorneoDTO {
-    nome: string,
-    gioco_id: number,
-    dateFrom: string,
-    dateTo: string,
-    stato: string
+  nome: string;
+  gioco_id: number;
+  dateFrom: string;
+  dateTo: string;
+  stato: string;
 }
 export interface Gioco {
-    id: number,
-    nomeGioco: string;
-    difficolta: number;
-    image: string;
-    descrizione: string;
-    recensione: Recensione[];
-    totalRecensioniNumber: number;
-    categorie: Categoria[];
-    active: boolean;
+  id: number;
+  nomeGioco: string;
+  difficolta: number;
+  image: string;
+  descrizione: string;
+  recensione: Recensione[];
+  totalRecensioniNumber: number;
+  categorie: Categoria[];
+  active: boolean;
 }
 
 export interface Recensione {
-    id: number,
-    commento: string,
-    commentoPreview: string,
-    punteggio: number
-    user: User,
-    createdAt: string,
-    modifiedAt: string,
-    deletedAt: string
+  id: number;
+  commento: string;
+  commentoPreview: string;
+  punteggio: number;
+  user: User;
+  createdAt: string;
+  modifiedAt: string;
+  deletedAt: string;
 }
 
 export interface Message {
-    message: string,
-    riceventi: number[],
-    mittente: number,
-    chat: number
-
+  message: string;
+  riceventi: number[];
+  mittente: number;
+  chat: number;
 }
 export interface Chat {
-    id: number,
-    utenti: User[],
-    messaggi: Messaggio[],
-    createdAt: string,
-    title: string,
-    image: string,
-    chatType: string,
-    administrators: User[]
+  id: number;
+  utenti: User[];
+  messaggi: Messaggio[];
+  createdAt: string;
+  title: string;
+  image: string;
+  chatType: string;
+  administrators: User[];
 }
 export interface ChatDTO {
-    userId: number[],
-    title: string | null,
-    chatType: string | null,
-    administrators: number[] | null
+  userId: number[];
+  title: string | null;
+  chatType: string | null;
+  administrators: number[] | null;
 }
 
 export interface Messaggio {
-    id: number,
-    sender: User,
-    state: string,
-    text: string,
-    createdAt: string,
-    settedChatId: number,
-    receivers: number[],
-    readers: number[],
-    messageImages: MessageImage[]
+  id: number;
+  sender: User;
+  state: string;
+  text: string;
+  createdAt: string;
+  settedChatId: number;
+  receivers: number[];
+  readers: number[];
+  messageImages: MessageImage[];
 }
 export interface MessageImage {
-    id: number,
-    name: string,
-    image: string;
+  id: number;
+  name: string;
+  image: string;
 }
 
 export interface Notification {
-    id: number,
-    testo: string,
-    chat: Chat,
-    sender: User,
-    state: string,
-    createdAt: string,
-    notificationType: string,
-    receiverIdOnly: number
+  id: number;
+  testo: string;
+  chat: Chat;
+  sender: User;
+  state: string;
+  createdAt: string;
+  notificationType: string;
+  receiverIdOnly: number;
 }
 
 export interface UserConnection {
-    id: number,
-    connected: boolean
+  id: number;
+  connected: boolean;
 }
 export interface Invito {
-    id: number,
-    createdAt: string,
-    gioco: Gioco,
-    sender: User,
-    inviteState: InviteState
+  id: number;
+  createdAt: string;
+  gioco: Gioco;
+  sender: User;
+  inviteState: InviteState;
 }
 export interface SocketDTO {
-    connectionRequestDTO: ConnectionRequestDTO | null | {},
-    messageDTO: Message | null | {},
-    moveDTO: MoveDTO | null | {},
-    gameConnectionDTO: GameConnectionDTO | null | {},
-    connectionDTO: ConnectionDTO | null | {},
-    invitoDTO: InvitoDTO | null | {},
-    scopaHand: ScopaHand | null | {},
-    gameEnd: GameEnd | null | {}
+  connectionRequestDTO: ConnectionRequestDTO | null | {};
+  messageDTO: Message | null | {};
+  moveDTO: MoveDTO | null | {};
+  gameConnectionDTO: GameConnectionDTO | null | {};
+  connectionDTO: ConnectionDTO | null | {};
+  invitoDTO: InvitoDTO | null | {};
+  scopaHand: ScopaHand | null | {};
+  gameEnd: GameEnd | null | {};
 }
 export interface GameEnd {
-    gameId: number,
-    partitaDoubleId: number,
-    winner: number,
-    punteggio: string
+  gameId: number;
+  partitaDoubleId: number;
+  winner: number;
+  punteggio: string;
 }
 export interface InvitoDTO {
-    giocoId: number,
-    status: string,
-    accepterId: number,
-    torneo: number,
-    senderId: number,
-    invitoId: number,
+  giocoId: number;
+  status: string;
+  accepterId: number;
+  torneo: number;
+  senderId: number;
+  invitoId: number;
 }
 export interface ScopaHand {
-    enemysCards: any[],
-    yourCards: any[],
-    tableCards: any[],
-    enemysCardsTaken: any[],
-    yourCardsTaken: any[],
-    enemysScopas: number,
-    yourScopas: number,
-    enemysPoints: number,
-    yourPoints: number,
-    isItStart: boolean,
-    tourn: string,
-    partitaId: number | null
+  enemysCards: any[];
+  yourCards: any[];
+  tableCards: any[];
+  enemysCardsTaken: any[];
+  yourCardsTaken: any[];
+  enemysScopas: number;
+  yourScopas: number;
+  enemysPoints: number;
+  yourPoints: number;
+  isItStart: boolean;
+  tourn: string;
+  partitaId: number | null;
+}
+export interface ScopaDone {
+  userId: number;
+  partitaDoubleId: number;
 }
 
 export interface ConnectionDTO {
-    userId: number
+  userId: number;
 }
 export interface GameConnectionDTO {
-    giocoId: number,
-    userId: number,
-    connected: boolean
+  giocoId: number;
+  userId: number;
+  connected: boolean;
 }
 export interface MoveDTO {
-    id: number,
-    idDiv: string | null,
-    moveType: MoveType,
-    oppositeUser: number,
-    senderUser: number,
-    invitationId: number | null,
-    partitaId: number | null,
-    senderScore: number | null,
-    oppositeScore: number | null,
-    userTimeoutId: number | null,
-    moverId: number | null
+  id: number;
+  idDiv: string | null;
+  moveType: MoveType;
+  oppositeUser: number;
+  senderUser: number;
+  invitationId: number | null;
+  partitaId: number | null;
+  senderScore: number | null;
+  oppositeScore: number | null;
+  userTimeoutId: number | null;
+  moverId: number | null;
 }
 
 export interface ConnectionRequestDTO {
-    receiverId: number
+  receiverId: number;
 }
 export interface PartitaDouble {
-    id: number,
-    gioco: Gioco,
-    partecipanti: User[],
-    vincitori: User[],
-    invito: any,
-    tournament: any,
-    createdAt: string,
-    createdAtDate: string,
-    isActive: boolean,
-    deletedAt: string,
-    modifiedAt: string,
-    punteggioVincenti: any,
-    punteggioPerdenti: string
+  id: number;
+  gioco: Gioco;
+  partecipanti: User[];
+  vincitori: User[];
+  invito: any;
+  tournament: any;
+  createdAt: string;
+  createdAtDate: string;
+  isActive: boolean;
+  deletedAt: string;
+  modifiedAt: string;
+  punteggioVincenti: any;
+  punteggioPerdenti: string;
 }
 export interface Invito {
-    id: number,
-    createdAt: string
-    gioco: Gioco,
-    sender: User,
-    inviteState: InviteState
+  id: number;
+  createdAt: string;
+  gioco: Gioco;
+  sender: User;
+  inviteState: InviteState;
 }
