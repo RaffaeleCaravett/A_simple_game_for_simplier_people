@@ -1058,6 +1058,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         }
         if (this.partitaDouble) {
           let scopaHand: ScopaHand = this.organizeScopaHand();
+          scopaHand.tourn = this.setPartitaDoubleTourn();
           this.setScopaDatas(scopaHand, true);
         }
         return;
@@ -1132,6 +1133,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               } else {
                 if (!this.userWon && !this.enemyWon) {
                   let cards: ScopaHand = this.organizeScopaHand();
+                  cards.tourn = this.setPartitaDoubleTourn();
                   let socketDTO: SocketDTO = {
                     messageDTO: null,
                     connectionDTO: null,
@@ -1165,6 +1167,9 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     }
+  }
+  setPartitaDoubleTourn(): string {
+    return this.tourn == 'user' ? 'enemy' : 'user';
   }
   isNotSingleCardToBeTaken(card: any): boolean {
     let isGood: boolean = true;
