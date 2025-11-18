@@ -3,7 +3,6 @@ import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogContent,
-  MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { NgForOf, NgIf } from '@angular/common';
@@ -32,7 +31,7 @@ export class ShowScopaPointsComponent implements OnInit {
   detailedEnemysPoints: { nome: string; punti: number }[] = [];
   detailedUserPoints: { nome: string; punti: number }[] = [];
   user: User | null = null;
-  enemy: User | null = null;
+  userSender: User | null = null; //Il sender non è mai il nemico
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private gameField: GamefieldService
@@ -51,12 +50,12 @@ export class ShowScopaPointsComponent implements OnInit {
       this.enemysScopas = this.data[2];
       this.enemysCards = this.data[3];
       this.enemysPoints = this.data[4];
+      this.user = this.data[8];
+      this.userSender = this.data[9];
     }
     this.userScopa = this.data[5];
     this.userCards = this.data[6];
     this.userPoints = this.data[7];
-    this.user = this.data[8];
-    this.enemy = this.data[10];
     this.calculatePoints();
   }
   filterCards(group: string, cards: any[]) {
