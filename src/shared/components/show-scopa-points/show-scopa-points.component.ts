@@ -8,6 +8,7 @@ import {
 } from '@angular/material/dialog';
 import { NgForOf, NgIf } from '@angular/common';
 import { GamefieldService } from '../../../services/gamefield.service';
+import { User } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-show-scopa-points',
@@ -30,6 +31,8 @@ export class ShowScopaPointsComponent implements OnInit {
   detailedComputerPoints: { nome: string; punti: number }[] = [];
   detailedEnemysPoints: { nome: string; punti: number }[] = [];
   detailedUserPoints: { nome: string; punti: number }[] = [];
+  user: User | null = null;
+  enemy: User | null = null;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private gameField: GamefieldService
@@ -52,6 +55,8 @@ export class ShowScopaPointsComponent implements OnInit {
     this.userScopa = this.data[5];
     this.userCards = this.data[6];
     this.userPoints = this.data[7];
+    this.user = this.data[8];
+    this.enemy = this.data[10];
     this.calculatePoints();
   }
   filterCards(group: string, cards: any[]) {
