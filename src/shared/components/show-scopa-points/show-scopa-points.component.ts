@@ -1,6 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
-import { NgForOf, NgIf } from "@angular/common";
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { NgForOf, NgIf } from '@angular/common';
 import { GamefieldService } from '../../../services/gamefield.service';
 
 @Component({
@@ -8,19 +14,26 @@ import { GamefieldService } from '../../../services/gamefield.service';
   standalone: true,
   imports: [MatDialogTitle, MatDialogActions, MatDialogContent, NgForOf, NgIf],
   templateUrl: './show-scopa-points.component.html',
-  styleUrl: './show-scopa-points.component.scss'
+  styleUrl: './show-scopa-points.component.scss',
 })
 export class ShowScopaPointsComponent implements OnInit {
   computerPoints: number = 0;
+  enemysPoints: number = 0;
   userPoints: number = 0;
-  computerCards: any[] = []
+  computerCards: any[] = [];
   computerScopas: number = 0;
+  enemysCards: any[] = [];
+  enemysScopas: number = 0;
   userScopa: number = 0;
   userCards: any[] = [];
   options: boolean = false;
-  detailedComputerPoints: { nome: string, punti: number }[] = []
-  detailedUserPoints: { nome: string, punti: number }[] = []
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private gameField: GamefieldService) { }
+  detailedComputerPoints: { nome: string; punti: number }[] = [];
+  detailedEnemysPoints: { nome: string; punti: number }[] = [];
+  detailedUserPoints: { nome: string; punti: number }[] = [];
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private gameField: GamefieldService
+  ) {}
 
   ngOnInit(): void {
     this.getData();
@@ -32,7 +45,9 @@ export class ShowScopaPointsComponent implements OnInit {
       this.computerCards = this.data[3];
       this.computerPoints = this.data[4];
     } else {
-      console.log("to do ...")
+      this.enemysScopas = this.data[2];
+      this.enemysCards = this.data[3];
+      this.enemysPoints = this.data[4];
     }
     this.userScopa = this.data[5];
     this.userCards = this.data[6];
@@ -40,7 +55,9 @@ export class ShowScopaPointsComponent implements OnInit {
     this.calculatePoints();
   }
   filterCards(group: string, cards: any[]) {
-    return cards.filter(c => c?.group == group).sort((c: any, a: any) => c.value < a.value ? -1 : 1);
+    return cards
+      .filter((c) => c?.group == group)
+      .sort((c: any, a: any) => (c.value < a.value ? -1 : 1));
   }
   calculatePoints() {
     let gold: number = 0;
@@ -57,7 +74,7 @@ export class ShowScopaPointsComponent implements OnInit {
     let cpGoldPoints: number = 0;
     let cpSwordPoints: number = 0;
 
-    this.userCards.forEach(c => {
+    this.userCards.forEach((c) => {
       if (c.group == '🪙') {
         gold += 1;
       }
@@ -75,23 +92,41 @@ export class ShowScopaPointsComponent implements OnInit {
         swordPoints = Math.max(swordPoints, c.primeraValue);
       }
     });
-
-    this.computerCards.forEach(c => {
-      if (c.group == '🪙') {
-        cpGoldPoints = Math.max(cpGoldPoints, c.primeraValue);
-      } else if (c.group == '🫖') {
-        cpCupsPoints = Math.max(cpCupsPoints, c.primeraValue);
-      } else if (c.group == '🪓') {
-        cpStickPoints = Math.max(cpStickPoints, c.primeraValue);
-      } else {
-        cpSwordPoints = Math.max(cpSwordPoints, c.primeraValue);
-      }
-    });
+    if (this.data[1] == 'computer') {
+      this.computerCards.forEach((c) => {
+        if (c.group == '🪙') {
+          cpGoldPoints = Math.max(cpGoldPoints, c.primeraValue);
+        } else if (c.group == '🫖') {
+          cpCupsPoints = Math.max(cpCupsPoints, c.primeraValue);
+        } else if (c.group == '🪓') {
+          cpStickPoints = Math.max(cpStickPoints, c.primeraValue);
+        } else {
+          cpSwordPoints = Math.max(cpSwordPoints, c.primeraValue);
+        }
+      });
+    } else {
+      this.enemysCards.forEach((c) => {
+        if (c.group == '🪙') {
+          cpGoldPoints = Math.max(cpGoldPoints, c.primeraValue);
+        } else if (c.group == '🫖') {
+          cpCupsPoints = Math.max(cpCupsPoints, c.primeraValue);
+        } else if (c.group == '🪓') {
+          cpStickPoints = Math.max(cpStickPoints, c.primeraValue);
+        } else {
+          cpSwordPoints = Math.max(cpSwordPoints, c.primeraValue);
+        }
+      });
+    }
     primeraEnemy = cpGoldPoints + cpSwordPoints + cpCupsPoints + cpStickPoints;
     primeraUser = goldPoints + swordPoints + cupsPoints + stickPoints;
     if (primeraEnemy > primeraUser) {
-      this.detailedComputerPoints.push({ nome: 'primera', punti: 1 });
-      this.computerPoints += 1;
+      if (this.data[1] == 'computer') {
+        this.detailedComputerPoints.push({ nome: 'primera', punti: 1 });
+        this.computerPoints += 1;
+      } else {
+        this.detailedEnemysPoints.push({ nome: 'primera', punti: 1 });
+        this.enemysPoints += 1;
+      }
     } else if (primeraEnemy < primeraUser) {
       this.detailedUserPoints.push({ nome: 'primera', punti: 1 });
       this.userPoints += 1;
@@ -101,33 +136,60 @@ export class ShowScopaPointsComponent implements OnInit {
         this.detailedUserPoints.push({ nome: 'Carta oro', punti: 1 });
         this.userPoints += 1;
       } else {
-        this.detailedComputerPoints.push({ nome: 'Carta oro', punti: 1 });
-        this.computerPoints += 1;
+        if (this.data[1] == 'computer') {
+          this.detailedComputerPoints.push({ nome: 'Carta oro', punti: 1 });
+          this.computerPoints += 1;
+        } else {
+          this.detailedEnemysPoints.push({ nome: 'Carta oro', punti: 1 });
+          this.enemysPoints += 1;
+        }
       }
     }
     if (totalUserCard > 20) {
       this.detailedUserPoints.push({ nome: 'Carta a lungo', punti: 1 });
       this.userPoints += 1;
     } else if (totalUserCard < 20) {
-      this.detailedComputerPoints.push({ nome: 'Carta a lungo', punti: 1 });
-      this.computerPoints += 1;
+      if (this.data[1] == 'computer') {
+        this.detailedComputerPoints.push({ nome: 'Carta a lungo', punti: 1 });
+        this.computerPoints += 1;
+      } else {
+        this.detailedEnemysPoints.push({ nome: 'Carta a lungo', punti: 1 });
+        this.enemysPoints += 1;
+      }
     }
     if (user7Gold) {
       this.detailedUserPoints.push({ nome: 'Sette bello', punti: 1 });
       this.userPoints += 1;
     } else {
-      this.detailedComputerPoints.push({ nome: 'Sette bello', punti: 1 });
-      this.computerPoints += 1;
+      if (this.data[1] == 'computer') {
+        this.detailedComputerPoints.push({ nome: 'Sette bello', punti: 1 });
+        this.computerPoints += 1;
+      } else {
+        this.detailedEnemysPoints.push({ nome: 'Sette bello', punti: 1 });
+        this.enemysPoints += 1;
+      }
     }
     if (this.computerScopas != 0) {
-      this.detailedComputerPoints.push({ nome: 'scopa', punti: this.computerScopas });
+      this.detailedComputerPoints.push({
+        nome: 'scopa',
+        punti: this.computerScopas,
+      });
       this.computerPoints += this.computerScopas;
+    } else if (this.enemysScopas != 0) {
+      this.detailedEnemysPoints.push({
+        nome: 'scopa',
+        punti: this.enemysScopas,
+      });
+      this.enemysPoints += this.enemysScopas;
     }
     if (this.userScopa != 0) {
       this.detailedUserPoints.push({ nome: 'scopa', punti: this.userScopa });
       this.userPoints += this.userScopa;
     }
-    this.gameField.updateScopaPoints({ enemy: this.computerPoints, user: this.userPoints });
+    this.gameField.updateScopaPoints({
+      enemy:
+        this.data[1] == 'computer' ? this.computerPoints : this.enemysPoints,
+      user: this.userPoints,
+    });
   }
-
 }
