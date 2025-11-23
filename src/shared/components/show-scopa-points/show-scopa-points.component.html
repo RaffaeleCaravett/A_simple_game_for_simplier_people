@@ -1,136 +1,248 @@
 <div mat-dialog-title>
-    <div class="row">
-        <div class="col-12">
-            <h1>Riepilogo</h1>
-        </div>
+  <div class="row">
+    <div class="col-12">
+      <h1>Riepilogo</h1>
     </div>
+  </div>
 </div>
 <div mat-dialog-content>
-    <div class="row">
-        <div class="col-12 my-1">
-            <h2>{{data[1] == 'computer'?'Computer':'Avversario'}}</h2>
-        </div>
-        <div class="col-12 w-100 p-2 bg-light" *ngIf="data[1]=='computer'">
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Gold</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🪙', computerCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Cups</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🫖', computerCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Stick</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🪓', computerCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Swords</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🗡️', computerCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 my-1 mt-3">
-            <h2>You</h2>
-        </div>
-        <div class="col-12 w-100 my-1 p-2 bg-light">
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Gold</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🪙', userCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Cups</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🫖', userCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Stick</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🪓', userCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-            <div class="row my-1">
-                <div class="col-12">
-                    <p class="fs-2">Swords</p>
-                </div>
-                <div class="col-2 p-1" *ngFor="let c of filterCards('🗡️', userCards)">
-                    <p class="p-2 border shadow-smw text-center m-1">
-                        {{c.value + " " + c.group}}
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 p-2">
-            <div class="w-100 p-1 shadow-sm">
-                <p class="fs-2 text-center">
-                    Punti {{data[1]=='computer'?'Computer':'Avversario'}}
-                </p>
-                <ul *ngIf="data[1]=='computer'">
-                    <li *ngFor="let p of detailedComputerPoints">
-                        {{p.nome + " - " + p.punti}}
-                    </li>
-                    <li *ngIf="detailedComputerPoints.length ==0">0 punti</li>
-                    <li>Totale : {{computerPoints==1?'1 punto' : computerPoints + " punti"}}</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-6 p-2">
-            <div class="w-100 p-1 shadow-sm">
-                <p class="fs-2 text-center">
-                    Punti tuoi
-                </p>
-                <ul>
-                    <li *ngFor="let p of detailedUserPoints">
-                        {{p.nome + " - " + p.punti}}
-                    </li>
-                    <li *ngIf="detailedUserPoints.length ==0">0 punti</li>
-                    <li>Totale : {{userPoints==1?'1 punto' : userPoints + " punti"}}</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-12" *ngIf="computerPoints>=12 && computerPoints>userPoints">
-            <p class="fs-1">Il computer ha vinto!</p>
-        </div>
-        <div class="col-md-12" *ngIf="userPoints>=12 && userPoints>computerPoints">
-            <p class="fs-1">Tu hai vinto!</p>
-        </div>
+  <div class="row">
+    <div class="col-12 my-1">
+      <h2>{{ data[1] == "computer" ? "Computer" : "Avversario" }}</h2>
     </div>
+    <div
+      class="col-12 w-100 p-2 bg-light"
+      *ngIf="data[1] == 'computer'; else enemy"
+    >
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Gold</p>
+        </div>
+        <div
+          class="col-2 p-1"
+          *ngFor="let c of filterCards('🪙', computerCards)"
+        >
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Cups</p>
+        </div>
+        <div
+          class="col-2 p-1"
+          *ngFor="let c of filterCards('🫖', computerCards)"
+        >
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Stick</p>
+        </div>
+        <div
+          class="col-2 p-1"
+          *ngFor="let c of filterCards('🪓', computerCards)"
+        >
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Swords</p>
+        </div>
+        <div
+          class="col-2 p-1"
+          *ngFor="let c of filterCards('🗡️', computerCards)"
+        >
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <ng-template #enemy>
+      <div class="col-12 w-100 p-2 bg-light">
+        <div class="row my-1">
+          <div class="col-12">
+            <p class="fs-2">Gold</p>
+          </div>
+          <div
+            class="col-2 p-1"
+            *ngFor="let c of filterCards('🪙', enemysCards)"
+          >
+            <p class="p-2 border shadow-smw text-center m-1">
+              {{ c.value + " " + c.group }}
+            </p>
+          </div>
+        </div>
+        <div class="row my-1">
+          <div class="col-12">
+            <p class="fs-2">Cups</p>
+          </div>
+          <div
+            class="col-2 p-1"
+            *ngFor="let c of filterCards('🫖', enemysCards)"
+          >
+            <p class="p-2 border shadow-smw text-center m-1">
+              {{ c.value + " " + c.group }}
+            </p>
+          </div>
+        </div>
+        <div class="row my-1">
+          <div class="col-12">
+            <p class="fs-2">Stick</p>
+          </div>
+          <div
+            class="col-2 p-1"
+            *ngFor="let c of filterCards('🪓', enemysCards)"
+          >
+            <p class="p-2 border shadow-smw text-center m-1">
+              {{ c.value + " " + c.group }}
+            </p>
+          </div>
+        </div>
+        <div class="row my-1">
+          <div class="col-12">
+            <p class="fs-2">Swords</p>
+          </div>
+          <div
+            class="col-2 p-1"
+            *ngFor="let c of filterCards('🗡️', enemysCards)"
+          >
+            <p class="p-2 border shadow-smw text-center m-1">
+              {{ c.value + " " + c.group }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="col-12 my-1 mt-3">
+      <h2>You</h2>
+    </div>
+    <div class="col-12 w-100 my-1 p-2 bg-light">
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Gold</p>
+        </div>
+        <div class="col-2 p-1" *ngFor="let c of filterCards('🪙', userCards)">
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Cups</p>
+        </div>
+        <div class="col-2 p-1" *ngFor="let c of filterCards('🫖', userCards)">
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Stick</p>
+        </div>
+        <div class="col-2 p-1" *ngFor="let c of filterCards('🪓', userCards)">
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-12">
+          <p class="fs-2">Swords</p>
+        </div>
+        <div class="col-2 p-1" *ngFor="let c of filterCards('🗡️', userCards)">
+          <p class="p-2 border shadow-smw text-center m-1">
+            {{ c.value + " " + c.group }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 p-2">
+      <div class="w-100 p-1 shadow-sm">
+        <p class="fs-2 text-center">
+          Punti {{ data[1] == "computer" ? "Computer" : "Avversario" }}
+        </p>
+        <ul *ngIf="data[1] == 'computer'; else enemyPoints">
+          <li *ngFor="let p of detailedComputerPoints">
+            {{ p.nome + " - " + p.punti }}
+          </li>
+          <li *ngIf="detailedComputerPoints.length == 0">0 punti</li>
+          <li>
+            Totale :
+            {{ computerPoints == 1 ? "1 punto" : computerPoints + " punti" }}
+          </li>
+        </ul>
+        <ng-template #enemyPoints>
+          <ul>
+            <li *ngFor="let p of detailedEnemysPoints">
+              {{ p.nome + " - " + p.punti }}
+            </li>
+            <li *ngIf="detailedEnemysPoints.length == 0">0 punti</li>
+            <li>
+              Totale :
+              {{ enemysPoints == 1 ? "1 punto" : enemysPoints + " punti" }}
+            </li>
+          </ul>
+        </ng-template>
+      </div>
+    </div>
+    <div class="col-md-6 p-2">
+      <div class="w-100 p-1 shadow-sm">
+        <p class="fs-2 text-center">Punti tuoi</p>
+        <ul>
+          <li *ngFor="let p of detailedUserPoints">
+            {{ p.nome + " - " + p.punti }}
+          </li>
+          <li *ngIf="detailedUserPoints.length == 0">0 punti</li>
+          <li>
+            Totale : {{ userPoints == 1 ? "1 punto" : userPoints + " punti" }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="col-md-12"
+      *ngIf="computerPoints >= 12 && computerPoints > userPoints"
+    >
+      <p class="fs-1">Il computer ha vinto!</p>
+    </div>
+    <div
+      class="col-md-12"
+      *ngIf="enemysPoints >= 12 && enemysPoints > userPoints"
+    >
+      <p class="fs-1">L'avversario ha vinto!</p>
+    </div>
+    <div
+      class="col-md-12"
+      *ngIf="
+        userPoints >= 12 &&
+        userPoints > computerPoints &&
+        this.data[1] != 'computer'
+      "
+    >
+      <p class="fs-1">Tu hai vinto!</p>
+    </div>
+    <div
+      class="col-md-12"
+      *ngIf="
+        userPoints >= 12 &&
+        userPoints > enemysPoints &&
+        this.data[1] != 'computer'
+      "
+    >
+      <p class="fs-1">Tu hai vinto!</p>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions></div>
