@@ -189,6 +189,7 @@ export interface ScopaHand {
   yourScopas: number;
   enemysPoints: number;
   yourPoints: number;
+  allCards: any[];
   isItStart: boolean;
   tourn: string;
   partitaId: number | null;

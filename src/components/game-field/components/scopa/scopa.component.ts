@@ -33,7 +33,6 @@ import {
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { WebsocketService } from '../../../../services/websocket.service';
-import { ActivatedRoute } from '@angular/router';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -125,56 +124,58 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
           this.enemyWon = true;
           this.liveGameCounter = 3;
           this.partitaDoubleHasStarted = false;
-          this.gameField
-            .putPartitaDouble(this.partitaDouble.id, {
-              gioco: this.partitaDouble.gioco.id,
-              invito: this.partitaDouble.invito.id,
-              partecipanti: this.partitaDouble.partecipanti.map((c) => c.id),
-              torneo: this.partitaDouble?.tournament?.id || null,
-              punteggioVincenti: this.enemyWon
-                ? this.enemysPoints
-                : this.yourPoints,
-              punteggioPerdenti: this.enemyWon
-                ? this.yourPoints
-                : this.enemysPoints,
-              vincitori: this.enemyWon
-                ? this.partitaDouble.partecipanti
-                    .map((u) => u.id)
-                    .filter(
-                      (id) => id != this.partitaDouble?.invito?.sender?.id
-                    )[0]
-                : this.partitaDouble?.invito?.sender?.id,
-            })
-            .subscribe({
-              next: (data: any) => {
-                this.cleanDatas();
-                this.partitaDouble = data;
-                let gameEnd: GameEnd = {
-                  gameId: this.game,
-                  partitaDoubleId: this.partitaDouble!.id,
-                  winner:
-                    this.user!.id != this.partitaDouble?.invito?.sender?.id
-                      ? this.user!.id
-                      : this.partitaDouble?.invito?.sender?.id,
-                  punteggio:
-                    this.partitaDouble?.punteggioVincenti?.punteggio +
-                    ' a ' +
-                    this.partitaDouble?.punteggioPerdenti,
-                };
-                let socketDTO: SocketDTO = {
-                  connectionRequestDTO: null,
-                  messageDTO: null,
-                  moveDTO: null,
-                  gameConnectionDTO: null,
-                  connectionDTO: null,
-                  invitoDTO: null,
-                  scopaHand: null,
-                  gameEnd: gameEnd,
-                  scopaDone: null,
-                };
-                this.ws.send(socketDTO);
-              },
-            });
+          if (this.user!.id == this.partitaDouble?.invito?.sender?.id) {
+            this.gameField
+              .putPartitaDouble(this.partitaDouble.id, {
+                gioco: this.partitaDouble.gioco.id,
+                invito: this.partitaDouble.invito.id,
+                partecipanti: this.partitaDouble.partecipanti.map((c) => c.id),
+                torneo: this.partitaDouble?.tournament?.id || null,
+                punteggioVincenti: this.enemyWon
+                  ? this.enemysPoints
+                  : this.yourPoints,
+                punteggioPerdenti: this.enemyWon
+                  ? this.yourPoints
+                  : this.enemysPoints,
+                vincitori: this.enemyWon
+                  ? this.partitaDouble.partecipanti
+                      .map((u) => u.id)
+                      .filter(
+                        (id) => id != this.partitaDouble?.invito?.sender?.id
+                      )[0]
+                  : this.partitaDouble?.invito?.sender?.id,
+              })
+              .subscribe({
+                next: (data: any) => {
+                  this.cleanDatas();
+                  this.partitaDouble = data;
+                  let gameEnd: GameEnd = {
+                    gameId: this.game,
+                    partitaDoubleId: this.partitaDouble!.id,
+                    winner:
+                      this.user!.id != this.partitaDouble?.invito?.sender?.id
+                        ? this.user!.id
+                        : this.partitaDouble?.invito?.sender?.id,
+                    punteggio:
+                      this.partitaDouble?.punteggioVincenti?.punteggio +
+                      ' a ' +
+                      this.partitaDouble?.punteggioPerdenti,
+                  };
+                  let socketDTO: SocketDTO = {
+                    connectionRequestDTO: null,
+                    messageDTO: null,
+                    moveDTO: null,
+                    gameConnectionDTO: null,
+                    connectionDTO: null,
+                    invitoDTO: null,
+                    scopaHand: null,
+                    gameEnd: gameEnd,
+                    scopaDone: null,
+                  };
+                  this.ws.send(socketDTO);
+                },
+              });
+          }
         }
       } else if (data.you >= 12 && data.you > data.enemy) {
         this.userWon = true;
@@ -184,56 +185,58 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           this.liveGameCounter = 3;
           this.partitaDoubleHasStarted = false;
-          this.gameField
-            .putPartitaDouble(this.partitaDouble.id, {
-              gioco: this.partitaDouble.gioco.id,
-              invito: this.partitaDouble.invito.id,
-              partecipanti: this.partitaDouble.partecipanti.map((c) => c.id),
-              torneo: this.partitaDouble?.tournament?.id || null,
-              punteggioVincenti: this.enemyWon
-                ? this.enemysPoints
-                : this.yourPoints,
-              punteggioPerdenti: this.enemyWon
-                ? this.yourPoints
-                : this.enemysPoints,
-              vincitori: this.enemyWon
-                ? this.partitaDouble.partecipanti
-                    .map((u) => u.id)
-                    .filter(
-                      (id) => id != this.partitaDouble?.invito?.sender?.id
-                    )[0]
-                : this.partitaDouble?.invito?.sender?.id,
-            })
-            .subscribe({
-              next: (data: any) => {
-                this.cleanDatas();
-                this.partitaDouble = data;
-                let gameEnd: GameEnd = {
-                  gameId: this.game,
-                  partitaDoubleId: this.partitaDouble!.id,
-                  winner:
-                    this.user!.id == this.partitaDouble?.invito?.sender?.id
-                      ? this.user!.id
-                      : this.partitaDouble?.invito?.sender?.id,
-                  punteggio:
-                    this.partitaDouble?.punteggioVincenti?.punteggio +
-                    ' a ' +
-                    this.partitaDouble?.punteggioPerdenti,
-                };
-                let socketDTO: SocketDTO = {
-                  connectionRequestDTO: null,
-                  messageDTO: null,
-                  moveDTO: null,
-                  gameConnectionDTO: null,
-                  connectionDTO: null,
-                  invitoDTO: null,
-                  scopaHand: null,
-                  gameEnd: gameEnd,
-                  scopaDone: null,
-                };
-                this.ws.send(socketDTO);
-              },
-            });
+          if (this.user!.id == this.partitaDouble?.invito?.sender?.id) {
+            this.gameField
+              .putPartitaDouble(this.partitaDouble.id, {
+                gioco: this.partitaDouble.gioco.id,
+                invito: this.partitaDouble.invito.id,
+                partecipanti: this.partitaDouble.partecipanti.map((c) => c.id),
+                torneo: this.partitaDouble?.tournament?.id || null,
+                punteggioVincenti: this.enemyWon
+                  ? this.enemysPoints
+                  : this.yourPoints,
+                punteggioPerdenti: this.enemyWon
+                  ? this.yourPoints
+                  : this.enemysPoints,
+                vincitori: this.enemyWon
+                  ? this.partitaDouble.partecipanti
+                      .map((u) => u.id)
+                      .filter(
+                        (id) => id != this.partitaDouble?.invito?.sender?.id
+                      )[0]
+                  : this.partitaDouble?.invito?.sender?.id,
+              })
+              .subscribe({
+                next: (data: any) => {
+                  this.cleanDatas();
+                  this.partitaDouble = data;
+                  let gameEnd: GameEnd = {
+                    gameId: this.game,
+                    partitaDoubleId: this.partitaDouble!.id,
+                    winner:
+                      this.user!.id == this.partitaDouble?.invito?.sender?.id
+                        ? this.user!.id
+                        : this.partitaDouble?.invito?.sender?.id,
+                    punteggio:
+                      this.partitaDouble?.punteggioVincenti?.punteggio +
+                      ' a ' +
+                      this.partitaDouble?.punteggioPerdenti,
+                  };
+                  let socketDTO: SocketDTO = {
+                    connectionRequestDTO: null,
+                    messageDTO: null,
+                    moveDTO: null,
+                    gameConnectionDTO: null,
+                    connectionDTO: null,
+                    invitoDTO: null,
+                    scopaHand: null,
+                    gameEnd: gameEnd,
+                    scopaDone: null,
+                  };
+                  this.ws.send(socketDTO);
+                },
+              });
+          }
         }
       }
     });
@@ -356,6 +359,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 gameEnd: null,
                 scopaDone: null,
               };
+
               this.ws.send(socketDTO);
             } else {
               let randomCard = Math.floor(
@@ -491,6 +495,59 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
+    this.ws.scopaDoneBehaviorSubject.subscribe((data: ScopaDone | null) => {
+      if (data && data?.partitaDoubleId == this.partitaDouble?.id) {
+        if (data?.userId == this.user!.id) {
+          this.showYourScopa = true;
+        }
+        if (
+          data?.userId != this.user!.id &&
+          this.partitaDouble?.partecipanti
+            ?.map((p: User) => p.id)
+            .includes(this.user!.id)
+        ) {
+          this.showEnemysScopa = true;
+        }
+        setTimeout(() => {
+          if (this.user!.id == this.partitaDouble?.invito.sender?.id) {
+            let cards: ScopaHand = this.organizeScopaHand();
+            cards.tourn = this.setPartitaDoubleTourn();
+            if (data?.userId == this.user!.id) {
+              for (let c of cards.yourCards) {
+                cards.yourCardsTaken.push(c);
+              }
+              for (let c of cards.tableCards) {
+                cards.yourCardsTaken.push(c);
+              }
+              cards.yourCards = [];
+            } else {
+              for (let c of cards.enemysCards) {
+                cards.enemysCardsTaken.push(c);
+              }
+              for (let c of cards.tableCards) {
+                cards.enemysCardsTaken.push(c);
+              }
+              cards.enemysCards = [];
+            }
+            cards.tableCards = [];
+            let socketDTO: SocketDTO = {
+              messageDTO: null,
+              connectionDTO: null,
+              gameConnectionDTO: null,
+              moveDTO: null,
+              connectionRequestDTO: null,
+              invitoDTO: null,
+              scopaHand: cards,
+              gameEnd: null,
+              scopaDone: null,
+            };
+            this.showEnemysScopa = false;
+            this.showYourScopa = false;
+            this.ws.send(socketDTO);
+          }
+        }, 3000);
+      }
+    });
   }
   playAgain() {
     this.partitaDouble = null;
@@ -513,24 +570,31 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     this.tableCards = data.tableCards;
     this.partitaDoubleHasStarted = true;
     this.tourn = data.tourn;
+    this.allCards = data.allCards;
     if (isNew) {
       this.toastr.success('Partita iniziata');
     }
-    // if (this.user!.id == this.partitaDouble?.invito?.sender?.id && isNew) {
-    //   let scopaHand: ScopaHand = this.startLiveGame(data);
-    //   let socketDTO: SocketDTO = {
-    //     messageDTO: null,
-    //     connectionDTO: null,
-    //     gameConnectionDTO: null,
-    //     moveDTO: null,
-    //     connectionRequestDTO: null,
-    //     invitoDTO: null,
-    //     scopaHand: scopaHand,
-    //     gameEnd: null,
-    //scopaDone: null,
-    //   };
-    //   this.ws.send(socketDTO);
-    // }
+    if (
+      this.allCards.length == 0 &&
+      this.yourCards.length == 0 &&
+      this.enemysCards.length == 0 &&
+      this.yourPoints < 12 &&
+      this.enemysPoints < 12
+    ) {
+      let scopaHand: ScopaHand = this.startLiveGame();
+      let socketDTO: SocketDTO = {
+        messageDTO: null,
+        connectionDTO: null,
+        gameConnectionDTO: null,
+        moveDTO: null,
+        connectionRequestDTO: null,
+        invitoDTO: null,
+        scopaHand: scopaHand,
+        gameEnd: null,
+        scopaDone: null,
+      };
+      this.ws.send(socketDTO);
+    }
   }
   liveGameCounterStarts(data: ScopaHand) {
     const interval = setInterval(() => {
@@ -612,6 +676,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       yourScopas: this.yourScopas,
       enemysPoints: this.enemysPoints,
       yourPoints: this.yourPoints,
+      allCards: this.allCards,
       isItStart: !this.partitaDoubleHasStarted,
       tourn: this.tourn,
       partitaId: this.partitaDouble?.id || null,
@@ -1040,6 +1105,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
   chooseCard(card: any) {
+    let scopaDone: boolean = false;
     if (
       (this.release && !this.partitaDouble) ||
       (this.release &&
@@ -1078,7 +1144,18 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         if (this.partitaDouble) {
           let scopaHand: ScopaHand = this.organizeScopaHand();
           scopaHand.tourn = this.setPartitaDoubleTourn();
-          this.setScopaDatas(scopaHand);
+          let socketDTO: SocketDTO = {
+            messageDTO: null,
+            connectionDTO: null,
+            gameConnectionDTO: null,
+            moveDTO: null,
+            connectionRequestDTO: null,
+            invitoDTO: null,
+            scopaHand: scopaHand,
+            gameEnd: null,
+            scopaDone: null,
+          };
+          this.ws.send(socketDTO);
         }
         return;
       } else {
@@ -1130,10 +1207,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             if (this.tableCards.length == 0) {
               if (this.tourn == 'user') {
                 this.yourScopas += 1;
-                this.showYourScopa = true;
+                scopaDone = true;
               } else {
                 this.enemysScopas += 1;
-                this.showEnemysScopa = true;
+                scopaDone = true;
               }
               if (this.partitaDouble) {
                 let scopa: ScopaDone = {
@@ -1156,11 +1233,8 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             }
             setTimeout(
               () => {
-                if (this.showYourScopa) {
+                if (this.showYourScopa && !this.partitaDouble) {
                   this.showYourScopa = false;
-                }
-                if (this.showEnemysScopa) {
-                  this.showEnemysScopa = false;
                 }
                 this.selectedCard = [];
                 this.setLastMove();
@@ -1176,7 +1250,13 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                     this.calculateComputerMove();
                   }
                 } else {
-                  if (!this.userWon && !this.enemyWon) {
+                  if (!this.userWon && !this.enemyWon && !scopaDone) {
+                    if (
+                      this.enemysCards.length == 0 &&
+                      this.yourCards.length == 0
+                    ) {
+                      this.giveCards();
+                    }
                     let cards: ScopaHand = this.organizeScopaHand();
                     cards.tourn = this.setPartitaDoubleTourn();
                     let socketDTO: SocketDTO = {
@@ -1238,32 +1318,92 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     return isGood;
   }
   checkForPoints(): boolean {
-    for (let c = 0; c <= this.yourCards.length - 1; c++) {
-      if (this.checkForScopa(this.yourCards[c])) {
-        return true;
-      }
-    }
-    for (let c = 0; c <= this.yourCards.length - 1; c++) {
-      for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
-        if (this.yourCards[c].value == this.tableCards[tc].value) {
+    if (!this.partitaDouble) {
+      for (let c = 0; c <= this.yourCards.length - 1; c++) {
+        if (this.checkForScopa(this.yourCards[c])) {
           return true;
         }
       }
-    }
-    for (let c = 0; c <= this.yourCards.length - 1; c++) {
-      for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
-        for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
-          if (
-            this.yourCards[c].value ==
-              this.tableCards[tc].value + this.tableCards[itc].value &&
-            this.tableCards[tc] != this.tableCards[itc]
-          ) {
+      for (let c = 0; c <= this.yourCards.length - 1; c++) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          if (this.yourCards[c].value == this.tableCards[tc].value) {
             return true;
           }
         }
       }
+      for (let c = 0; c <= this.yourCards.length - 1; c++) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
+            if (
+              this.yourCards[c].value ==
+                this.tableCards[tc].value + this.tableCards[itc].value &&
+              this.tableCards[tc] != this.tableCards[itc]
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    } else if (
+      this.partitaDouble &&
+      this.tourn == 'user' &&
+      this.user?.id == this.partitaDouble?.invito.sender?.id
+    ) {
+      for (let c = 0; c <= this.yourCards.length - 1; c++) {
+        if (this.checkForScopa(this.yourCards[c])) {
+          return true;
+        }
+      }
+      for (let c = 0; c <= this.yourCards.length - 1; c++) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          if (this.yourCards[c].value == this.tableCards[tc].value) {
+            return true;
+          }
+        }
+      }
+      for (let c = 0; c <= this.yourCards.length - 1; c++) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
+            if (
+              this.yourCards[c].value ==
+                this.tableCards[tc].value + this.tableCards[itc].value &&
+              this.tableCards[tc] != this.tableCards[itc]
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    } else {
+      for (let c = 0; c <= this.enemysCards.length - 1; c++) {
+        if (this.checkForScopa(this.enemysCards[c])) {
+          return true;
+        }
+      }
+      for (let c = 0; c <= this.enemysCards.length - 1; c++) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          if (this.enemysCards[c].value == this.tableCards[tc].value) {
+            return true;
+          }
+        }
+      }
+      for (let c = 0; c <= this.enemysCards.length - 1; c++) {
+        for (let tc = 0; tc <= this.tableCards.length - 1; tc++) {
+          for (let itc = this.tableCards.length - (tc + 1); itc >= 1; itc--) {
+            if (
+              this.enemysCards[c].value ==
+                this.tableCards[tc].value + this.tableCards[itc].value &&
+              this.tableCards[tc] != this.tableCards[itc]
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
     }
-    return false;
   }
   cleanYourHand(card: any) {
     if (this.tourn == 'user') {

@@ -1,11 +1,11 @@
 <div class="row text-center position-relative">
   <div
     class="position-absolute start-25 top-50 bg-light shadow-sm bg-gradient p-4"
-    *ngIf="showComputerScopa"
+    *ngIf="showComputerScopa || showEnemysScopa"
     style="font-size: 3rem"
     [style.width]="windowWidth"
   >
-    COMPUTER SCOPA!
+    {{ showComputerScopa ? "COMPUTER SCOPA!" : "ENEMY'S SCOPA!" }}
   </div>
   <div
     class="position-absolute start-25 top-50 bg-light shadow-sm bg-gradient p-4"
