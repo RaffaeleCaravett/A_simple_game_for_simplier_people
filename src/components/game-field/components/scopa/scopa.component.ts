@@ -520,9 +520,13 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               for (let c of cards.tableCards) {
                 cards.yourCardsTaken.push(c);
               }
-              cards.yourCards = cards.yourCards.filter(
-                (c) => c != data.scopaCard
-              );
+              cards.yourCards = cards.yourCards.filter((c) => {
+                return (
+                  c.value != data.scopaCard.value &&
+                  c.group != data.scopaCard.group &&
+                  c.primeraValue != data.scopaCard.primeraValue
+                );
+              });
               if (!this.yourCardsTaken.includes(data.scopaCard)) {
                 this.yourCardsTaken.push(data.scopaCard);
               }
@@ -530,9 +534,13 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               for (let c of cards.tableCards) {
                 cards.enemysCardsTaken.push(c);
               }
-              cards.enemysCards = cards.enemysCards.filter(
-                (c) => c != data.scopaCard
-              );
+              cards.enemysCards = cards.enemysCards.filter((c) => {
+                return (
+                  c.value != data.scopaCard.value &&
+                  c.group != data.scopaCard.group &&
+                  c.primeraValue != data.scopaCard.primeraValue
+                );
+              });
               if (!this.enemysCardsTaken.includes(data.scopaCard)) {
                 this.enemysCardsTaken.push(data.scopaCard);
               }
