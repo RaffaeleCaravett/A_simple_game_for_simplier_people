@@ -247,10 +247,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       if (data && data.partitaId == this.partitaDouble?.id) {
         if (data && data.isItStart == true) {
           this.liveGameCounterStarts(data);
-        } else if (data && !data.isItStart) {
-          this.setScopaDatas(data);
         } else if (data && data.isPoint) {
           this.openPointsDialog(this.modalitaForm.controls['mode'].value);
+        } else if (data && !data.isItStart) {
+          this.setScopaDatas(data);
         }
         this.liveTimer = setInterval(() => {
           this.liveTimerTime--;
