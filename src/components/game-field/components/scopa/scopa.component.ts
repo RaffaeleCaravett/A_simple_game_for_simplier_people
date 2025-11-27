@@ -1281,6 +1281,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 let scopa: ScopaDone = {
                   userId: this.user!.id,
                   partitaDoubleId: this.partitaDouble!.id,
+                  scopaCard: card,
                 };
                 let socketDTO: SocketDTO = {
                   messageDTO: null,

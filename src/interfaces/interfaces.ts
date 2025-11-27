@@ -198,6 +198,7 @@ export interface ScopaHand {
 export interface ScopaDone {
   userId: number;
   partitaDoubleId: number;
+  scopaCard: { value: string; group: string; primeraValue: string };
 }
 
 export interface ConnectionDTO {
