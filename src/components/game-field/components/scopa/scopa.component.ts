@@ -523,7 +523,6 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               for (let c of cards.tableCards) {
                 cards.yourCardsTaken.push(c);
               }
-              cards.yourCards = [];
             } else {
               for (let c of cards.enemysCards) {
                 cards.enemysCardsTaken.push(c);
@@ -531,7 +530,6 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               for (let c of cards.tableCards) {
                 cards.enemysCardsTaken.push(c);
               }
-              cards.enemysCards = [];
             }
             cards.tableCards = [];
             let socketDTO: SocketDTO = {
@@ -545,10 +543,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               gameEnd: null,
               scopaDone: null,
             };
-            this.showEnemysScopa = false;
-            this.showYourScopa = false;
             this.ws.send(socketDTO);
           }
+          this.showEnemysScopa = false;
+          this.showYourScopa = false;
         }, 3000);
       }
     });
