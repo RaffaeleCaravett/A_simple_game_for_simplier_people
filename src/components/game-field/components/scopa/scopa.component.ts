@@ -517,18 +517,24 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             let cards: ScopaHand = this.organizeScopaHand();
             cards.tourn = this.setPartitaDoubleTourn();
             if (data?.userId == this.user!.id) {
-              for (let c of cards.yourCards) {
-                cards.yourCardsTaken.push(c);
-              }
               for (let c of cards.tableCards) {
                 cards.yourCardsTaken.push(c);
+              }
+              cards.yourCards = cards.yourCards.filter(
+                (c) => c != data.scopaCard
+              );
+              if (!this.yourCardsTaken.includes(data.scopaCard)) {
+                this.yourCardsTaken.push(data.scopaCard);
               }
             } else {
-              for (let c of cards.enemysCards) {
-                cards.enemysCardsTaken.push(c);
-              }
               for (let c of cards.tableCards) {
                 cards.enemysCardsTaken.push(c);
+              }
+              cards.enemysCards = cards.enemysCards.filter(
+                (c) => c != data.scopaCard
+              );
+              if (!this.enemysCardsTaken.includes(data.scopaCard)) {
+                this.enemysCardsTaken.push(data.scopaCard);
               }
             }
             cards.tableCards = [];
