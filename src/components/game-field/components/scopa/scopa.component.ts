@@ -15,7 +15,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogState } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToastrService } from 'ngx-toastr';
 import { ShowScopaPointsComponent } from '../../../../shared/components/show-scopa-points/show-scopa-points.component';
@@ -113,7 +113,9 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     private ws: WebsocketService
   ) {
     this.gameField.points.subscribe((data: any) => {
-      this.computerPoints = data.enemy;
+      this.partitaDouble
+        ? (this.computerPoints = data.enemy)
+        : (this.enemysPoints = data.enemy);
       this.yourPoints = data.you;
       if (data.enemy >= 12 && data.enemy > data.you) {
         if (!this.partitaDouble) {
@@ -245,8 +247,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       if (data && data.partitaId == this.partitaDouble?.id) {
         if (data && data.isItStart == true) {
           this.liveGameCounterStarts(data);
-        } else {
+        } else if (data && !data.isItStart) {
           this.setScopaDatas(data);
+        } else if (data && data.isPoint) {
+          this.openPointsDialog(this.modalitaForm.controls['mode'].value);
         }
         this.liveTimer = setInterval(() => {
           this.liveTimerTime--;
@@ -665,7 +669,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     return scopaHand;
   }
 
-  organizeScopaHand(): ScopaHand {
+  organizeScopaHand(isPoint?: boolean): ScopaHand {
     let scopaHand: ScopaHand = {
       enemysCards: this.enemysCards,
       yourCards: this.yourCards,
@@ -680,6 +684,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       isItStart: !this.partitaDoubleHasStarted,
       tourn: this.tourn,
       partitaId: this.partitaDouble?.id || null,
+      isPoint: isPoint || false,
     };
     return scopaHand;
   }
@@ -811,7 +816,23 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.tableCards = [];
       this.tourn = '';
-      this.openPointsDialog(this.modalitaForm.controls['modalita'].value);
+      if (this.partitaDouble) {
+        let scopaHand: ScopaHand = this.organizeScopaHand(true);
+        let socketDTO: SocketDTO = {
+          messageDTO: null,
+          connectionDTO: null,
+          gameConnectionDTO: null,
+          moveDTO: null,
+          connectionRequestDTO: null,
+          invitoDTO: null,
+          scopaHand: scopaHand,
+          gameEnd: null,
+          scopaDone: null,
+        };
+        this.ws.send(socketDTO);
+      } else {
+        this.openPointsDialog(this.modalitaForm.controls['modalita'].value);
+      }
     }
   }
   calculatePoints() {
@@ -858,51 +879,97 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             : this.enemysCardsTaken,
           this.modalitaForm.controls['modalita'].value == 'computer'
             ? this.computerPoints
-            : 0,
+            : this.enemysPoints,
           this.yourScopas,
           this.yourCardsTaken,
           this.yourPoints,
+          this.user?.id == this.partitaDouble?.invito?.sender?.id
+            ? this.user
+            : this.partitaDouble?.partecipanti.filter(
+                (u: User) => u.id != this.user!.id
+              )[0] || null,
+          this.partitaDouble?.partecipanti.filter(
+            (u: User) => u.id != this.partitaDouble?.invito?.sender?.id
+          )[0] || null,
         ],
       });
-
-      dialogRef.afterClosed().subscribe((data: any) => {
-        this.dialogRef = null;
-        if (this.computerWon || this.userWon || this.enemyWon) {
-          this.toastr.show(
-            this.computerWon || this.enemyWon
-              ? "L'avversario ha vinto!"
-              : 'Hai vinto!'
-          );
-          if (!this.partitaDouble) {
-            this.gameField
-              .putPartita(this.partita.id, {
-                userId: this.user!.id,
-                giocoId: this.game,
-                esito: this.computerWon ? 'PERSA' : 'VINTA',
-                punteggio: this.computerWon ? 0 : this.yourPoints,
-              })
-              .subscribe({
-                next: (data: any) => {
-                  this.getPartite();
-                },
-              });
+      if (this.partitaDouble) {
+        //Non c'è bisogno di impostare i punti qui, perchè vengono impostati al subscribe dei punti stessi dopo che vienge chiuso il dialog.
+        setTimeout(() => {
+          if (dialogRef.getState() === MatDialogState.OPEN) dialogRef.close();
+          if (this.user!.id == this.partitaDouble?.invito?.sender?.id) {
+            dialogRef.afterClosed().subscribe((data: any) => {
+              this.dialogRef = null;
+              if (this.computerWon || this.userWon || this.enemyWon) {
+                this.toastr.show(
+                  this.computerWon || this.enemyWon
+                    ? "L'avversario ha vinto!"
+                    : 'Hai vinto!'
+                );
+                this.cleanDatas();
+              } else {
+                this.round += 1;
+                this.enemysCardsTaken = [];
+                this.yourCardsTaken = [];
+                this.yourScopas = 0;
+                this.enemysScopas = 0;
+                let scopaHand: ScopaHand = this.startLiveGame();
+                let socketDTO: SocketDTO = {
+                  messageDTO: null,
+                  connectionDTO: null,
+                  gameConnectionDTO: null,
+                  moveDTO: null,
+                  connectionRequestDTO: null,
+                  invitoDTO: null,
+                  scopaHand: scopaHand,
+                  gameEnd: null,
+                  scopaDone: null,
+                };
+                this.ws.send(socketDTO);
+              }
+            });
           }
-          this.cleanDatas();
-        } else {
-          this.round += 1;
-          this.computerCardsTaken = [];
-          this.enemysCardsTaken = [];
-          this.yourCardsTaken = [];
-          this.computerScopas = 0;
-          this.yourScopas = 0;
-          this.enemysScopas = 0;
-          if (!this.partitaDouble) {
-            this.startComputerGame();
+        }, 150000);
+      } else {
+        dialogRef.afterClosed().subscribe((data: any) => {
+          this.dialogRef = null;
+          if (this.computerWon || this.userWon || this.enemyWon) {
+            this.toastr.show(
+              this.computerWon || this.enemyWon
+                ? "L'avversario ha vinto!"
+                : 'Hai vinto!'
+            );
+            if (!this.partitaDouble) {
+              this.gameField
+                .putPartita(this.partita.id, {
+                  userId: this.user!.id,
+                  giocoId: this.game,
+                  esito: this.computerWon ? 'PERSA' : 'VINTA',
+                  punteggio: this.computerWon ? 0 : this.yourPoints,
+                })
+                .subscribe({
+                  next: (data: any) => {
+                    this.getPartite();
+                  },
+                });
+            }
+            this.cleanDatas();
           } else {
-            this.startLiveGame();
+            this.round += 1;
+            this.computerCardsTaken = [];
+            this.enemysCardsTaken = [];
+            this.yourCardsTaken = [];
+            this.computerScopas = 0;
+            this.yourScopas = 0;
+            this.enemysScopas = 0;
+            if (!this.partitaDouble) {
+              this.startComputerGame();
+            } else {
+              this.startLiveGame();
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
   getTournUserName(): string {
