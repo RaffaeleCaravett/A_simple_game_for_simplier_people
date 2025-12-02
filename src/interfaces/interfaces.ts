@@ -193,6 +193,7 @@ export interface ScopaHand {
   isItStart: boolean;
   tourn: string;
   partitaId: number | null;
+  isPoint?: boolean | null;
 }
 export interface ScopaDone {
   userId: number;
