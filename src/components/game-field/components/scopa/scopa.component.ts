@@ -999,8 +999,12 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         (this.tourn == 'enemy' &&
           this.user!.id != this.partitaDouble.invito.sender.id)
       ) {
-        this.release = !this.release;
-        this.selectedCard = [];
+        if (!this.showYourScopa && !this.showEnemysScopa) {
+          this.release = !this.release;
+          this.selectedCard = [];
+        } else {
+          this.toastr.error('Aspetta il tuo turno.');
+        }
       } else {
         this.toastr.error('Aspetta il tuo turno.');
       }
