@@ -32,6 +32,7 @@ export class ShowScopaPointsComponent implements OnInit {
   detailedUserPoints: { nome: string; punti: number }[] = [];
   user: User | null = null;
   userSender: User | null = null; //Il sender non è mai il nemico
+  userEnemy: User | null = null; //Nemico assicurato
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private gameField: GamefieldService
