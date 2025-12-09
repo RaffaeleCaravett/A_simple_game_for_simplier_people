@@ -52,7 +52,8 @@ export class ShowScopaPointsComponent implements OnInit {
       this.enemysCards = this.data[3];
       this.enemysPoints = this.data[4];
       this.user = this.data[8];
-      this.userSender = this.data[9];
+      this.userSender = this.data[8];
+      this.userEnemy = this.data[9];
     }
     this.userScopa = this.data[5];
     this.userCards = this.data[6];

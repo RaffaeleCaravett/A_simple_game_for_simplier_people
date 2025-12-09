@@ -153,30 +153,32 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 next: (data: any) => {
                   this.cleanDatas();
                   this.partitaDouble = data;
-                  let gameEnd: GameEnd = {
-                    gameId: this.game,
-                    partitaDoubleId: this.partitaDouble!.id,
-                    winner:
-                      this.user!.id != this.partitaDouble?.invito?.sender?.id
-                        ? this.user!.id
-                        : this.partitaDouble?.invito?.sender?.id,
-                    punteggio:
-                      this.partitaDouble?.punteggioVincenti?.punteggio +
-                      ' a ' +
-                      this.partitaDouble?.punteggioPerdenti,
-                  };
-                  let socketDTO: SocketDTO = {
-                    connectionRequestDTO: null,
-                    messageDTO: null,
-                    moveDTO: null,
-                    gameConnectionDTO: null,
-                    connectionDTO: null,
-                    invitoDTO: null,
-                    scopaHand: null,
-                    gameEnd: gameEnd,
-                    scopaDone: null,
-                  };
-                  this.ws.send(socketDTO);
+                  if (this.user!.id == this.partitaDouble?.invito.sender.id) {
+                    let gameEnd: GameEnd = {
+                      gameId: this.game,
+                      partitaDoubleId: this.partitaDouble!.id,
+                      winner:
+                        this.user!.id != this.partitaDouble?.invito?.sender?.id
+                          ? this.user!.id
+                          : this.partitaDouble?.invito?.sender?.id,
+                      punteggio:
+                        this.partitaDouble?.punteggioVincenti?.punteggio +
+                        ' a ' +
+                        this.partitaDouble?.punteggioPerdenti,
+                    };
+                    let socketDTO: SocketDTO = {
+                      connectionRequestDTO: null,
+                      messageDTO: null,
+                      moveDTO: null,
+                      gameConnectionDTO: null,
+                      connectionDTO: null,
+                      invitoDTO: null,
+                      scopaHand: null,
+                      gameEnd: gameEnd,
+                      scopaDone: null,
+                    };
+                    this.ws.send(socketDTO);
+                  }
                 },
               });
           }
@@ -557,6 +559,13 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               gameEnd: null,
               scopaDone: null,
             };
+            if (
+              cards.allCards.length == 0 &&
+              cards.yourCards.length == 0 &&
+              cards.enemysCards.length == 0
+            ) {
+              cards.isPoint = true;
+            }
             this.ws.send(socketDTO);
           }
           this.showEnemysScopa = false;
@@ -913,9 +922,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         //Non c'è bisogno di impostare i punti qui, perchè vengono impostati al subscribe dei punti stessi dopo che vienge chiuso il dialog.
         setTimeout(() => {
           if (dialogRef.getState() === MatDialogState.OPEN) dialogRef.close();
+          this.round += 1;
+          this.dialogRef = null;
           if (this.user!.id == this.partitaDouble?.invito?.sender?.id) {
             dialogRef.afterClosed().subscribe((data: any) => {
-              this.dialogRef = null;
               if (this.computerWon || this.userWon || this.enemyWon) {
                 this.toastr.show(
                   this.computerWon || this.enemyWon
@@ -924,7 +934,6 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 );
                 this.cleanDatas();
               } else {
-                this.round += 1;
                 this.enemysCardsTaken = [];
                 this.yourCardsTaken = [];
                 this.yourScopas = 0;

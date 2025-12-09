@@ -659,19 +659,19 @@
                   (user!.id != partitaDouble.invito?.sender?.id && enemyWon)
                 "
               >
-                Hai vinto!
+                {{ user?.fullName }} ha vinto!
               </p>
               <p
                 class="fs-3 py-5"
                 *ngIf="user!.id == partitaDouble.invito?.sender?.id && enemyWon"
               >
-                Hai perso!
+                {{ user?.fullName }} ha perso!
               </p>
               <p
                 class="fs-3 py-5"
                 *ngIf="user!.id != partitaDouble.invito?.sender?.id && userWon"
               >
-                Hai perso!
+                {{ user?.fullName }} ha perso!
               </p>
             </div>
             <div class="col-12 py-5">
