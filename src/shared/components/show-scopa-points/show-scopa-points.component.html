@@ -173,7 +173,7 @@
     <div class="col-md-6 p-2">
       <div class="w-100 p-1 shadow-sm">
         <p class="fs-2 text-center">
-          Punti {{ data[1] == "computer" ? "Computer" : "Avversario" }}
+          Punti {{ data[1] == "computer" ? "Computer" : userEnemy?.fullName }}
         </p>
         <ul *ngIf="data[1] == 'computer'; else enemyPoints">
           <li *ngFor="let p of detailedComputerPoints">
@@ -201,7 +201,7 @@
     </div>
     <div class="col-md-6 p-2">
       <div class="w-100 p-1 shadow-sm">
-        <p class="fs-2 text-center">Punti tuoi</p>
+        <p class="fs-2 text-center">Punti {{ userSender?.fullName }}</p>
         <ul>
           <li *ngFor="let p of detailedUserPoints">
             {{ p.nome + " - " + p.punti }}

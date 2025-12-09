@@ -1,5 +1,6 @@
 import { NgIf, NgForOf, NgClass, NgStyle, DatePipe } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   HostListener,
   Input,
@@ -110,7 +111,8 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     private dialog: MatDialog,
     private gameField: GamefieldService,
     private authService: AuthService,
-    private ws: WebsocketService
+    private ws: WebsocketService,
+    private cdr: ChangeDetectorRef
   ) {
     this.gameField.points.subscribe((data: any) => {
       this.partitaDouble
@@ -478,6 +480,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             }
           }, 30000);
         }
+        this.cdr.markForCheck();
       }
     });
     this.ws.gameEndBehaviorSubject.subscribe((data: GameEnd | null) => {
@@ -874,8 +877,16 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
   openPointsDialog(mode: string) {
-    debugger;
     if (!this.dialogRef) {
+      const enemy = this.partitaDouble?.partecipanti.filter(
+        (u: User) => u.id != this.partitaDouble?.invito?.sender?.id
+      )[0];
+      const inviter =
+        this.user?.id == this.partitaDouble?.invito?.sender?.id
+          ? this.user
+          : this.partitaDouble?.partecipanti.filter(
+              (u: User) => u.id != this.user!.id
+            )[0];
       this.dialogRef = true;
       const dialogRef = this.dialog.open(ShowScopaPointsComponent, {
         data: [
@@ -893,15 +904,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
           this.yourScopas,
           this.yourCardsTaken,
           this.yourPoints,
-          this.user?.id == this.partitaDouble?.invito?.sender?.id
-            ? this.user
-            : this.partitaDouble?.partecipanti.filter(
-                (u: User) => u.id != this.user!.id
-              )[0] || null,
-          this.partitaDouble?.partecipanti.filter(
-            (u: User) => u.id != this.partitaDouble?.invito?.sender?.id
-          )[0] || null,
+          inviter || null,
+          enemy || null,
         ],
+        disableClose: this.partitaDouble ? true : false,
       });
       if (this.partitaDouble) {
         //Non c'è bisogno di impostare i punti qui, perchè vengono impostati al subscribe dei punti stessi dopo che vienge chiuso il dialog.
@@ -922,6 +928,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 this.enemysCardsTaken = [];
                 this.yourCardsTaken = [];
                 this.yourScopas = 0;
+                this.allCards = [];
+                this.yourCards = [];
+                this.enemysCards = [];
+                this.tableCards = [];
                 this.enemysScopas = 0;
                 let scopaHand: ScopaHand = this.startLiveGame();
                 let socketDTO: SocketDTO = {
@@ -939,7 +949,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               }
             });
           }
-        }, 150000);
+        }, 15000);
       } else {
         dialogRef.afterClosed().subscribe((data: any) => {
           this.dialogRef = null;
