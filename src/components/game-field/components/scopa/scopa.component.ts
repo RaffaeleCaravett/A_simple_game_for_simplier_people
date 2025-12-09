@@ -106,7 +106,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
   partitaDoubleHasStarted: boolean = false;
   @Input() partitaDouble: PartitaDouble | null = null;
   liveGameCounter: number = 3;
-  liveTimerTime: number = 30000;
+  liveTimerTime: number = 20;
   liveTimer: any;
   liveInterval: any = null;
   constructor(
@@ -252,6 +252,9 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     this.user = this.authService.getUser();
     this.ws.scopaHandBehaviorSubject.subscribe((data: ScopaHand | null) => {
       if (data && data.partitaId == this.partitaDouble?.id) {
+        clearInterval(this.liveInterval);
+        console.log('YOUR POINTS : ' + this.yourPoints);
+        console.log('ENEMYS POINTS : ' + this.enemysPoints);
         if (data && data.isItStart == true) {
           this.liveGameCounterStarts(data);
         } else if (data && data.isPoint == true) {
@@ -260,149 +263,49 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
           this.setScopaDatas(data);
         }
         if (data.isPoint == false) {
+          this.liveTimerTime = 20;
           this.liveTimer = setInterval(() => {
-            this.liveTimerTime--;
-            if (this.liveTimerTime == 0) {
-              if (
-                this.tourn == 'enemy' &&
-                this.user!.id != this.partitaDouble?.invito?.sender?.id
-              ) {
-                let randomCard = Math.floor(
-                  Math.random() * (this.enemysCards.length - 1)
-                );
-                if (randomCard < 0) randomCard = 0;
-                else if (randomCard >= this.enemysCards.length)
-                  randomCard = this.enemysCards.length - 1;
-                else randomCard = randomCard;
-                let automaticSelectedCard = this.enemysCards[randomCard];
-                let cardTaken: boolean = false;
-                if (this.checkForScopa(automaticSelectedCard)) {
-                  cardTaken = true;
-                  for (let c of this.tableCards) {
-                    this.enemysCardsTaken.push(c);
-                  }
-                  this.tableCards = [];
-                  this.enemysCardsTaken.push(automaticSelectedCard);
-                  this.enemysCards = this.enemysCards.filter(
-                    (ec) => ec != automaticSelectedCard
+            if (this.liveGameCounter == 0) {
+              this.liveTimerTime--;
+              console.log(this.liveTimerTime);
+              if (this.liveTimerTime == 0) {
+                clearInterval(this.liveTimer);
+                this.liveTimerTime = 20;
+                if (
+                  this.tourn == 'enemy' &&
+                  this.user!.id != this.partitaDouble?.invito?.sender?.id
+                ) {
+                  let randomCard = Math.floor(
+                    Math.random() * (this.enemysCards.length - 1)
                   );
-                }
-                for (let c of this.tableCards) {
-                  if (c.value == automaticSelectedCard.value) {
-                    this.enemysCardsTaken.push(c, automaticSelectedCard);
+                  if (randomCard < 0) randomCard = 0;
+                  else if (randomCard >= this.enemysCards.length)
+                    randomCard = this.enemysCards.length - 1;
+                  else randomCard = randomCard;
+                  let automaticSelectedCard = this.enemysCards[randomCard];
+                  let cardTaken: boolean = false;
+                  if (this.checkForScopa(automaticSelectedCard)) {
+                    cardTaken = true;
+                    for (let c of this.tableCards) {
+                      this.enemysCardsTaken.push(c);
+                    }
+                    this.tableCards = [];
+                    this.enemysCardsTaken.push(automaticSelectedCard);
                     this.enemysCards = this.enemysCards.filter(
                       (ec) => ec != automaticSelectedCard
                     );
-                    this.tableCards = this.tableCards.filter((tc) => tc != c);
-                    cardTaken = true;
+                    this.createScopa(automaticSelectedCard);
                     return;
                   }
-                }
-                if (!cardTaken) {
-                  for (let i = 0; i <= this.tableCards.length - 1; i++) {
-                    for (let a = this.tableCards.length - 1; a >= 0; a--) {
-                      if (
-                        this.tableCards[i] != this.tableCards[a] &&
-                        this.tableCards[i].value + this.tableCards[a].value ==
-                          automaticSelectedCard.value
-                      ) {
-                        this.enemysCardsTaken.push(this.tableCards[i]);
-                        this.enemysCardsTaken.push(this.tableCards[a]);
-                        this.enemysCardsTaken.push(automaticSelectedCard);
-                        this.enemysCards = this.enemysCards.filter(
-                          (ec) => ec != automaticSelectedCard
-                        );
-                        this.tableCards = this.tableCards.filter(
-                          (tc) =>
-                            tc != this.tableCards[i] && tc != this.tableCards[a]
-                        );
-                        cardTaken = true;
-                      }
-                    }
-                  }
-                }
-                if (!cardTaken && this.tableCards.length > 3) {
-                  for (let i = 0; i <= this.tableCards.length - 1; i++) {
-                    for (let a = this.tableCards.length - 1; a >= 0; a--) {
-                      for (let e = 1; e <= this.tableCards.length - 2; e++) {
-                        if (
-                          this.tableCards[i] != this.tableCards[a] &&
-                          this.tableCards[i] != this.tableCards[e] &&
-                          this.tableCards[e] != this.tableCards[a] &&
-                          this.tableCards[i].value +
-                            this.tableCards[a].value +
-                            this.tableCards[e].value ==
-                            automaticSelectedCard.value
-                        ) {
-                          this.enemysCardsTaken.push(this.tableCards[i]);
-                          this.enemysCardsTaken.push(this.tableCards[a]);
-                          this.enemysCardsTaken.push(this.tableCards[e]);
-                          this.enemysCardsTaken.push(automaticSelectedCard);
-                          this.enemysCards = this.enemysCards.filter(
-                            (ec) => ec != automaticSelectedCard
-                          );
-                          this.tableCards = this.tableCards.filter(
-                            (tc) =>
-                              tc != this.tableCards[i] &&
-                              tc != this.tableCards[a] &&
-                              tc != this.tableCards[e]
-                          );
-                          cardTaken = true;
-                        }
-                      }
-                    }
-                  }
-                }
-                if (!cardTaken) {
-                  this.tableCards.push(automaticSelectedCard);
-                  this.enemysCards = this.enemysCards.filter(
-                    (card) => card != automaticSelectedCard
-                  );
-                }
-                let scopaHand: ScopaHand = this.organizeScopaHand();
-                let socketDTO: SocketDTO = {
-                  messageDTO: null,
-                  connectionDTO: null,
-                  gameConnectionDTO: null,
-                  moveDTO: null,
-                  connectionRequestDTO: null,
-                  invitoDTO: null,
-                  scopaHand: scopaHand,
-                  gameEnd: null,
-                  scopaDone: null,
-                };
-
-                this.ws.send(socketDTO);
-              } else {
-                let randomCard = Math.floor(
-                  Math.random() * (this.yourCards.length - 1)
-                );
-                if (randomCard < 0) randomCard = 0;
-                else if (randomCard >= this.yourCards.length)
-                  randomCard = this.yourCards.length - 1;
-                else randomCard = randomCard;
-                let automaticSelectedCard = this.yourCards[randomCard];
-                let cardTaken: boolean = false;
-                if (this.checkForScopa(automaticSelectedCard)) {
-                  this.tableCards.forEach((tc) => {
-                    this.yourCardsTaken.push(tc);
-                  });
-                  this.yourCardsTaken.push(automaticSelectedCard);
-                  this.yourCards = this.yourCards.filter(
-                    (yc) => yc != automaticSelectedCard
-                  );
-                  this.tableCards = [];
-                  cardTaken = true;
-                } else {
                   for (let c of this.tableCards) {
                     if (c.value == automaticSelectedCard.value) {
-                      this.yourCardsTaken.push(c, automaticSelectedCard);
-                      this.yourCards = this.yourCards.filter(
+                      this.enemysCardsTaken.push(c, automaticSelectedCard);
+                      this.enemysCards = this.enemysCards.filter(
                         (ec) => ec != automaticSelectedCard
                       );
                       this.tableCards = this.tableCards.filter((tc) => tc != c);
                       cardTaken = true;
-                      return;
+                      break;
                     }
                   }
                   if (!cardTaken) {
@@ -413,10 +316,10 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                           this.tableCards[i].value + this.tableCards[a].value ==
                             automaticSelectedCard.value
                         ) {
-                          this.yourCardsTaken.push(this.tableCards[i]);
-                          this.yourCardsTaken.push(this.tableCards[a]);
-                          this.yourCardsTaken.push(automaticSelectedCard);
-                          this.yourCards = this.yourCards.filter(
+                          this.enemysCardsTaken.push(this.tableCards[i]);
+                          this.enemysCardsTaken.push(this.tableCards[a]);
+                          this.enemysCardsTaken.push(automaticSelectedCard);
+                          this.enemysCards = this.enemysCards.filter(
                             (ec) => ec != automaticSelectedCard
                           );
                           this.tableCards = this.tableCards.filter(
@@ -442,11 +345,11 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                               this.tableCards[e].value ==
                               automaticSelectedCard.value
                           ) {
-                            this.yourCardsTaken.push(this.tableCards[i]);
-                            this.yourCardsTaken.push(this.tableCards[a]);
-                            this.yourCardsTaken.push(this.tableCards[e]);
-                            this.yourCardsTaken.push(automaticSelectedCard);
-                            this.yourCards = this.yourCards.filter(
+                            this.enemysCardsTaken.push(this.tableCards[i]);
+                            this.enemysCardsTaken.push(this.tableCards[a]);
+                            this.enemysCardsTaken.push(this.tableCards[e]);
+                            this.enemysCardsTaken.push(automaticSelectedCard);
+                            this.enemysCards = this.enemysCards.filter(
                               (ec) => ec != automaticSelectedCard
                             );
                             this.tableCards = this.tableCards.filter(
@@ -463,11 +366,25 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                   }
                   if (!cardTaken) {
                     this.tableCards.push(automaticSelectedCard);
-                    this.yourCards = this.yourCards.filter(
+                    this.enemysCards = this.enemysCards.filter(
                       (card) => card != automaticSelectedCard
                     );
                   }
+                  if (
+                    this.enemysCards.length == 0 &&
+                    this.yourCards.length == 0
+                  ) {
+                    this.giveCards();
+                  }
                   let scopaHand: ScopaHand = this.organizeScopaHand();
+                  scopaHand.tourn = this.setPartitaDoubleTourn();
+                  if (
+                    this.enemysCards.length == 0 &&
+                    this.yourCards.length == 0 &&
+                    this.allCards.length == 0
+                  ) {
+                    scopaHand.isPoint = true;
+                  }
                   let socketDTO: SocketDTO = {
                     messageDTO: null,
                     connectionDTO: null,
@@ -479,11 +396,146 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                     gameEnd: null,
                     scopaDone: null,
                   };
+
                   this.ws.send(socketDTO);
+                } else if (
+                  this.tourn == 'user' &&
+                  this.user!.id == this.partitaDouble?.invito?.sender?.id
+                ) {
+                  let randomCard = Math.floor(
+                    Math.random() * (this.yourCards.length - 1)
+                  );
+                  if (randomCard < 0) randomCard = 0;
+                  else if (randomCard >= this.yourCards.length)
+                    randomCard = this.yourCards.length - 1;
+                  else randomCard = randomCard;
+                  let automaticSelectedCard = this.yourCards[randomCard];
+                  let cardTaken: boolean = false;
+                  if (this.checkForScopa(automaticSelectedCard)) {
+                    this.tableCards.forEach((tc) => {
+                      this.yourCardsTaken.push(tc);
+                    });
+                    this.yourCardsTaken.push(automaticSelectedCard);
+                    this.yourCards = this.yourCards.filter(
+                      (yc) => yc != automaticSelectedCard
+                    );
+                    this.tableCards = [];
+                    cardTaken = true;
+                    this.createScopa(automaticSelectedCard);
+                    return;
+                  } else {
+                    for (let c of this.tableCards) {
+                      if (c.value == automaticSelectedCard.value) {
+                        this.yourCardsTaken.push(c, automaticSelectedCard);
+                        this.yourCards = this.yourCards.filter(
+                          (ec) => ec != automaticSelectedCard
+                        );
+                        this.tableCards = this.tableCards.filter(
+                          (tc) => tc != c
+                        );
+                        cardTaken = true;
+                        break;
+                      }
+                    }
+                    if (!cardTaken) {
+                      for (let i = 0; i <= this.tableCards.length - 1; i++) {
+                        for (let a = this.tableCards.length - 1; a >= 0; a--) {
+                          if (
+                            this.tableCards[i] != this.tableCards[a] &&
+                            this.tableCards[i].value +
+                              this.tableCards[a].value ==
+                              automaticSelectedCard.value
+                          ) {
+                            this.yourCardsTaken.push(this.tableCards[i]);
+                            this.yourCardsTaken.push(this.tableCards[a]);
+                            this.yourCardsTaken.push(automaticSelectedCard);
+                            this.yourCards = this.yourCards.filter(
+                              (ec) => ec != automaticSelectedCard
+                            );
+                            this.tableCards = this.tableCards.filter(
+                              (tc) =>
+                                tc != this.tableCards[i] &&
+                                tc != this.tableCards[a]
+                            );
+                            cardTaken = true;
+                          }
+                        }
+                      }
+                    }
+                    if (!cardTaken && this.tableCards.length > 3) {
+                      for (let i = 0; i <= this.tableCards.length - 1; i++) {
+                        for (let a = this.tableCards.length - 1; a >= 0; a--) {
+                          for (
+                            let e = 1;
+                            e <= this.tableCards.length - 2;
+                            e++
+                          ) {
+                            if (
+                              this.tableCards[i] != this.tableCards[a] &&
+                              this.tableCards[i] != this.tableCards[e] &&
+                              this.tableCards[e] != this.tableCards[a] &&
+                              this.tableCards[i].value +
+                                this.tableCards[a].value +
+                                this.tableCards[e].value ==
+                                automaticSelectedCard.value
+                            ) {
+                              this.yourCardsTaken.push(this.tableCards[i]);
+                              this.yourCardsTaken.push(this.tableCards[a]);
+                              this.yourCardsTaken.push(this.tableCards[e]);
+                              this.yourCardsTaken.push(automaticSelectedCard);
+                              this.yourCards = this.yourCards.filter(
+                                (ec) => ec != automaticSelectedCard
+                              );
+                              this.tableCards = this.tableCards.filter(
+                                (tc) =>
+                                  tc != this.tableCards[i] &&
+                                  tc != this.tableCards[a] &&
+                                  tc != this.tableCards[e]
+                              );
+                              cardTaken = true;
+                            }
+                          }
+                        }
+                      }
+                    }
+                    if (!cardTaken) {
+                      this.tableCards.push(automaticSelectedCard);
+                      this.yourCards = this.yourCards.filter(
+                        (card) => card != automaticSelectedCard
+                      );
+                    }
+                    if (
+                      this.enemysCards.length == 0 &&
+                      this.yourCards.length == 0
+                    ) {
+                      this.giveCards();
+                    }
+                    let scopaHand: ScopaHand = this.organizeScopaHand();
+                    scopaHand.tourn = this.setPartitaDoubleTourn();
+                    if (
+                      this.enemysCards.length == 0 &&
+                      this.yourCards.length == 0 &&
+                      this.allCards.length == 0
+                    ) {
+                      scopaHand.isPoint = true;
+                    }
+                    let socketDTO: SocketDTO = {
+                      messageDTO: null,
+                      connectionDTO: null,
+                      gameConnectionDTO: null,
+                      moveDTO: null,
+                      connectionRequestDTO: null,
+                      invitoDTO: null,
+                      scopaHand: scopaHand,
+                      gameEnd: null,
+                      scopaDone: null,
+                    };
+                    this.ws.send(socketDTO);
+                  }
                 }
               }
             }
-          }, 30000);
+          }, 500);
         }
         this.cdr.markForCheck();
       }
@@ -601,6 +653,27 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         }, 3000);
       }
     });
+  }
+
+  createScopa(card: any) {
+    let scopa: ScopaDone = {
+      userId: this.user!.id,
+      partitaDoubleId: this.partitaDouble!.id,
+      scopaCard: card,
+    };
+    let socketDTO: SocketDTO = {
+      messageDTO: null,
+      connectionDTO: null,
+      gameConnectionDTO: null,
+      moveDTO: null,
+      connectionRequestDTO: null,
+      invitoDTO: null,
+      scopaHand: null,
+      gameEnd: null,
+      scopaDone: scopa,
+    };
+    this.ws.send(socketDTO);
+    return;
   }
   playAgain() {
     this.partitaDouble = null;
@@ -953,6 +1026,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
           this.round += 1;
           this.dialogRef = null;
           if (this.user!.id == this.partitaDouble?.invito?.sender?.id) {
+            debugger;
             dialogRef.afterClosed().subscribe((data: any) => {
               if (this.computerWon || this.userWon || this.enemyWon) {
                 this.toastr.show(
