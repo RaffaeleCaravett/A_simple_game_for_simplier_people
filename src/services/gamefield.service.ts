@@ -5,10 +5,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { PartitaDouble } from '../interfaces/interfaces';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GamefieldService {
-
   private partita: string = '/partita';
   private partitaDoubleUrl: string = '/partitaDouble';
   private classifiche: string = '/classifiche';
@@ -18,61 +17,130 @@ export class GamefieldService {
   private byUserAndDate: string = '/userAndDate';
   private byUserAndGioco: string = '/userAndGioco';
   private assignGiocoToUser: string = '/assignGiocoToUser';
-  public points: BehaviorSubject<{ enemy: number, you: number }> = new BehaviorSubject<{ enemy: number, you: number }>({ enemy: 0, you: 0 });
+  public points: BehaviorSubject<{ enemy: number; you: number }> =
+    new BehaviorSubject<{ enemy: number; you: number }>({ enemy: 0, you: 0 });
   private enemyPoints: number = 0;
   private userPoints: number = 0;
   private invito: string = '/invito';
-  public partitaDouble: BehaviorSubject<PartitaDouble | null> = new BehaviorSubject<PartitaDouble | null>(null);
-  constructor(private http: HttpClient) { }
+  public partitaDouble: BehaviorSubject<PartitaDouble | null> =
+    new BehaviorSubject<PartitaDouble | null>(null);
+  constructor(private http: HttpClient) {}
 
   postPartite(partita: {}[]) {
-    return this.http.post(environment.API_URL + this.partita, partita)
+    return this.http.post(environment.API_URL + this.partita, partita);
   }
 
   putPartita(partitaId: number, partita: {}) {
-    return this.http.put(environment.API_URL + this.partita + '/' + partitaId, partita)
+    return this.http.put(
+      environment.API_URL + this.partita + '/' + partitaId,
+      partita
+    );
   }
 
   putPartitaDouble(partitaId: number, partita: {}) {
-    return this.http.put(environment.API_URL + this.partitaDoubleUrl + '/' + partitaId, partita)
+    return this.http.put(
+      environment.API_URL + this.partitaDoubleUrl + '/' + partitaId,
+      partita
+    );
+  }
+  getPDouble(partitaId: number) {
+    return this.http.get(
+      environment.API_URL + this.partitaDoubleUrl + '/' + partitaId
+    );
   }
 
-  getPartitaByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string, gioco: number) {
-    return this.http.get(environment.API_URL + this.partita + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}${gioco != 0 && gioco != null && gioco != undefined ? ('&gioco=' + gioco) : ''}`)
+  getPartitaByUser(
+    userId: number,
+    page: number,
+    size: number,
+    orderBy: string,
+    sortOrder: string,
+    gioco: number
+  ) {
+    return this.http.get(
+      environment.API_URL +
+        this.partita +
+        this.byUser +
+        `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}${
+          gioco != 0 && gioco != null && gioco != undefined
+            ? '&gioco=' + gioco
+            : ''
+        }`
+    );
   }
-  getClassificheByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
-    return this.http.get(environment.API_URL + this.classifiche + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`)
+  getClassificheByUser(
+    userId: number,
+    page: number,
+    size: number,
+    orderBy: string,
+    sortOrder: string
+  ) {
+    return this.http.get(
+      environment.API_URL +
+        this.classifiche +
+        this.byUser +
+        `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`
+    );
   }
-  getTrofeiByUser(userId: number, page: number, size: number, orderBy: string, sortOrder: string) {
-    return this.http.get(environment.API_URL + this.trofeo + this.byUser + `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`)
+  getTrofeiByUser(
+    userId: number,
+    page: number,
+    size: number,
+    orderBy: string,
+    sortOrder: string
+  ) {
+    return this.http.get(
+      environment.API_URL +
+        this.trofeo +
+        this.byUser +
+        `/${userId}?page=${page}&size=${size}&orderBy=${orderBy}&sortOrder=${sortOrder}`
+    );
   }
 
   getPartitaByGioco(giocoId: number) {
-    return this.http.get(environment.API_URL + this.partita + this.byGioco + `/${giocoId}`)
+    return this.http.get(
+      environment.API_URL + this.partita + this.byGioco + `/${giocoId}`
+    );
   }
 
   getPartitaByUserAndDate(userId: number, from: string, to: string) {
-    return this.http.get(environment.API_URL + this.byUserAndDate + `/${userId}?from=${from}&to=${to}`)
+    return this.http.get(
+      environment.API_URL +
+        this.byUserAndDate +
+        `/${userId}?from=${from}&to=${to}`
+    );
   }
 
   getPartitaByUserAndGioco(userId: number, giocoId: number) {
-    return this.http.get(environment.API_URL + this.partita + this.byUserAndGioco + `/${userId}/${giocoId}`)
+    return this.http.get(
+      environment.API_URL +
+        this.partita +
+        this.byUserAndGioco +
+        `/${userId}/${giocoId}`
+    );
   }
 
   assignGiocoUser(giocoId: number, userId: number) {
-    return this.http.get(environment.API_URL + this.byGioco + this.assignGiocoToUser + `?gioco=${giocoId}&user=${userId}`)
+    return this.http.get(
+      environment.API_URL +
+        this.byGioco +
+        this.assignGiocoToUser +
+        `?gioco=${giocoId}&user=${userId}`
+    );
   }
 
   getGiochiByUser(userId: number) {
-    return this.http.get(environment.API_URL + this.byGioco + this.byUser + `Id`)
+    return this.http.get(
+      environment.API_URL + this.byGioco + this.byUser + `Id`
+    );
   }
   getGiocoById(giocoId: number) {
-    return this.http.get(environment.API_URL + this.byGioco + '/' + giocoId)
+    return this.http.get(environment.API_URL + this.byGioco + '/' + giocoId);
   }
   getGiochi() {
-    return this.http.get(environment.API_URL + this.byGioco + '/idAndName')
+    return this.http.get(environment.API_URL + this.byGioco + '/idAndName');
   }
-  updateScopaPoints(points: { enemy: number, user: number }) {
+  updateScopaPoints(points: { enemy: number; user: number }) {
     this.enemyPoints = points.enemy;
     this.userPoints = points.user;
     this.points.next({ enemy: this.enemyPoints, you: this.userPoints });
@@ -82,12 +150,22 @@ export class GamefieldService {
     this.userPoints = 0;
   }
   getInvites(game: number, page: number, size: number) {
-    return this.http.get(environment.API_URL + this.invito + '/params' + `?page=${page}&size=${size}&gioco=${game}`);
+    return this.http.get(
+      environment.API_URL +
+        this.invito +
+        '/params' +
+        `?page=${page}&size=${size}&gioco=${game}`
+    );
   }
   createInvite(game: number) {
     let invito = {
-      giocoId: game
-    }
+      giocoId: game,
+    };
     return this.http.post(environment.API_URL + this.invito, invito);
+  }
+  deleteInvito(invitoId: number) {
+    return this.http.get(
+      environment.API_URL + this.invito + `/elimina?invito=${invitoId}`
+    );
   }
 }

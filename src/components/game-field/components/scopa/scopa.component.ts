@@ -35,6 +35,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { WebsocketService } from '../../../../services/websocket.service';
 import { catchError, of } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-scopa',
@@ -50,13 +51,14 @@ import { catchError, of } from 'rxjs';
     ButtonModule,
     TableModule,
     DatePipe,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './scopa.component.html',
   styleUrl: './scopa.component.scss',
 })
 export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
   @Input() game: number = 0;
-
+  spinner: boolean = false;
   modalitaForm: FormGroup = new FormGroup({});
   count: number = 3;
   gameHasStarted: boolean = false;
@@ -106,6 +108,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
   liveGameCounter: number = 3;
   liveTimerTime: number = 30000;
   liveTimer: any;
+  liveInterval: any = null;
   constructor(
     private toastr: ToastrService,
     private dialog: MatDialog,
@@ -492,19 +495,44 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         data.partitaDoubleId == this.partitaDouble?.id
       ) {
         this.toastr.info('Il gioco è terminato!');
-        if (data?.punteggio == '0') {
-          this.partitaDouble.vincitori.map((u) => u.id).includes(this.user!.id)
-            ? this.toastr.info('Hai vinto per abbandono!')
-            : '';
-        }
-        if (
-          this.partitaDouble?.invito?.sender?.id == this.user!.id &&
-          this.partitaDouble.vincitori.map((u) => u.id).includes(this.user!.id)
-        ) {
-          this.userWon;
-        } else {
-          this.enemyWon;
-        }
+        this.gameField.getPDouble(this.partitaDouble?.id).subscribe({
+          next: (dataP: any) => {
+            if (dataP) {
+              this.partitaDouble = dataP;
+              if (data?.punteggio == '0') {
+                this.partitaDouble!.vincitori.map((u) => u.id).includes(
+                  this.user!.id
+                )
+                  ? this.toastr.info("Hai vinto per abbandono dell'avversario!")
+                  : '';
+              }
+              if (
+                this.partitaDouble?.invito?.sender?.id == this.user!.id &&
+                this.partitaDouble.vincitori
+                  .map((u) => u.id)
+                  .includes(this.user!.id)
+              ) {
+                this.userWon;
+              } else {
+                this.enemyWon;
+              }
+              if (this.liveInterval) {
+                clearInterval(this.liveInterval);
+              }
+              this.partitaDouble = null;
+              this.liveGameCounter = 3;
+              this.partitaDoubleHasStarted = false;
+              this.getInviti();
+            }
+          },
+          error: (err: any) => {
+            this.toastr.show(
+              err?.error?.message ||
+                "E' successo qualcosa nel recupero dei dati. Ogni informazione è stata comunque salvata e se hai vinto a tavolino, o per merito, o perso per qualsiasi " +
+                  'motivo ne teniamo conto comunque.'
+            );
+          },
+        });
       }
     });
     this.ws.scopaDoneBehaviorSubject.subscribe((data: ScopaDone | null) => {
@@ -622,12 +650,12 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
   liveGameCounterStarts(data: ScopaHand) {
-    const interval = setInterval(() => {
+    this.liveInterval = setInterval(() => {
       this.liveGameCounter--;
       if (this.liveGameCounter == 0) {
         this.partitaDoubleHasStarted = true;
         this.setScopaDatas(data, true);
-        clearInterval(interval);
+        clearInterval(this.liveInterval);
       }
     }, 3000);
   }
@@ -1576,6 +1604,13 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         scopaDone: null,
       };
       this.ws.send(socketDTO);
+    } else {
+      this.gameField.deleteInvito(invito.id).subscribe({
+        next: (data: any) => {
+          this.toastr.show('Invito eliminato correttamente.');
+          this.getInviti();
+        },
+      });
     }
   }
   exitPartitaDouble() {
@@ -1600,9 +1635,30 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       )
       .subscribe({
         next: (data: any) => {
-          this.partitaDouble = null;
-          this.toastr.error('Hai perso la partita per abbandono');
-          this.getInviti();
+          this.spinner = true;
+          setTimeout(() => {
+            this.spinner = false;
+            this.toastr.error('Hai perso la partita per abbandono');
+            let gameEnd: GameEnd = {
+              gameId: this.game,
+              partitaDoubleId: data?.id,
+              winner: data?.vincitori[0].id!,
+              punteggio: '0',
+            };
+            let socketDTO: SocketDTO = {
+              messageDTO: null,
+              connectionDTO: null,
+              gameConnectionDTO: null,
+              moveDTO: null,
+              connectionRequestDTO: null,
+              invitoDTO: null,
+              scopaHand: null,
+              gameEnd: gameEnd,
+              scopaDone: null,
+            };
+            this.ws.send(socketDTO);
+            this.getInviti();
+          }, 300);
         },
       });
   }

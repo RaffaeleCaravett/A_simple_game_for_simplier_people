@@ -441,10 +441,26 @@
           <p-button
             type="button"
             icon="pi pi-refresh text-dark"
+            label="Ricarica"
             matTooltip="refresh"
             matTooltipPosition="above"
             (click)="reset()"
             text
+            class="bg-light bg-gradient rounded"
+          />
+          <span class="m-1"> Oppure </span>
+          <p-button
+            type="button"
+            icon="pi pi-plus text-dark"
+            label="Crea un invito"
+            matTooltip="add"
+            matTooltipPosition="above"
+            (click)="
+              modalitaForm.controls['liveAction'].setValue('invito');
+              modalitaForm.updateValueAndValidity()
+            "
+            text
+            class="bg-light bg-gradient rounded"
           />
         </p>
       </div>
@@ -470,60 +486,40 @@
       </div>
     </div>
     <div class="row" *ngIf="partitaDouble">
-      <div class="col-12">
-        <p class="text-end">
-          <button
-            class="btn"
-            matTooltip="Chiudi partita"
-            matTooltipPosition="above"
-            (click)="exitPartitaDouble()"
-          >
-            <i class="pi pi-trash"></i>
-          </button>
-        </p>
-      </div>
-      <div class="col-12">
-        <h1>Live scopa!</h1>
-      </div>
-      <div
-        class="col-12 py-5 d-flex justify-content-center align-items-center fs-1"
-        *ngIf="liveGameCounter != 0"
-      >
-        {{ liveGameCounter }}
-      </div>
-      <div
-        class="col-12 py-5 text-center"
-        *ngIf="liveGameCounter == 0 && partitaDoubleHasStarted"
-      >
-        <div class="row" *ngIf="!userWon && !enemyWon; else showWinner">
-          <div
-            class="col-12"
-            *ngIf="user!.id == partitaDouble.invito.sender?.id; else your"
-          >
-            <h2>Avversario</h2>
-            <div class="row">
-              <div class="col-4 p-3" *ngFor="let c of enemysCards">
-                <div class="border shadow-sm">
-                  <p class="text-end fs-2">
-                    <!--{{c.group}}-->
-                    Scopa
-                  </p>
-                  <p class="text-center my-5 fs-2">
-                    <!--
-                           NgClass of p above 
-                           [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'"
-                            {{c.value}}-->
-                    Scopa
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <ng-template #your>
-            <div class="col-12">
+      <div class="row" *ngIf="!spinner">
+        <div class="col-12">
+          <p class="text-end">
+            <button
+              class="btn"
+              matTooltip="Chiudi partita"
+              matTooltipPosition="above"
+              (click)="exitPartitaDouble()"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </p>
+        </div>
+        <div class="col-12">
+          <h1>Live scopa!</h1>
+        </div>
+        <div
+          class="col-12 py-5 d-flex justify-content-center align-items-center fs-1"
+          *ngIf="liveGameCounter != 0"
+        >
+          {{ liveGameCounter }}
+        </div>
+        <div
+          class="col-12 py-5 text-center"
+          *ngIf="liveGameCounter == 0 && partitaDoubleHasStarted"
+        >
+          <div class="row" *ngIf="!userWon && !enemyWon; else showWinner">
+            <div
+              class="col-12"
+              *ngIf="user!.id == partitaDouble.invito.sender?.id; else your"
+            >
               <h2>Avversario</h2>
               <div class="row">
-                <div class="col-4 p-3" *ngFor="let c of yourCards">
+                <div class="col-4 p-3" *ngFor="let c of enemysCards">
                   <div class="border shadow-sm">
                     <p class="text-end fs-2">
                       <!--{{c.group}}-->
@@ -540,92 +536,79 @@
                 </div>
               </div>
             </div>
-          </ng-template>
-          <div class="col-12">
-            <h2>Tavolo (round {{ round }})</h2>
-            <div class="row p-3 bg-success border shadow-sm">
-              <div class="col-3 p-3" *ngFor="let c of tableCards">
-                <div
-                  class="border shadow-sm bg-light"
-                  (click)="selectCard(c); release = false"
-                  [ngStyle]="selectedCard.includes(c) ? { scale: '1.1' } : {}"
-                >
-                  <p class="text-end fs-2">{{ c.group }}</p>
-                  <p
-                    class="text-center my-5 fs-2"
-                    [ngClass]="
-                      c.group == '🗡️'
-                        ? 'text-info'
-                        : c.group == '🪓'
-                        ? 'text-success'
-                        : c.group == '🫖'
-                        ? 'text-danger'
-                        : 'text-warning'
-                    "
-                  >
-                    {{ c.value }}
-                  </p>
-                </div>
-              </div>
-              <div class="col-3 p-3">
-                <div
-                  class="border shadow-sm bg-light"
-                  (click)="setRelease()"
-                  [ngStyle]="release ? { scale: '1.1' } : {}"
-                >
-                  <p class="text-end fs-2"><i class="bi bi-plus h2"></i></p>
-                  <p class="text-center my-5 fs-2 text-success">
-                    <i class="bi bi-plus h2"></i>
-                  </p>
-                </div>
-              </div>
+            <ng-template #your>
               <div class="col-12">
-                <p class="fs-2">E' il turno di : {{ getTournUserName() }}</p>
+                <h2>Avversario</h2>
+                <div class="row">
+                  <div class="col-4 p-3" *ngFor="let c of yourCards">
+                    <div class="border shadow-sm">
+                      <p class="text-end fs-2">
+                        <!--{{c.group}}-->
+                        Scopa
+                      </p>
+                      <p class="text-center my-5 fs-2">
+                        <!--
+                           NgClass of p above 
+                           [ngClass]="c.group =='🗡️'?'text-info':c.group=='🪓'?'text-success':c.group=='🫖'?'text-danger':'text-warning'"
+                            {{c.value}}-->
+                        Scopa
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="col-12"
-            *ngIf="user!.id == partitaDouble.invito.sender?.id; else enemy"
-          >
-            <h2>Tu</h2>
-            <div class="row">
-              <div class="col-4 p-3" *ngFor="let c of yourCards">
-                <div class="border shadow-sm" (click)="chooseCard(c)">
-                  <p class="text-end fs-2">
-                    {{ c.group }}
-                  </p>
-                  <p
-                    class="text-center my-5 fs-2"
-                    [ngClass]="
-                      c.group == '🗡️'
-                        ? 'text-info'
-                        : c.group == '🪓'
-                        ? 'text-success'
-                        : c.group == '🫖'
-                        ? 'text-danger'
-                        : 'text-warning'
-                    "
+            </ng-template>
+            <div class="col-12">
+              <h2>Tavolo (round {{ round }})</h2>
+              <div class="row p-3 bg-success border shadow-sm">
+                <div class="col-3 p-3" *ngFor="let c of tableCards">
+                  <div
+                    class="border shadow-sm bg-light"
+                    (click)="selectCard(c); release = false"
+                    [ngStyle]="selectedCard.includes(c) ? { scale: '1.1' } : {}"
                   >
-                    {{ c.value }}
-                  </p>
+                    <p class="text-end fs-2">{{ c.group }}</p>
+                    <p
+                      class="text-center my-5 fs-2"
+                      [ngClass]="
+                        c.group == '🗡️'
+                          ? 'text-info'
+                          : c.group == '🪓'
+                          ? 'text-success'
+                          : c.group == '🫖'
+                          ? 'text-danger'
+                          : 'text-warning'
+                      "
+                    >
+                      {{ c.value }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-3 p-3">
+                  <div
+                    class="border shadow-sm bg-light"
+                    (click)="setRelease()"
+                    [ngStyle]="release ? { scale: '1.1' } : {}"
+                  >
+                    <p class="text-end fs-2"><i class="bi bi-plus h2"></i></p>
+                    <p class="text-center my-5 fs-2 text-success">
+                      <i class="bi bi-plus h2"></i>
+                    </p>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <p class="fs-2">E' il turno di : {{ getTournUserName() }}</p>
                 </div>
               </div>
             </div>
-          </div>
-          <ng-template #enemy>
             <div
               class="col-12"
-              *ngIf="user!.id != partitaDouble.invito.sender?.id"
+              *ngIf="user!.id == partitaDouble.invito.sender?.id; else enemy"
             >
               <h2>Tu</h2>
               <div class="row">
-                <div
-                  class="col-4 p-3"
-                  *ngFor="let c of enemysCards"
-                  (click)="chooseCard(c)"
-                >
-                  <div class="border shadow-sm">
+                <div class="col-4 p-3" *ngFor="let c of yourCards">
+                  <div class="border shadow-sm" (click)="chooseCard(c)">
                     <p class="text-end fs-2">
                       {{ c.group }}
                     </p>
@@ -647,41 +630,87 @@
                 </div>
               </div>
             </div>
+            <ng-template #enemy>
+              <div
+                class="col-12"
+                *ngIf="user!.id != partitaDouble.invito.sender?.id"
+              >
+                <h2>Tu</h2>
+                <div class="row">
+                  <div
+                    class="col-4 p-3"
+                    *ngFor="let c of enemysCards"
+                    (click)="chooseCard(c)"
+                  >
+                    <div class="border shadow-sm">
+                      <p class="text-end fs-2">
+                        {{ c.group }}
+                      </p>
+                      <p
+                        class="text-center my-5 fs-2"
+                        [ngClass]="
+                          c.group == '🗡️'
+                            ? 'text-info'
+                            : c.group == '🪓'
+                            ? 'text-success'
+                            : c.group == '🫖'
+                            ? 'text-danger'
+                            : 'text-warning'
+                        "
+                      >
+                        {{ c.value }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+          <ng-template #showWinner>
+            <div class="row">
+              <div class="col-12">
+                <p
+                  class="fs-3 py-5"
+                  *ngIf="
+                    (user!.id == partitaDouble.invito?.sender?.id && userWon) ||
+                    (user!.id != partitaDouble.invito?.sender?.id && enemyWon)
+                  "
+                >
+                  {{ user?.fullName }} ha vinto!
+                </p>
+                <p
+                  class="fs-3 py-5"
+                  *ngIf="
+                    user!.id == partitaDouble.invito?.sender?.id && enemyWon
+                  "
+                >
+                  {{ user?.fullName }} ha perso!
+                </p>
+                <p
+                  class="fs-3 py-5"
+                  *ngIf="
+                    user!.id != partitaDouble.invito?.sender?.id && userWon
+                  "
+                >
+                  {{ user?.fullName }} ha perso!
+                </p>
+              </div>
+              <div class="col-12 py-5">
+                <button class="btn" (click)="playAgain()">
+                  Gioca di nuovo
+                  <i class="pi pi-replay"> </i>
+                </button>
+              </div>
+            </div>
           </ng-template>
         </div>
-        <ng-template #showWinner>
-          <div class="row">
-            <div class="col-12">
-              <p
-                class="fs-3 py-5"
-                *ngIf="
-                  (user!.id == partitaDouble.invito?.sender?.id && userWon) ||
-                  (user!.id != partitaDouble.invito?.sender?.id && enemyWon)
-                "
-              >
-                {{ user?.fullName }} ha vinto!
-              </p>
-              <p
-                class="fs-3 py-5"
-                *ngIf="user!.id == partitaDouble.invito?.sender?.id && enemyWon"
-              >
-                {{ user?.fullName }} ha perso!
-              </p>
-              <p
-                class="fs-3 py-5"
-                *ngIf="user!.id != partitaDouble.invito?.sender?.id && userWon"
-              >
-                {{ user?.fullName }} ha perso!
-              </p>
-            </div>
-            <div class="col-12 py-5">
-              <button class="btn" (click)="playAgain()">
-                Gioca di nuovo
-                <i class="pi pi-replay"> </i>
-              </button>
-            </div>
-          </div>
-        </ng-template>
+      </div>
+      <div class="row py-5" *ngIf="spinner">
+        <div
+          class="col-12 py-5 d-flex justify-content-center align-items-center"
+        >
+          <mat-spinner [color]="'warn'"></mat-spinner>
+        </div>
       </div>
     </div>
   </div>
