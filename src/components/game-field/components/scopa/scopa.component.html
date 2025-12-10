@@ -493,7 +493,9 @@
               class="btn"
               matTooltip="Chiudi partita"
               matTooltipPosition="above"
-              (click)="exitPartitaDouble()"
+              (click)="
+                exitPartitaDouble('Hai perso la partita per abbandono', 300)
+              "
             >
               <i class="pi pi-trash"></i>
             </button>
