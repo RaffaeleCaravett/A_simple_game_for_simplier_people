@@ -253,6 +253,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
     this.user = this.authService.getUser();
     this.ws.scopaHandBehaviorSubject.subscribe((data: ScopaHand | null) => {
       if (data && data.partitaId == this.partitaDouble?.id) {
+        clearInterval(this.liveTimer);
         clearInterval(this.liveInterval);
         if (data && data.isItStart == true) {
           this.liveGameCounterStarts(data);
@@ -267,14 +268,14 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             if (this.liveGameCounter == 0) {
               this.liveTimerTime--;
               if (this.liveTimerTime == 0) {
-                if (this.automaticChooses == 3) {
-                  clearInterval(this.liveInterval);
-                  this.liveTimerTime = 20;
+                if (this.automaticChooses == 3 && this.partitaDouble) {
                   this.spinner = true;
                   this.exitPartitaDouble(
                     'Hai perso la partita per inattività.',
                     1000
                   );
+                  clearInterval(this.liveTimer);
+                  this.liveTimerTime = 20;
                   return;
                 }
                 clearInterval(this.liveTimer);
@@ -530,19 +531,15 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         this.gameField.getPDouble(this.partitaDouble?.id).subscribe({
           next: (dataP: any) => {
             if (dataP) {
-              this.partitaDouble = dataP;
+              this.automaticChooses = 0;
               if (data?.punteggio == '0') {
-                this.partitaDouble!.vincitori.map((u) => u.id).includes(
-                  this.user!.id
-                )
+                dataP.vincitori.map((u: User) => u.id).includes(this.user!.id)
                   ? this.toastr.info("Hai vinto per abbandono dell'avversario!")
                   : '';
               }
               if (
-                this.partitaDouble?.invito?.sender?.id == this.user!.id &&
-                this.partitaDouble.vincitori
-                  .map((u) => u.id)
-                  .includes(this.user!.id)
+                dataP.invito?.sender?.id == this.user!.id &&
+                dataP.vincitori.map((u: User) => u.id).includes(this.user!.id)
               ) {
                 this.userWon;
               } else {
@@ -551,12 +548,6 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
               if (this.liveInterval) {
                 clearInterval(this.liveInterval);
               }
-              this.partitaDouble = null;
-              this.liveGameCounter = 3;
-              this.partitaDoubleHasStarted = false;
-              this.cleanDatas();
-              clearInterval(this.liveInterval);
-              this.getInviti();
             }
           },
           error: (err: any) => {
@@ -565,6 +556,16 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
                 "E' successo qualcosa nel recupero dei dati. Ogni informazione è stata comunque salvata e se hai vinto a tavolino, o per merito, o perso per qualsiasi " +
                   'motivo ne teniamo conto comunque.'
             );
+          },
+          complete: () => {
+            this.partitaDouble = null;
+            this.liveGameCounter = 3;
+            this.liveTimerTime = 20;
+            this.partitaDoubleHasStarted = false;
+            this.cleanDatas();
+            clearInterval(this.liveInterval);
+            clearInterval(this.liveTimer);
+            this.getInviti();
           },
         });
       }
@@ -1714,7 +1715,12 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe({
         next: (data: any) => {
           this.spinner = true;
+          this.automaticChooses = 0;
           setTimeout(() => {
+            this.partitaDouble = null;
+            this.cleanDatas();
+            this.liveGameCounter = 3;
+            this.partitaDoubleHasStarted = false;
             this.spinner = false;
             this.toastr.error(message);
             let gameEnd: GameEnd = {
@@ -1787,7 +1793,7 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
         ?.map((c) => c.id)
         .filter((id) => id != this.user!.id);
       this.gameField
-        .putPartitaDouble(this.partitaDouble.id, {
+        .putPartitaDouble(this.partitaDouble?.id, {
           gioco: this.partitaDouble.gioco.id,
           invito: this.partitaDouble.invito.id,
           partecipanti: this.partitaDouble.partecipanti.map((c) => c.id),
@@ -1801,7 +1807,9 @@ export class ScopaComponent implements OnInit, OnChanges, OnDestroy {
             let gameEnd: GameEnd = {
               gameId: this.game,
               partitaDoubleId: data?.id,
-              winner: this.partitaDouble?.vincitori[0].id!,
+              winner: this.partitaDouble?.vincitori
+                ? this.partitaDouble.vincitori[0].id
+                : 0!,
               punteggio: '0',
             };
             let socketDTO: SocketDTO = {
