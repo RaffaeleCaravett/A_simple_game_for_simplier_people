@@ -11,9 +11,10 @@ import {
   SocketDTO,
   User,
 } from '../interfaces/interfaces';
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { environment } from '../core/environment';
 import { BehaviorSubject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 export type ListenerCallBack = (message: Message) => void;
 
@@ -25,7 +26,7 @@ export class WebsocketService implements OnDestroy {
 
   private subscription: StompSubscription | undefined;
   private interval: any = null;
-
+  private toastr = inject(ToastrService);
   public messageBehaviorSubject: BehaviorSubject<Messaggio | null> =
     new BehaviorSubject<Messaggio | null>(null);
   public connectionBehaviorSubject: BehaviorSubject<User | null> =
@@ -62,7 +63,15 @@ export class WebsocketService implements OnDestroy {
 
   public send(message: SocketDTO): void {
     if (this.connection && this.connection.connected) {
-      this.connection.send('/ws/send', {}, JSON.stringify(message));
+      try {
+        this.connection.send('/ws/send', {}, JSON.stringify(message));
+      } catch (error: any) {
+        this.toastr.toastrConfig.disableTimeOut = true;
+        this.toastr.toastrConfig.autoDismiss = false;
+        this.toastr.show(
+          "E' successo un errore imprevisto! Ci scusiamo per il disagio. Ricarica la pagina e se ti va mandaci un reclamo spiegandoci cosa è successo."
+        );
+      }
     }
   }
   public listen(fun: ListenerCallBack): void {
